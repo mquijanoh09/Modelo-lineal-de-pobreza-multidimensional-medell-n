@@ -1,11 +1,11 @@
 # Contexto de datos para los 4 modelos
 
-Actualizado: 30-oct-2026 · Autor: Martín (Modelos 1 y 2) · Para: Jerónimo (Modelos 3 y 4)
+Actualizado: 2-nov-2026 · Autor: Martín (Modelos 1 y 2) · Para: Jerónimo (Modelos 3 y 4)
 
 Este archivo dice qué datos tengo, qué concluí de ellos y qué falta acordar para que los 4 modelos usen las mismas bases.
 Jerónimo: si algo está mal o te falta, escríbelo en la sección **Notas de Jerónimo** al final (o en un archivo `NOTAS_JERONIMO.md` en esta branch).
 
-**Grafo de conocimiento:** `graphify-out/perspectiva_equidad/` (101 nodos, 139 relaciones, 10 comunidades). Lee primero
+**Grafo de conocimiento:** `graphify-out/perspectiva_equidad/` (117 nodos, 169 relaciones, 11 comunidades, actualizado el 2-nov). Lee primero
 "Contexto en 60 segundos" de `GRAPH_REPORT.md`; para verlo, abre `graph.html` en el navegador (doble clic en un nodo de
 simulador abre su enlace). La sección 7 de este archivo resume qué hay en cada comunidad.
 
@@ -21,7 +21,7 @@ simulador abre su enlace). La sección 7 de este archivo resume qué hay en cada
 | Línea base por zona (H, A, M0, contribuciones) | Hecho | `04_linea_base.py` |
 | Reglas para contar personas afectadas (u_ij) | Validadas contra HOGARES en los 87.060 hogares del país | `docs/reglas_conteo_personas.md` (por subir) |
 | Costos EpF_j con fuente oficial | Verificados el 30-oct-2026 | sección 4 |
-| Estrategia de rezago (brecha normalizada) | Adoptada el 30-oct-2026 | sección 5 |
+| Estrategia de rezago e inasistencia (SevEdu con estrategias E0–E3) | Decidida el 2-nov-2026 | sección 5 |
 | Conteo u_ij (`05_conteo_personas.py`) | **Por hacer** | — |
 | Parámetros compartidos (`parametros.py`) | **Por hacer** | — |
 
@@ -117,7 +117,22 @@ El $6,3 M que usábamos antes para el rezago ya no se usa (no tenía fuente).
 
 ---
 
-## 5. Rezago escolar: estrategia adoptada (30-oct-2026)
+## 5. Rezago escolar: estrategia adoptada (30-oct-2026, actualizada el 2-nov-2026)
+
+### Lo que cambió el 1–2 de noviembre (síntesis vigente; reemplaza ρ_e ≈ 29 %)
+
+Fuente de verdad: `rezago_inasistencia_sevedu_documento.md` (carpeta `rezago/` del proyecto de Martín). Resumen:
+
+- **Con las reglas oficiales, ningún niño de los 215 sale del rezago binario en un año** (haría falta m_k ≥ a_k⁰ + 1). Por eso sin SevEdu el modelo no invierte en rezago.
+- **Regla de costos:** a quien ya asiste no se le paga otra vez el cupo (el SGP ya lo paga): 160 de 215 asisten. El regreso de quien no asiste sí es gasto nuevo.
+- **Estrategias por niño** (variable z_ks, con elegibilidad e_ks parámetro y Σ_s z_ks ≤ 1): E0 ninguna (asiste); E1 regreso = Renta Ciudadana $3,0 M / p por hogar + cupo SGP por niño; E2 CLEI primaria (≥ 13 años); E3 CLEI secundaria (≥ 15 años, con primaria y ≥ 2 años por fuera). Requisitos CLEI: Decreto 1075 de 2015.
+- **Caso base sin E3**, porque la ECV 2025 no trae los años por fuera del colegio (E3 queda como sensibilidad).
+- **ρ_e:** el 29 % del 28-oct era infactible. Máximo factible sin E3: 16,9 %; con E3: 21,2 %. Codo (Kneedle): 11,5 % sin E3. **Decidido el 2-nov:** cobertura obligatoria de 6 a 15 años que no asisten (Constitución, art. 67) + ρ_e = 14 % (≈ $105,8 mil millones); sensibilidad con E3: cobertura + ρ_e = 20 % (≈ $77,9 mil millones).
+- **Fundamento:** FGT (1984) con α = 2 sobre la brecha normalizada de Alkire-Foster (2011); techo por ε-restricción (Haimes, Lasdon y Wismer, 1971).
+- **Para los Modelos 3 y 4:** la fórmula SevEdu es la misma niño por niño, así que se reproduce con el sorteo, pero el sorteo de rezago tendría que ser por niño.
+- **Pendientes de datos oficiales** (`mejoras/mejoras_modelo.md`): costo oficial de permanencia (derecho de petición al MEN) y años por fuera del colegio (SIMAT) para habilitar E3.
+
+### Detalle de la estrategia del 30-oct (sigue vigente en lo que no contradice lo anterior)
 
 Fuente de verdad: `informe_rezago_brecha_normalizada.md` (§4.4 y §4.6). El rezago va en **dos capas**:
 
@@ -178,13 +193,19 @@ max Σ p_i y_i − λ Σ p_i q_i, con p_i = HW_i · HS_i, sujeto a:
 | 6. Limitaciones y defensa | Supuestos que hay que declarar ante la profesora |
 | 7. Grafo base (21-oct) | Nodos del grafo original del repo |
 | 8. Simuladores y artefactos | Enlaces a simuladores y documentos publicados |
-| 9. Rezago (brecha normalizada) | Estrategia vigente del rezago |
+| 9. Rezago (brecha normalizada) | Estrategia del rezago del 30-oct |
+| 10. Conclusiones de rezago, inasistencia y SevEdu | Síntesis del 1–2 nov: estrategias E0–E3, rango factible de ρ_e, decisión final |
 
 ---
 
 ## 8. Pendientes y preguntas para Jerónimo
 
-1. **Severidad educativa en los 4 modelos.** ¿La adoptamos con la brecha normalizada? Si sí, el sorteo de rezago debería ser por niño. ρ_e se vuelve a escoger cuando recalculemos.
+Jerónimo dejó el 1-nov tres preguntas para Martín en el `CLAUDE.md` de esta branch. Estado:
+- **¿La meta del Modelo 2 es sobre M0 o sobre H?** Pendiente de respuesta de Martín. El paper fija la meta sobre M0; si el Modelo 2 usa H, la comparación con M3/M4 no cuadra.
+- **¿El 05 cuenta u_ij también para los no pobres?** Sí, para los 3.732 hogares (sección 3), porque el costo en no pobres es el error de inclusión.
+- **¿Qué p de inasistencia y qué tolerancias del solver son el caso base?** Pendiente de Martín. El análisis de rezago e inasistencia usa p = 0,37 (Renta Ciudadana, ciclo 4 de 2025); el plan de la sección 3 también lista 0,50 y 0,75 como sensibilidades. HiGHS con `mip_rel_gap = 1e-4` en el Modelo 1; Jerónimo usa 1e-6 en la etapa 1 y 1e-4 en la etapa 2. Hay que unificar o reportar el gap de cada corrida.
+
+1. **Severidad educativa en los 4 modelos.** ¿La adoptamos con la brecha normalizada y las estrategias E0–E3 (sección 5)? Si sí, el sorteo de rezago debería ser por niño. Jerónimo propuso usarla primero como métrica ex post en el Monte Carlo; hay que acordar si entra como techo desde ya con ρ_e = 14 %.
 2. **Cambio de objetivo del Modelo 1:** H con techo de severidad y desempate en dos etapas. Cambia lo que se compara entre los 4 modelos.
 3. **u_ij = 1 en empleo formal y desempleo.** Propuesta: $2,73 M por hogar en empleo formal y $5,12 M en desempleo.
 4. **Inasistencia (3,0/p) con el sorteo.** Sugerencia: en la optimización el sorteo queda fijo y el costo es 3,0/p; el cumplimiento entra solo en el Monte Carlo de evaluación. Tú decides.

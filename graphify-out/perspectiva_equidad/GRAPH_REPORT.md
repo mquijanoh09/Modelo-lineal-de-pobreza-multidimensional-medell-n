@@ -1,4 +1,4 @@
-# Graph Report - Perspectiva de equidad del Modelo 1  (2026-10-28)
+# Graph Report - Perspectiva de equidad del Modelo 1  (actualizado 2026-11-02)
 
 > Grafo construido a mano en formato graphify (node-link JSON, mismas claves que `graphify-out/graph.json`) para dar contexto a otro Claude sobre la **nueva perspectiva** del proyecto. Los nodos de la comunidad 7 son los mismos IDs del grafo base del 21-oct, así que los dos grafos se pueden unir.
 
@@ -24,8 +24,10 @@
 - **Rezago (30-oct):** pago condicionado en corridas sucesivas (desde la 2.ª corrida solo se paga a quien ganó el año); se cuenta el año que pasa: a^t = a^{t−1} + 1 − grados aprobados, con cohorte fija (los 215 siguen aunque cumplan 18) y techo contra el escenario sin intervención; dos capas (IPM binario intacto + SevEdu por niño con z_k pagado; x_i,rez sin costo); α = 2 es el menor exponente que prioriza al niño más atrasado; ρ_e ≈ 29 % propuesto (máx 37.4 %); restricción (10) corregida a (10a)/(10b).
 - **Abierto:** desempate en una o dos etapas (se recomienda dos, por la tolerancia de HiGHS); comunicar a Jerónimo el cambio de objetivo (afecta lo que se compara entre los Modelos 1–4).
 
+- **REZAGO, INASISTENCIA Y SevEdu — SÍNTESIS VIGENTE (2-nov):** /mnt/project-files/rezago/rezago_inasistencia_sevedu_documento.md (fuente de verdad; reemplaza lo de ρ_e ≈ 29 %). Con reglas oficiales ningún niño sale del rezago binario en un año → SevEdu^N_1 = Σ HW_k((b_k − Σ_s d_ks z_ks)/(e_k+1))², lineal exacta. Estrategias: E0 (asiste, sin pago doble del SGP), E1 regreso $3.0 M/p + cupo SGP, E2 CLEI primaria, E3 CLEI secundaria. **Caso base sin E3** (la ECV no trae años por fuera; decisión de Martín 2-nov), elegibilidad z_ks ≤ e_ks. ρ_e: máx 16.9 % sin E3 (21.2 % con E3); codo 11.5 %; DECIDIDO 2-nov: cobertura obligatoria 6–15 (art. 67) + ρ_e 14 % ($105.8 mm); sensibilidad con E3 cobertura + 20 % ($77.9 mm). Simulador v2: https://claude.ai/artifact/DSSzRA8KbvVstWfiwRJkZp
+
 ## Summary
-- 101 nodes · 139 edges · 10 communities · 9 hyperedges
+- 117 nodes · 169 edges · 11 communities · 10 hyperedges
 - Extraction: 95% EXTRACTED · 5% INFERRED · construido manualmente (sin costo de tokens)
 
 ## Community Hubs (Navigation)
@@ -39,6 +41,7 @@
 - Grafo base (21-oct) — nodos ya existentes
 - Simuladores y artefactos publicados (con enlace)
 - Estrategia vigente del rezago (brecha normalizada, 30-oct)
+- Conclusiones rezago, inasistencia y SevEdu (1–2 nov)
 
 ## God Nodes (most connected - your core abstractions)
 1. `Severidad educativa (28-oct, versión en años brutos, reemplazada por la brecha normalizada): SevEdu = Σ_k HW_k (a_k⁰ − z_k)² sobre años de atraso de 215 niños rezagados; SevEdu₀ ≈ 1,291,034` - 15 edges
@@ -61,9 +64,10 @@
 - **Estrategia vigente del rezago (30-oct)** — rez_estrategia, brecha_normalizada, sin_tope, m_k_grados, sevedu_n_contrafactual, cohorte_fija, rest_10_rezago, clei_norma, clei_costo, asistencia_pendiente, pago_condicionado, rez_recalcular [EXTRACTED 1.00]
 - **Costos verificados con fuente oficial (30-oct)** — regla_costos_oficiales, costos_verificados, costos_corregidos, acueducto_rural, clei_costo, costo_rezago_sgp, art_costos, presupuesto_recalcular [EXTRACTED 1.00]
 - **Supuestos y limitaciones a defender** — sup_pension_buscar, sup_efectividad, af_binario, empleo_hipotetico, severidad_agregada [EXTRACTED 1.00]
+- **Conclusiones de rezago, inasistencia y SevEdu (1–2 nov)** — doc_sintesis_edu, binario_no_mueve, fgt_alpha2, no_pagar_dos_veces, estrategias_e0_e3, costo_e1, clei_requisitos, caso_base_sin_e3, elegibilidad_param, rango_factible_edu, codo_kneedle_edu, cobertura_art67, propuesta_rho_e_final, eps_restriccion, mejoras_doc, sim_sevedu_v2, sevedu_n_contrafactual, brecha_normalizada, cohorte_fija [EXTRACTED 1.00]
 - **Verificación oficial de unidades de costo** — v_fonvivienda, v_renta, v_upc, v_cdi, v_alfab, empleos_vida [EXTRACTED 1.00]
 
-## Communities (10 total)
+## Communities (11 total)
 
 ### Community 0 - "Paper LEPI: método y crítica"
 Nodes (9):
@@ -220,6 +224,33 @@ Nodes (9):
   Fuente: https://normativa.colpensiones.gov.co/colpens/docs/decreto_1075_2015_pr017.htm
 - `asistencia_pendiente` — Asistencia: opciones A/B DESCARTADAS (30-oct). Corrida 1 sin condición; luego el único requisito de pago es ganar el año (ap_k). Los 49 de 132 que no asisten pueden entrar (≥13 años vía CLEI)
 
+### Community 10 - "Conclusiones rezago, inasistencia y SevEdu (1–2 nov)"
+Nodes (15):
+- `doc_sintesis_edu` — DOCUMENTO DE SÍNTESIS (2-nov): rezago_inasistencia_sevedu_documento.md — cómo se calculan y reducen rezago e inasistencia, con énfasis en SevEdu; fuente de verdad vigente  
+  _Por qué:_ Martín pidió un .md con todo lo concluido, justificado con fuentes. Reúne informe del rezago, casos, justificación de ρ_e, simulación de Tomás y mejoras.
+- `binario_no_mueve` — Con las reglas oficiales NINGÚN niño de los 215 sale del rezago binario en un año (requiere m_k ≥ a_k⁰+1; CLEI primaria exige ≥4 de atraso, E3 solo quitaría atraso 1): sin SevEdu el modelo no invierte en rezago  
+  _Por qué:_ Verificado niño por niño en el simulador (2-nov). Es el argumento central de por qué SevEdu es necesaria.
+- `fgt_alpha2` — Base teórica: FGT (Foster, Greer y Thorbecke 1984, Econometrica 52(3):761–766) con α=2 + brecha normalizada de Alkire-Foster (2011); aporte propio: Scopus 8 docs, ninguno mide severidad del atraso en un IPM  
+  Fuente: https://econometricsociety.org/publications/econometrica/1984/05/01/notes-and-comments-class-decomposable-poverty-measures
+- `no_pagar_dos_veces` — Regla de costos: a quien asiste no se le paga otra vez el cupo (el SGP ya lo paga); el regreso de quien no asiste sí es gasto nuevo. 160 de 215 asisten → E0
+- `estrategias_e0_e3` — Catálogo: E0 ninguna (asiste); E1 regreso = Renta Ciudadana + cupo SGP (6–16 que no asisten, m=1); E2 CLEI primaria (≥13, g≤3, m=3−g o 2); E3 CLEI secundaria (≥15, primaria, ≥2 años por fuera, m=2 o 1)
+- `costo_e1` — Costo E1 por regreso logrado = $3.0 M/p por hogar + cupo SGP por niño (p=0.37 → Tomás $11.2 M); Monte Carlo: $412.8 M / 37 regresos (aprobado por Martín 1-nov)
+- `clei_requisitos` — Requisitos CLEI verificados (Decreto 1075/2015): art. 2.3.3.5.3.4.2 ≥13 con máx. 3 grados o ≥15 con primaria y ≥2 años por fuera; 2.3.3.5.3.5.1 media solo ≥18 con 9.º; 2.3.3.5.3.4.3 <13 nivelación en colegio regular  
+  Fuente: https://normativa.colpensiones.gov.co/colpens/docs/decreto_1075_2015_pr017.htm
+- `caso_base_sin_e3` — CASO BASE SIN E3 (decisión de Martín 2-nov): la ECV 2025 (F24, 82 variables) no trae años por fuera del colegio; atraso ≥2 es solo condición necesaria (33 de 34). 15–16 años que no asisten → solo E1. E3 = sensibilidad  
+  _Por qué:_ Regla del proyecto: solo lo verificable entra al modelo. Martín: "dejemos claro porqué se tomó esta y no la que queremos debido a falta de datos".
+- `elegibilidad_param` — Elegibilidad como parámetro: z_ks ≤ e_ks, Σ_s z_ks ≤ 1; e_k,E3 = 0 (base) o 1[edad≥15]·1[no asiste]·1[g∈5..8]·1[a≥θ] (sensibilidad θ=2,3,4); si llega el dato real solo cambia e_k,E3
+- `rango_factible_edu` — Rango factible de ρ_e (normalizada, p=0.37): sin E3 máx 16.9 % ($201.6 mm); con E3 21.2 % ($83.3 mm); con A3 24.1 %. El 29 % del 28-oct es INFACTIBLE
+- `codo_kneedle_edu` — Codo Kneedle (Satopää 2011; Branke et al. 2004): sin E3 en 11.5 % ($31.2 mm, se acaban los CLEI de primaria); con E3 en 13.7 % ($20.4 mm, 32 jóvenes con CLEI)
+- `cobertura_art67` — Cobertura obligatoria 6–15 años que no asisten (Constitución art. 67: "obligatoria entre los cinco y los quince años"): el codo dejaba a 23 de 55 sin atender (8–14 años, poco atraso, solo E1)  
+  Fuente: https://minciencias.gov.co/sites/default/files/upload/reglamentacion/ConstitucionPoliticaColombia-1991.pdf
+- `propuesta_rho_e_final` — DECISIÓN FINAL ρ_e (Martín 2-nov): caso base sin E3 = cobertura obligatoria 6–15 + ρ_e 14 % ($105.8 mm); sensibilidad con E3 = cobertura + 20 % ($77.9 mm)
+- `eps_restriccion` — ε-restricción (Haimes, Lasdon y Wismer 1971, IEEE SMC 1(3):296–297): H objetivo, SevEdu como techo Σ coef_ks z_ks ≥ ρ_e·SevEdu^N_1,sin (≈21,562)
+- `mejoras_doc` — mejoras/mejoras_modelo.md: (1) costo oficial de permanencia (PTAFI, sin costo por estudiante; derecho de petición MEN); (2) años por fuera del colegio para habilitar E3 (SIMAT vía derecho de petición)
+
+_Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov): 215 niños reales con asistencia ECV, estrategias E1–E3, paso del tiempo, frontera ρ_e vs costo  
+  Fuente: https://claude.ai/artifact/DSSzRA8KbvVstWfiwRJkZp
+
 ## Edges
 - `lepi_paper` --classified_as--> `lepi_es_madm`
 - `lepi_es_madm` --explained_by--> `madm_vs_modm`
@@ -360,3 +391,33 @@ Nodes (9):
 - `regla_costos_oficiales` --motivated--> `costo_rezago_sgp`
 - `presupuesto_recalcular` --caused_by--> `costos_corregidos`
 - `presupuesto_recalcular` --caused_by--> `acueducto_rural`
+- `doc_sintesis_edu` --extends--> `rez_estrategia`
+- `doc_sintesis_edu` --explains--> `sevedu_n_contrafactual`
+- `binario_no_mueve` --motivates--> `sevedu_n_contrafactual`
+- `binario_no_mueve` --follows_from--> `rest_10_rezago`
+- `fgt_alpha2` --justifies--> `brecha_normalizada`
+- `fgt_alpha2` --justifies--> `sevedu_n_contrafactual`
+- `no_pagar_dos_veces` --constrains--> `estrategias_e0_e3`
+- `estrategias_e0_e3` --uses--> `costo_e1`
+- `estrategias_e0_e3` --constrained_by--> `clei_requisitos`
+- `clei_requisitos` --refines--> `clei_norma`
+- `estrategias_e0_e3` --uses--> `clei_costo`
+- `clei_requisitos` --causes--> `caso_base_sin_e3`
+- `caso_base_sin_e3` --implemented_by--> `elegibilidad_param`
+- `caso_base_sin_e3` --documented_in--> `mejoras_doc`
+- `elegibilidad_param` --constrains--> `sevedu_n_contrafactual`
+- `eps_restriccion` --uses--> `sevedu_n_contrafactual`
+- `eps_restriccion` --same_method_as--> `techo_severidad`
+- `rango_factible_edu` --supersedes--> `rho_e_eleccion`
+- `rango_factible_edu` --resolves--> `rez_recalcular`
+- `caso_base_sin_e3` --determines--> `rango_factible_edu`
+- `codo_kneedle_edu` --applies--> `codo`
+- `rango_factible_edu` --precedes--> `codo_kneedle_edu`
+- `cobertura_art67` --corrects--> `codo_kneedle_edu`
+- `codo_kneedle_edu` --informs--> `propuesta_rho_e_final`
+- `cobertura_art67` --informs--> `propuesta_rho_e_final`
+- `sim_sevedu_v2` --computes--> `rango_factible_edu`
+- `sim_sevedu_v2` --supersedes--> `sim_sevedu`
+- `costo_e1` --prices--> `cobertura_art67`
+- `doc_sintesis_edu` --concludes--> `propuesta_rho_e_final`
+- `doc_sintesis_edu` --references--> `mejoras_doc`

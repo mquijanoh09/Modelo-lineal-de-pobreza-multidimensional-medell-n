@@ -1,6 +1,6 @@
 # Modelo 3 — focalización geográfica estocástica (rama `Modelo3`)
 
-> Actualizado: 1-nov-2026, sobre `origin/Modelo3` = `16a4e4f`. Responsable: Jerónimo Vélez.
+> Actualizado: 2-nov-2026, con los archivos `m34_*`. Responsable: Jerónimo Vélez.
 > Sustentación: noviembre de 2026. Responder en español, paso a paso y revisando con rigor
 > los Big-M y el Monte Carlo. El panorama de los 4 modelos está en el `CLAUDE.md` de la rama
 > `Contexto`.
@@ -46,6 +46,12 @@ Escenario: **Antioquia completa** (`DEPARTAMENTO == 5`), con D = las 3 clases de
 | `correr_m3_equidad.py` | Pruebas por capas: `capa0` a `capa3` |
 | `extremos_m3.py` | Diagnóstico de `rho_max` y `r_max` para un B dado (fijo en $500 mm) |
 | `07_clusters.py` | Clústeres del Modelo 4 (fuera del alcance de este archivo) |
+| `m34_datos.py` | Carga + línea base con asserts + sorteo R (idéntico a 05). Autocontenido: no importa 05/06/07 |
+| `m34_mecanismo.py` | Cortes con `grupo` **matriz n×J** (sirve para M3 y M4), MILP del paper, métricas |
+| `m34_clusters.py` | k-means idéntico a 07 (reproduce 1.389/1.038/849/456) |
+| `m34_montecarlo.py` | MC: réplicas × metas {5, 10, 20 %} × costos {pp, u1}, para `m3` o `m4` |
+| `m34_optimos_alternos.py` | Rango del error de inclusión entre óptimos alternos |
+| `m34_test_regresion.py`, `m34_resumen_mc.py` | Regresión contra 06 (630 cortes, 153,0) y tabla/gráficas del MC |
 
 ## 4. Formulación
 
@@ -114,6 +120,10 @@ los cortes elegidos; no confía en `y` ni en `q`.
 11. **Gap de HiGHS por etapa:** 1e-6 en personas (etapa 1) y 1e-4 en severidad (etapa 2). Con
     el mismo solver en ambas, la etapa 2 no terminó en > 150 s con B = $500 mm.
 12. **Submuestras solo para depurar,** nunca para resultados.
+13. **Óptimos alternos (2-nov):** con esfuerzo en personas-privación hay empates; en la réplica 0,
+    meta 5 %, el error de inclusión va de 41,7 % a 61,7 % con el mismo esfuerzo (60,0). Reportar con
+    desempate lexicográfico (min inclusión s.a. esfuerzo ≤ E*) o como intervalo. El 41,7 % histórico
+    era uno de esos óptimos, no un error.
 
 ## 6. Estado y resultados
 
@@ -133,8 +143,8 @@ la causa; falta confirmarlo con Martín.
 
 ### Objetivo del paper: réplica 0, esfuerzo en personas-privación
 
-No son resultados definitivos: falta el Monte Carlo. Estas cifras vienen de corridas anteriores;
-el 1-nov solo se reprodujo el 153,0.
+Es una sola réplica: para resultados, usar el Monte Carlo de abajo. Estas cifras vienen de corridas
+anteriores; de ellas se reprodujo el 153,0.
 
 | MPI_r | Esfuerzo | Privaciones resueltas | M0 final | H final | Error de inclusión |
 |---|---|---|---|---|---|
@@ -142,14 +152,36 @@ el 1-nov solo se reprodujo el 153,0.
 | 0,10 | 153,0 | 47 | 0,034779 | 0,0854 | 62,1 % |
 | 0,20 | 349,0 | 104 | 0,030866 | 0,0756 | 68,5 % |
 
-El error de inclusión crece con la ambición de la meta.
+**Corrección:** la tendencia 42→62→69 % del error de inclusión era de una réplica. En el Monte Carlo
+la mediana de M3 es plana (~60 %): lo robusto es el nivel alto, no la tendencia.
+
+### Monte Carlo M3 y M4: objetivo del paper (2-nov)
+
+1.200 MILP (100 réplicas × 3 metas × 2 costos × 2 modelos), todos óptimos. Mediana [p5; p95]; archivos
+en `resultados/m34/`.
+
+| Meta | Modelo | Esfuerzo pp | Costo u=1 (mil millones $) | Inclusión (pp) | Exclusión | H final |
+|---|---|---|---|---|---|---|
+| 5 % | M3 | 83 [41; 124] | 12,2 [6,4; 17,4] | 59 % [32; 76] | 94 % | 0,0894 |
+| 5 % | M4 | 57 [30; 79] | 6,0 [3,2; 6,6] | 41 % [16; 64] | 94 % | 0,0892 |
+| 10 % | M3 | 164 [115; 223] | 23,5 [15,0; 32,9] | 64 % [44; 79] | 88 % | 0,0843 |
+| 10 % | M4 | 133 [92; 162] | 13,4 [10,3; 16,9] | 45 % [23; 57] | 88 % | 0,0844 |
+| 20 % | M3 | 365 [303; 420] | 44,2 [40,5; 47,8] | 62 % [45; 69] | 74 % | 0,0753 |
+| 20 % | M4 | 345 [290; 383] | 38,3 [33,5; 41,9] | 35 % [27; 51] | 72 % | 0,0763 |
+
+Pareado (misma R), por meta de 5 / 10 / 20 %:
+
+- **Costo:** con u = 1, M4 es más barato en 97–99 % de las réplicas (ahorro mediano 53 / 43 / 13 %).
+  Con `pp`, su esfuerzo es menor en 83 / 85 / 75 % (ahorro mediano 36 / 19 / 6 %).
+- **Inclusión:** con `pp`, M4 tiene menos en 78 / 92 / 98 % de las réplicas. Con u = 1, en 33 / 76 / 92 %:
+  con meta 5 % la mediana **sube** de 49 % a 60 %, así que no se puede afirmar que M4 siempre la reduzca.
 
 ### Objetivo de equidad: SIN VERIFICAR
 
 Reportado en el commit `16a4e4f` y en `extremos_m3.py` (u = 1, réplica 0, B = $500 mm):
 419.550 personas salen, 42,6 % del gasto cae en no pobres, `rho_max` = 40,7 %, `r_max` = 59,8 %.
-**No se pudo reproducir** el 1-nov: `opti1` no tiene `highspy`, y `capa1` falla con
-`HiGHS: Not Available`. No citar estas cifras hasta volver a correrlas.
+**No se pudo reproducir** el 1-nov porque faltaba `highspy`. Ya está instalado, pero estas corridas
+no se han repetido. No citar estas cifras hasta volver a correrlas.
 
 ## 7. Decisiones abiertas
 
@@ -166,11 +198,11 @@ Reportado en el commit `16a4e4f` y en `extremos_m3.py` (u = 1, réplica 0, B = $
 
 ## 8. Lo que sigue
 
-1. Instalar `highspy` en `opti1` y reproducir las capas 1 a 3 de equidad y `extremos_m3.py`.
+1. Reproducir las capas 1 a 3 de equidad y `extremos_m3.py`.
 2. Decidir el objetivo del caso base (sección 7, punto 1).
-3. **Monte Carlo:** ~100 réplicas × metas {0,05; 0,10; 0,20} variando `REPLICA`. Guardar esfuerzo,
-   errores de inclusión y exclusión, M0, H, severidad y cortes. Reportar la **distribución**: la
-   varianza entre réplicas es el resultado.
+3. **Monte Carlo:** hecho con el objetivo del paper (`m34_montecarlo.py`). Falta el desempate de la
+   trampa 13 y repetirlo con costos reales. Reportar la **distribución**: la varianza entre réplicas
+   es el resultado.
 4. Sustituir `costos_provisionales.py` por `parametros.py` y `conteo_pares.csv` de Martín cuando
    existan, con V = u_ij·HW_i, K = costo_ij y elig_ij reales.
 5. Verificar contra el Apéndice 1 del paper el error de unidades de p_jd y actualizar
@@ -190,8 +222,8 @@ $PY 05_modelo3.py 0.10                 # formulación directa
 $PY correr_m3_equidad.py capa0         # capa1 | capa2 <B> | capa3 <B> <r> <rho>; 1-3 requieren highspy
 ```
 
-- `opti1`: Python 3.10.18 y PuLP 2.9.0, solo con CBC (verificado el 1-nov). `requirements.txt` pide
-  `pulp>=2.9,<4` y `highspy>=1.7`, así que **a `opti1` le falta `highspy`**.
+- `opti1`: Python 3.10.18 y PuLP 2.9.0, con CBC y HiGHS (`highspy` instalado). `requirements.txt` pide
+  `pulp>=2.9,<4` y `highspy>=1.7`.
 - El `python3` por defecto trae PuLP 4.0.0 sin solvers: no usarlo.
 - `timeLimit` de `PULP_CBC_CMD` no es confiable: 120 s configurados llegaron a > 200 s. Este Mac no
   tiene `timeout`; usar `perl -e 'alarm 240; exec @ARGV' <comando>`.

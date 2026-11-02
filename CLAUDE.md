@@ -122,6 +122,19 @@ confirmado ni escrito en "Notas de Jerónimo".**
 4. **Tangentes:** Jerónimo tiene 6.048 y Martín 6.571. La diferencia es 523, el número de hogares
    pobres, probablemente por omitir a = 0 en cada hogar. Falta confirmarlo.
 
+### Preguntas para Martín (1-nov-2026)
+
+Salieron de cruzar su contexto de equidad (`graphify-out/perspectiva_equidad/`) con el Modelo 3.
+
+1. **¿La meta del Modelo 2 es sobre M0 o sobre H?** La versión del paper del M3/M4 fija la meta sobre
+   M0 (MPI_s = 0,038684). Si `09_modelo2` la fija sobre H, la comparación M2 ↔ M3/M4 no cuadra.
+2. **¿`05_conteo_personas` cuenta u_ij también para los no pobres (los 3.732 hogares)?** En el M1 basta
+   con los 523 pobres, pero en el M3/M4 el sorteo también le llega a los no pobres: ahí están el costo
+   real y el error de inclusión.
+3. **¿Qué p de inasistencia y qué tolerancias del solver usamos como caso base?** Martín usa p = 0,5 y
+   `mip_rel_gap = 1e-4`; `costos_provisionales.py` usa p = 0,369, y `modelo3_equidad.py` usa 1e-6 en la
+   etapa 1 y 1e-4 en la etapa 2. Hay que unificar o reportar el gap de cada corrida.
+
 ## 7. Lo que sigue
 
 **Jerónimo**

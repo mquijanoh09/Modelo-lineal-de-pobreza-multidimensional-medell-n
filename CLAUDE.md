@@ -77,26 +77,23 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 | `costos_provisionales.py` | `Modelo3` | PROVISIONAL: u = 1 con la tabla de Martín. Se borra cuando exista `parametros.py` |
 | `07_clusters.py` | `Modelo3` | k-means k = 4 del Modelo 4 |
 | `m34_datos.py` | `Modelo3` | carga + línea base con asserts + sorteo R (idéntico a 05). Autocontenido |
-| `m34_mecanismo.py` | `Modelo3` = versión 2-nov; **versión 3-nov solo en el Project** | cortes con `grupo` matriz n×J; la del 3-nov agrega `excluir=` (no intervenibles), `pobre0=` (cumNP), `desempate=True` y el reintento con `presolve="off"` |
+| `m34_mecanismo.py` | `Modelo3` | cortes con `grupo` matriz n×J; desde el 3-nov agrega `excluir=` (no intervenibles), `pobre0=` (cumNP), `desempate=True` y el reintento con `presolve="off"` |
 | `m34_clusters.py` | `Modelo3` | k-means idéntico a 07 (reproduce 1.389 / 1.038 / 849 / 456) |
 | `m34_montecarlo.py` | `Modelo3` | MC del 2-nov (sin desempate). Define `EPF`, `precios_u1`, `matriz_grupo` |
 | `m34_optimos_alternos.py` | `Modelo3` | rango del error de inclusión entre óptimos alternos |
 | `m34_test_regresion.py`, `m34_resumen_mc.py` | `Modelo3` | regresión contra 06 (630 cortes, 153,0, 62,1 %) y tabla/gráfica del MC del 2-nov |
 | `resultados/m34/` | `Modelo3` | MC del 2-nov: `mc_m3.csv`, `mc_m4.csv`, `resumen_mc.csv`, `mc_m3_vs_m4.png`, `optimos_alternos_m*.csv` |
 | `docs/m34_README.md` | `Modelo3` | cómo correr los `m34_*` |
-| `m34_montecarlo_lex.py` | **solo Project** (`claude/codigo-m34/`) | MC con desempate × rezago {intervenible, no_intervenible}, Pool(2) |
-| `m34_equidad.py`, `m34_correr_equidad.py` | **solo Project** | objetivo de equidad del M1 para M3 **y** M4 |
-| `m34_referencia_info_perfecta.py` | **solo Project** | mismo objetivo de equidad con información perfecta (techo propio; **no** es el M1) |
-| `m34_resumen_3nov.py`, `m34_grafica_equidad.py` | **solo Project** | tablas del MC lex y de equidad; gráfica `equidad_m3_m4_ip.png` |
-| `m34_sensibilidad_k.py`, `m34_resumen_k.py`, `m34_grafica_k.py` | **solo Project** (3-nov tarde) | M4 con k ∈ {2,3,4,5,6,8}, 50 réplicas pareadas; equidad (B = 10, 25) + paper (meta 10 %, u1); silueta, CH, η² de pobreza; gráfica `sensibilidad_k.png` |
-| `m34_barrido_metas_v2.py`, `m34_resumen_barrido_v2.py` | **solo Project** (3-nov tarde) | curva costo–meta 2–30 % (u1, 30 réplicas, desempate, rezago no intervenible); gráfica `barrido_v2.png` |
-| `m34_pares_pequenos.py` | **solo Project** (3-nov tarde) | lista los pares (j, g) con pocos hogares privados |
-| `notas_jeronimo_borrador.md` | **solo Project** | respuestas a las 7 preguntas de Martín, listas para pegar en "Notas de Jerónimo" |
-| Resultados 3-nov (`resumen_mc_lex.csv`, `equidad_m34.csv`, `resumen_equidad.csv`, `info_perfecta.csv`, `resumen_3nov.txt`, `resumen_k.csv`, `calidad_k.csv`, `resumen_barrido_v2.csv`, `pares_pequenos.csv`) | **solo Project** | cifras de §7. Los PNG no están en el Project (son binarios): se regeneran en segundos |
+| `m34_montecarlo_lex.py` | `Modelo3` | MC con desempate × rezago {intervenible, no_intervenible}, Pool(2) |
+| `m34_equidad.py`, `m34_correr_equidad.py` | `Modelo3` | objetivo de equidad del M1 para M3 **y** M4 |
+| `m34_referencia_info_perfecta.py` | `Modelo3` | mismo objetivo de equidad con información perfecta (techo propio; **no** es el M1) |
+| `m34_resumen_3nov.py`, `m34_grafica_equidad.py` | `Modelo3` | tablas del MC lex y de equidad; gráfica `equidad_m3_m4_ip.png` |
+| `m34_sensibilidad_k.py`, `m34_resumen_k.py`, `m34_grafica_k.py` | `Modelo3` | M4 con k ∈ {2,3,4,5,6,8}, 50 réplicas pareadas; equidad (B = 10, 25) + paper (meta 10 %, u1); silueta, CH, η² de pobreza; gráfica `sensibilidad_k.png` |
+| `m34_barrido_metas_v2.py`, `m34_resumen_barrido_v2.py` | `Modelo3` | curva costo–meta 2–30 % (u1, 30 réplicas, desempate, rezago no intervenible); gráfica `barrido_v2.png` |
+| `m34_pares_pequenos.py` | `Modelo3` | lista los pares (j, g) con pocos hogares privados |
+| "Notas de Jerónimo" | `Contexto` (`CONTEXTO_DATOS.md`) | respuestas a las 7 preguntas de Martín y pendientes con fecha |
+| Resultados 3-nov (`resumen_mc_lex.csv`, `equidad_m34.csv`, `resumen_equidad.csv`, `info_perfecta.csv`, `resumen_3nov.txt`, `resumen_k.csv`, `calidad_k.csv`, `resumen_barrido_v2.csv`, `pares_pequenos.csv`) | `Modelo3` (`resultados/m34/`) | cifras de §7. También están las 3 gráficas y los crudos `sens_k_crudo.csv` y `barrido_v2_crudo.csv` |
 | ~~`m34_barrido_sensibilidad.py`~~ + `barrido_sensibilidad.csv` | solo Project (2-nov) | **Reemplazado por `m34_barrido_metas_v2.py`.** Sus filas `no_intervenible` no sirven (Trampa 14) |
-
-**Pendiente: copiar al repo (rama `Modelo3`) los archivos "solo Project" del 3-nov.** Hasta entonces,
-el `m34_mecanismo.py` del repo no tiene `excluir=` ni `desempate=`.
 
 Sin seguimiento en git (no subir): `.vscode/`, `Collaborator.txt`, `Soloparasercolaborador.txt`,
 `hello.py`, `contexto_jeronimo/` (copia vieja del 29-oct), `data/processed/hogares_con_cluster.csv`,
@@ -182,7 +179,7 @@ cortes elegidos y no confía en `y` ni en `q`. Es la misma función para M3 y M4
     Usar `s_i = w·M_i − Σ w_j cur_ij`. Las filas `no_intervenible` del barrido del 2-nov no sirven.
 15. **(3-nov) Falso infactible del presolve de HiGHS en la etapa 2** (12/2.400 corridas del paper y
     2/300 de equidad), aunque la solución de la etapa 1 sea factible. Reintentar con
-    `presolve="off"`; ya está en `m34_mecanismo` y `m34_equidad` (versión del Project).
+    `presolve="off"`; ya está en `m34_mecanismo` y `m34_equidad`.
 16. **(3-nov) PuLP 4.x rompe `LpVariable(cat=...)`.** Instalar con `requirements.txt` (`pulp<4`).
 17. **Clústeres sin privaciones:** el k-means usa solo variables que el Estado observa (tamaño,
     composición por edades, dependencia, edad/sexo/educación del jefe). Agrupar por privaciones
@@ -345,8 +342,7 @@ y `barrido_v2.png`.
 
 ## 9. Respuestas a las preguntas de Martín (§8 de `CONTEXTO_DATOS.md`)
 
-Borrador de Jerónimo, **listo para pegar** en `claude/codigo-m34/notas_jeronimo_borrador.md`. **Siguen
-sin escribirse en "Notas de Jerónimo"** de `CONTEXTO_DATOS.md` (vacía al 3-nov, noche).
+Escritas el 3-nov en "Notas de Jerónimo" de `CONTEXTO_DATOS.md` (rama `Contexto`). Resumen:
 
 1. **SevEdu:** sí, primero como métrica ex post en el MC de M3/M4. El sorteo por niño rompe el prefijo
    por hogar; como techo con ρ_e = 14 % queda como trabajo futuro.
@@ -382,9 +378,7 @@ Preguntas de Jerónimo a Martín: u_ij para no pobres → **respondida** (sí). 
 
 ## 11. Lo que sigue, en orden
 
-1. **Jerónimo (a mano):** pegar `notas_jeronimo_borrador.md` en "Notas de Jerónimo" (rama `Contexto`)
-   y copiar a la rama `Modelo3` los `m34_*` y resultados del 3-nov que están en el Project; luego
-   commit y push.
+1. **Hecho (3-nov):** "Notas de Jerónimo" escritas en `Contexto`; `m34_*` y resultados del 3-nov en `Modelo3`.
 2. **Con Martín, con fecha límite:** M1 y M2 en el repo (aunque sea con u = 1), `parametros.py`,
    `05_conteo_personas.py` (`conteo_pares.csv`, `empleo_componentes.csv`, `ninos_rezago.csv`),
    `03_preparar_antioquia.py` y la meta del M2 (sobre M0). Si no llegan, sustentar M3/M4 con u = 1
@@ -410,7 +404,7 @@ $PY test_cortes.py
 $PY 06_modelo3_cortes.py 0.10          # producción + control de equivalencia ("solo" = sin control)
 $PY m34_test_regresion.py $R                                       # 630 cortes, 153,0, 62,1 %
 $PY m34_montecarlo.py $R m3 0 100 out/mc_m3.csv                    # MC 2-nov, ~25 s/réplica
-# Scripts del 3-nov (hoy solo en el Project, claude/codigo-m34/):
+# Scripts del 3-nov:
 $PY m34_montecarlo_lex.py $R 100 out/mc_lex                        # 800 tareas, ~85 min con 2 núcleos
 $PY m34_correr_equidad.py $R 0 30 out/equidad_m34.csv 10 25 50 100 200    # ~30 min
 $PY m34_referencia_info_perfecta.py $R out/info_perfecta.csv 10 25 50 100 200   # ~1 min
@@ -459,8 +453,8 @@ Revisión del 3-nov-2026, 21:00 UTC, sobre las referencias locales del clon. No 
 
 - `parametros.py`, `05_conteo_personas.py` y `03_preparar_antioquia.py` siguen sin existir en ninguna
   rama, y **no hay código de M1 ni M2**.
-- `CONTEXTO_DATOS.md` no cambió desde `72c9d02`; su §8 sigue con la meta del M2, la p de inasistencia y
-  el gap pendientes, y "Notas de Jerónimo" sigue vacía.
+- El último cambio de Martín a `CONTEXTO_DATOS.md` es `72c9d02`; su §8 sigue con la meta del M2, la p de
+  inasistencia y el gap pendientes. "Notas de Jerónimo" ya quedó escrita (3-nov, noche).
 - No hay archivos `NOTAS_*.md` en el repo.
 
 **Sin cambios relevantes** desde la última revisión (3-nov, tarde).

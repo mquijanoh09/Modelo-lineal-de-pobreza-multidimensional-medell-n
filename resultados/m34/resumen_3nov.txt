@@ -1,0 +1,28 @@
+MC lex (100 replicas, 2.400 MILP, todos Optimal). Tabla completa en resumen_mc_lex.csv.
+
+Pareado M4 vs M3 (misma replica):
+  intervenible    pp meta 0.05: M4 mas barato 83%, ahorro mediano 36%; M4 menos inclusion 77% (mediana 56% -> 41%)
+  intervenible    pp meta 0.10: M4 mas barato 85%, ahorro mediano 19%; M4 menos inclusion 92% (mediana 64% -> 44%)
+  intervenible    pp meta 0.20: M4 mas barato 75%, ahorro mediano 6%; M4 menos inclusion 98% (mediana 62% -> 35%)
+  intervenible    u1 meta 0.05: M4 mas barato 97%, ahorro mediano 53%; M4 menos inclusion 50% (mediana 48% -> 54%)
+  intervenible    u1 meta 0.10: M4 mas barato 99%, ahorro mediano 43%; M4 menos inclusion 84% (mediana 74% -> 57%)
+  intervenible    u1 meta 0.20: M4 mas barato 99%, ahorro mediano 13%; M4 menos inclusion 95% (mediana 64% -> 41%)
+  no_intervenible pp meta 0.05: M4 mas barato 83%, ahorro mediano 36%; M4 menos inclusion 76% (mediana 56% -> 41%)
+  no_intervenible pp meta 0.10: M4 mas barato 85%, ahorro mediano 19%; M4 menos inclusion 92% (mediana 64% -> 44%)
+  no_intervenible pp meta 0.20: M4 mas barato 73%, ahorro mediano 6%; M4 menos inclusion 98% (mediana 62% -> 36%)
+  no_intervenible u1 meta 0.05: M4 mas barato 97%, ahorro mediano 53%; M4 menos inclusion 50% (mediana 48% -> 54%)
+  no_intervenible u1 meta 0.10: M4 mas barato 99%, ahorro mediano 43%; M4 menos inclusion 84% (mediana 74% -> 57%)
+  no_intervenible u1 meta 0.20: M4 mas barato 99%, ahorro mediano 14%; M4 menos inclusion 95% (mediana 64% -> 41%)
+
+Efecto del desempate (rezago intervenible, mismas replicas que el 2-nov): mismo costo en 100 % de las replicas;
+  la inclusion baja en 3-14 % de las replicas pp y en 0 % de las u1. Mediana: m3 pp 0.05 59% -> 56%; resto sin cambio.
+
+Efecto de rezago no intervenible (lex): el costo sube en 0-13 % de las replicas; mediana +0,0 % en todos los casos.
+
+Equidad (objetivo del M1), u = 1, rezago no intervenible: ver resumen_equidad.csv.
+Pareado equidad M4/M3 (rho = 0):
+  B= 10.0: M4 saca mas en 93%; razon mediana 1.78; inclusion 51% -> 52%
+  B= 25.0: M4 saca mas en 93%; razon mediana 1.37; inclusion 62% -> 62%
+  B= 50.0: M4 saca mas en 100%; razon mediana 1.09; inclusion 61% -> 43%
+  B=100.0: M4 saca mas en 100%; razon mediana 1.10; inclusion 40% -> 39%
+  B=200.0: M4 saca mas en 90%; razon mediana 1.02; inclusion 41% -> 38%

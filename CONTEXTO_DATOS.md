@@ -217,4 +217,29 @@ Jerónimo dejó el 1-nov tres preguntas para Martín en el `CLAUDE.md` de esta b
 
 ## Notas de Jerónimo
 
-_(Escribe aquí lo que necesites que agregue, cambie o corrija.)_
+### Respuestas a tus 7 preguntas
+
+1. **SevEdu.** Sí la adoptamos, pero en M3/M4 primero como **métrica ex post** del Monte Carlo. El sorteo por niño rompe la propiedad de prefijo por hogar en la que se basan los cortes, así que no la meto como techo dentro del MILP. Si en M1 entra como techo con ρ_e = 14 %, en M3/M4 reporto cuánto se logra de ese 14 % y lo comparamos.
+2. **Objetivo del M1 (H con techo de severidad y dos etapas).** Ya está implementado también para M3 y M4 (`m34_equidad.py`), con las mismas etapas. Propongo que el caso base de M3/M4 sea el objetivo del paper (min costo s.a. meta de M0) y que la equidad sirva de puente con el M1. Así comparamos los 4 modelos con el mismo objetivo.
+3. **u_ij = 1 en empleo.** De acuerdo con $2,73 M (formal) y $5,12 M (desempleo) por hogar, pero como **sensibilidad**, no como caso base.
+4. **Inasistencia.** De acuerdo: en la optimización el costo es 3,0/p con el sorteo fijo, y el cumplimiento p solo entra en el Monte Carlo de evaluación. Propongo p = 0,369 como caso base (Renta Ciudadana 2025) y 0,50 / 0,75 como sensibilidad.
+5. **Conteo de no pobres en el 05.** Es imprescindible, porque el costo en no pobres **es** el error de inclusión. Lo reviso cuando lo subas.
+6. **Nombres.** Mis archivos usan el prefijo `m34_` y no importan nada de 05/06/07. Cuando exista `parametros.py`, importo de ahí `IND`, `W` y `SEMILLA`. Renumerar `05_modelo3.py` no hace falta: queda solo como control de equivalencia.
+7. **Costos.** Logro educativo con 3 ciclos CLEI (base). Acueducto rural a $43,7 M solo si la fuente es verificable; los $9,7 M del BID quedan como sensibilidad.
+
+### Lo que necesito de ti (con fecha)
+
+| # | Qué | Para qué | Fecha propuesta |
+|---|---|---|---|
+| 1 | M1 y M2 en el repo, aunque sea con u = 1 | Comparar los 4 modelos sobre el mismo universo | Esta semana |
+| 2 | `parametros.py` + `conteo_pares.csv` (u_ij de los 3.732 hogares) | Costos reales en M3/M4 (V = u·HW, K = costo_ij) | Esta semana |
+| 3 | Meta del M2: ¿M0 o H? (propongo M0, como el paper) | Que M2 y M3/M4 respondan la misma pregunta | En la próxima reunión |
+| 4 | Gap del solver: HiGHS, 1e-6 en el paper y en la etapa 1, 1e-4 en la etapa 2 | Mismos supuestos | En la próxima reunión |
+
+### Lo que ya tengo de M3/M4 (u = 1, rezago no intervenible)
+
+- Objetivo del paper: Monte Carlo de 100 réplicas con desempate lexicográfico (2.400 MILP, todos óptimos).
+- Objetivo de equidad: 30 réplicas × 5 presupuestos para M3, M4 y una referencia con información perfecta (`info_perfecta.csv`). **Cuando subas el M1, compáralo con esa referencia:** si con el mismo B, u = 1 y rezago no intervenible difiere en más de ~1 %, hay una diferencia de supuestos que hay que encontrar.
+- Dos trampas que te pueden afectar en el M1/M2:
+  - Si excluyes el rezago del MILP, su peso tiene que quedar como constante en el puntaje (`s_i = w·M_i − Σ w_j cur_ij`). Si no, se "cura" gratis.
+  - El presolve de HiGHS a veces declara infactible la etapa 2 aunque la solución de la etapa 1 la cumpla. Hay que reintentar con `presolve="off"`.

@@ -218,3 +218,9 @@ __marimo__/
 .streamlit/secrets.toml
 
 .idea/
+
+# Archivos locales de Jerónimo
+.vscode/
+*.bak
+contexto_jeronimo/
+data/processed/hogares_con_cluster.csv

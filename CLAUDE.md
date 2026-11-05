@@ -1,11 +1,12 @@
 # Modelos 3 y 4: focalización con información imperfecta (rama `Modelo3`)
 
-> **Actualizado: 3-nov-2026, noche** (corrida automática programada, 21:00 UTC). Responsable: Jerónimo Vélez.
+> **Actualizado: 4-nov-2026, tarde** (corrida automática programada, 19:48 UTC). Responsable: Jerónimo Vélez.
 > Sustentación final: noviembre de 2026. Responder en español, paso a paso, revisando con rigor
 > los Big-M y el Monte Carlo. Este archivo resume y **no reemplaza** `CONTEXTO_DATOS.md`
-> (de Martín, rama `Contexto`). Copia anterior de este archivo (3-nov, mañana): `CLAUDE.md.bak`.
-> La copia del 2-nov quedó en el Project: `claude/respaldo-CLAUDE-2nov.md`.
-> Resumen de avance más reciente: `claude/resumen-avance-3nov-tarde.md` (Project "Opti1").
+> (de Martín, rama `Contexto`). Copia anterior de este archivo (3-nov, noche): `CLAUDE.md.bak`.
+> Copia del 2-nov en el Project: `claude/respaldo-CLAUDE-2nov.md`.
+> Resúmenes más recientes (Project "Opti1"): `claude/resumen-avance-4nov.md` (costos reales) y
+> `claude/auditoria-m34-3nov.md` (auditoría con hallazgos abiertos, §7.0).
 
 ## 1. Qué es el proyecto y quién hace qué
 
@@ -45,6 +46,11 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 - **No hay municipio:** Medellín y el Valle de Aburrá son imposibles con esta base. Solo se
   recuperarían cruzando con la ECV 2025 (catálogo 905) por `DIRECTORIO`; descartado por ahora.
 - No hay ingreso ni gasto en la base (relevante para el Modelo 4).
+- **(4-nov) Reglas de conteo u_ij validadas contra la bandera del DANE** en los 87.060 hogares
+  (`m34_costos_reales.py`): analfabetismo (≥ 15 años y `P6160 = 2`), aseguramiento (≥ 6 años y
+  `P6090 ≠ 1`) y barreras (`P5665 = 1` y `P8563 ≥ 3`) coinciden al 100 %; logro educativo (≥ 15 años
+  con < 9 años de educación) cubre el 99,5 % de los privados; atención integral (niños de 0 a 5) el
+  100 %; desempleo (`P6351 = 1`, no ocupados, mínimo 1) da 86,5 %, igual que Martín.
 
 ## 3. Escenario (universo común de los 4 modelos)
 
@@ -61,8 +67,10 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 - Pares activos M_ij = 1: 8.602; 45 pares (j, zona) en M3 y 57 pares (j, grupo) en M4.
 - Por qué no Antioquia urbana: con un solo valor de `P3` hay una sola zona, E_jd colapsa a E_j y
   M3 = M1. Guarda `|D| ≥ 2` con `sys.exit`: no quitarla.
-- **Caso base (desde el 3-nov): rezago escolar no intervenible** (decisión de Martín del 2-nov:
-  ningún niño sale del rezago en un año). Se modela como constante en el puntaje (Trampa 14).
+- **Caso base: rezago escolar no intervenible** (decisión de Martín del 2-nov: ningún niño sale del
+  rezago en un año). Se modela como constante en el puntaje (Trampa 14).
+- **Costos del caso base (propuesta del 4-nov):** costos reales provisionales (u_ij reconstruido,
+  §7.8); u = 1 como sensibilidad. Pendiente de confirmar con Martín (§10).
 
 ## 4. Archivos
 
@@ -74,26 +82,32 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 | `06_modelo3_cortes.py` | `Modelo3` | objetivo del paper por cortes: min esfuerzo s.a. meta de M0 |
 | `cortes.py`, `test_cortes.py` | `Modelo3` | mecanismo separado del objetivo (cobertura `V`, costo `K`, elegibilidad `elig`); T1–T3 |
 | `modelo3_equidad.py`, `correr_m3_equidad.py`, `extremos_m3.py` | `Modelo3` | M3 con la equidad del M1, versión vieja (**ya verificada** por `m34_equidad.py`, que la reemplaza) |
-| `costos_provisionales.py` | `Modelo3` | PROVISIONAL: u = 1 con la tabla de Martín. Se borra cuando exista `parametros.py` |
+| `costos_provisionales.py` | `Modelo3` | u = 1 con la tabla de Martín. Se borra cuando exista `parametros.py` |
 | `07_clusters.py` | `Modelo3` | k-means k = 4 del Modelo 4 |
 | `m34_datos.py` | `Modelo3` | carga + línea base con asserts + sorteo R (idéntico a 05). Autocontenido |
-| `m34_mecanismo.py` | `Modelo3` | cortes con `grupo` matriz n×J; desde el 3-nov agrega `excluir=` (no intervenibles), `pobre0=` (cumNP), `desempate=True` y el reintento con `presolve="off"` |
+| `m34_mecanismo.py` | `Modelo3` | cortes con `grupo` matriz n×J; `excluir=` (no intervenibles), `pobre0=` (cumNP), `desempate=True` y reintento con `presolve="off"` |
 | `m34_clusters.py` | `Modelo3` | k-means idéntico a 07 (reproduce 1.389 / 1.038 / 849 / 456) |
 | `m34_montecarlo.py` | `Modelo3` | MC del 2-nov (sin desempate). Define `EPF`, `precios_u1`, `matriz_grupo` |
 | `m34_optimos_alternos.py` | `Modelo3` | rango del error de inclusión entre óptimos alternos |
 | `m34_test_regresion.py`, `m34_resumen_mc.py` | `Modelo3` | regresión contra 06 (630 cortes, 153,0, 62,1 %) y tabla/gráfica del MC del 2-nov |
-| `resultados/m34/` | `Modelo3` | MC del 2-nov: `mc_m3.csv`, `mc_m4.csv`, `resumen_mc.csv`, `mc_m3_vs_m4.png`, `optimos_alternos_m*.csv` |
-| `docs/m34_README.md` | `Modelo3` | cómo correr los `m34_*` |
 | `m34_montecarlo_lex.py` | `Modelo3` | MC con desempate × rezago {intervenible, no_intervenible}, Pool(2) |
 | `m34_equidad.py`, `m34_correr_equidad.py` | `Modelo3` | objetivo de equidad del M1 para M3 **y** M4 |
 | `m34_referencia_info_perfecta.py` | `Modelo3` | mismo objetivo de equidad con información perfecta (techo propio; **no** es el M1) |
 | `m34_resumen_3nov.py`, `m34_grafica_equidad.py` | `Modelo3` | tablas del MC lex y de equidad; gráfica `equidad_m3_m4_ip.png` |
-| `m34_sensibilidad_k.py`, `m34_resumen_k.py`, `m34_grafica_k.py` | `Modelo3` | M4 con k ∈ {2,3,4,5,6,8}, 50 réplicas pareadas; equidad (B = 10, 25) + paper (meta 10 %, u1); silueta, CH, η² de pobreza; gráfica `sensibilidad_k.png` |
-| `m34_barrido_metas_v2.py`, `m34_resumen_barrido_v2.py` | `Modelo3` | curva costo–meta 2–30 % (u1, 30 réplicas, desempate, rezago no intervenible); gráfica `barrido_v2.png` |
+| `m34_sensibilidad_k.py`, `m34_resumen_k.py`, `m34_grafica_k.py` | `Modelo3` | M4 con k ∈ {2,3,4,5,6,8}, 50 réplicas pareadas; silueta, CH, η² de pobreza; `sensibilidad_k.png` |
+| `m34_barrido_metas_v2.py`, `m34_resumen_barrido_v2.py` | `Modelo3` | curva costo–meta 2–30 % (u1, 30 réplicas); `barrido_v2.png` |
 | `m34_pares_pequenos.py` | `Modelo3` | lista los pares (j, g) con pocos hogares privados |
+| `docs/m34_README.md` | `Modelo3` | cómo correr los `m34_*` |
+| `resultados/m34/` | `Modelo3` | resultados del 2 y 3-nov (MC, equidad, IP, k, barrido, pares chicos, 4 gráficas) |
+| **`m34_costos_reales.py`** | **solo Project (4-nov)** | u_ij y costo_ij provisionales con las reglas de Martín (§2.6, §3, §4 de `CONTEXTO_DATOS.md`), validados contra el DANE. V = u·HW, K = costo_hogar·HW. **Si existe `data/processed/conteo_pares.csv`, usa el de Martín** |
+| **`m34_corridas_costos_reales.py`** | **solo Project (4-nov)** | modos `barrido` / `equidad` / `ip` con costos reales (mismo sorteo, k = 4, desempate, rezago no intervenible) |
+| **`m34_comparar_u1_real.py`** | **solo Project (4-nov)** | tablas pareadas u1 vs. real y gráfica `u1_vs_real.png` |
+| Resultados 4-nov (`costos_reales_tabla.csv`, `comparacion_barrido_u1_real.csv`, `comparacion_equidad_u1_real.csv`, `info_perfecta_real.csv`, `equidad_real.csv`) | **solo Project** (`claude/codigo-m34/`) | cifras de §7.8. `barrido_real_crudo.csv` y `u1_vs_real.png` se regeneran (~40 min) |
 | "Notas de Jerónimo" | `Contexto` (`CONTEXTO_DATOS.md`) | respuestas a las 7 preguntas de Martín y pendientes con fecha |
-| Resultados 3-nov (`resumen_mc_lex.csv`, `equidad_m34.csv`, `resumen_equidad.csv`, `info_perfecta.csv`, `resumen_3nov.txt`, `resumen_k.csv`, `calidad_k.csv`, `resumen_barrido_v2.csv`, `pares_pequenos.csv`) | `Modelo3` (`resultados/m34/`) | cifras de §7. También están las 3 gráficas y los crudos `sens_k_crudo.csv` y `barrido_v2_crudo.csv` |
 | ~~`m34_barrido_sensibilidad.py`~~ + `barrido_sensibilidad.csv` | solo Project (2-nov) | **Reemplazado por `m34_barrido_metas_v2.py`.** Sus filas `no_intervenible` no sirven (Trampa 14) |
+
+**Ojo (4-nov):** los 3 scripts del 4-nov y sus resultados **no están en este clon** (ni en la raíz ni
+en `resultados/m34/`). Hay que bajarlos del Project (`claude/codigo-m34/`) antes de hacer el commit.
 
 Sin seguimiento en git (no subir): `.vscode/`, `Collaborator.txt`, `Soloparasercolaborador.txt`,
 `hello.py`, `contexto_jeronimo/` (copia vieja del 29-oct), `data/processed/hogares_con_cluster.csv`,
@@ -130,10 +144,15 @@ Etapa 2 (desempate lexicográfico): min Σ cumNP·z  s.a.  Σ Costo ≤ E*·(1 +
 - Big-M de R4/R5 = HS_i·HW_i por hogar; los demás M valen 1. b1_i y C_i solo para los 523 pobres.
 - La lógica Big-M del Apéndice 1 del paper (Lin 6–10) se verificó rama por rama y es correcta; lo que
   se corrigió fueron unidades, desigualdades estrictas, el M global y MPI_s (doc `revision-formulacion-modelo3`).
+- **Auditoría del 3-nov:** el MILP coincide con fuerza bruta en 40/40 instancias (los dos objetivos)
+  y un verificador independiente (regla R ≤ p directa, sin prefijo) reproduce 36/36 soluciones.
+  Big-M opcionalmente más ajustado: R4/R5 con pers_i·s0_i y R6 con s0_i − 0,33 (no hace falta).
 
-**Variantes de costo:** `pp` = V = K = HS (como 06; la cobertura usa HS **sin** HW y hay que
-declararlo); `u1` = V = HW, K = EpF_j^zona·HW (tabla de Martín §4, millones de $ de 2025). Con los
-costos reales de Martín: V = u_ij·HW_i y K = EpF_j·u_ij·HW_i (misma unidad arriba y abajo; el ε no cambia).
+**Variantes de costo:**
+- `pp` = V = K = HS (como 06; personas **de la muestra**, sin HW). **Defectuosa, ver §7.0 hallazgo 1.**
+- `u1` = V = HW, K = EpF_j^zona·HW (tabla de Martín §4, millones de $ de 2025).
+- **`real` (4-nov)** = V = u_ij·HW, K = costo_hogar_ij·HW, con u_ij reconstruido (§2). Misma unidad
+  arriba y abajo (Trampa 1); el ε no cambia.
 
 ### 5.1 Objetivo de equidad (`m34_equidad.py`, numeración del Modelo 1)
 
@@ -149,8 +168,10 @@ Etapa 2  min Σ p_i q_i   s.a. Σ p_i y_i ≥ H*·(1 − 1e-7)
 (8) Σ p_i q_i ≤ (1 − ρ)·Sev0
 ```
 
-SevEdu (9) no está implementada: necesita un sorteo por niño. `metricas` recalcula todo desde los
-cortes elegidos y no confía en `y` ni en `q`. Es la misma función para M3 y M4 (recibe la matriz de grupo).
+- SevEdu (9) no está implementada: necesita un sorteo por niño. `metricas` recalcula todo desde los
+  cortes elegidos y no confía en `y` ni en `q`. Es la misma función para M3 y M4.
+- La "severidad" es Σ p_i·s_i² sobre los pobres **iniciales, sin censurar** (un hogar que sale sigue
+  sumando). No es la severidad AF censurada: declararlo o censurarla (§7.0 hallazgo 5).
 
 ## 6. Trampas ya corregidas: NO revertirlas
 
@@ -185,18 +206,38 @@ cortes elegidos y no confía en `y` ni en `q`. Es la misma función para M3 y M4
     composición por edades, dependencia, edad/sexo/educación del jefe). Agrupar por privaciones
     contradice el supuesto de información imperfecta.
 18. **(3-nov tarde) Un k grande en M4 simula información individual.** Con k = 8 hay 26 pares
-    (j, clúster) con menos de 10 hogares privados y un clúster de solo 81 hogares. En un par de 1–3
-    hogares el corte equivale a escoger hogar por hogar. La "ganancia" de subir k más allá de 4 es en
-    buena parte un artefacto de la muestra. **No presentar k = 8 como mejor.** Regla: menos del 15 %
-    de los pares con n < 10 (k = 4: 8/53; k = 5: 14/64).
+    (j, clúster) con menos de 10 hogares privados y un clúster de solo 81 hogares. **No presentar
+    k = 8 como mejor.** Regla: menos del 15 % de los pares con n < 10 (k = 4: 8/53; k = 5: 14/64).
+19. **(4-nov) Reglas de conteo u_ij: no usar `P6090 == 2` ni `P8563 != 1`.** El DANE cuenta como no
+    asegurado a `P6090 != 1` (incluye "no sabe", 9) y solo a las personas de 6 años o más; con `== 2`
+    se pierde el 6,9 % de los hogares privados. En barreras el DANE usa `P8563 ≥ 3` (el promotor o
+    enfermero, 2, cuenta como atendido); con `!= 1` sobran 307 hogares. Desocupados = no ocupados con
+    `P6351 = 1`; con esa regla el 98 % de los hogares privados en desempleo queda imputado (u = 1).
 
-## 7. Estado y resultados (3-nov-2026, noche)
+## 7. Estado y resultados (4-nov-2026)
 
-**M3 y M4 técnicamente completos con u = 1:** objetivo del paper + MC con desempate, objetivo de
-equidad + MC, referencia de información perfecta, **sensibilidad a k**, **curva costo–meta del 2 al
-30 %** y diagnóstico de los pares chicos. Lo que falta depende de Martín (costos reales, M1/M2 en el
-repo) o es redacción (PDF y diapositivas). Regresión vigente: 630 cortes, 153,0 e inclusión 62,1 %,
-con HiGHS y con CBC.
+**M3 y M4 técnicamente completos**, con u = 1 y, desde el 4-nov, con **costos reales provisionales**.
+Quedan abiertos los hallazgos de la auditoría (§7.0), lo que depende de Martín (M1/M2 en el repo,
+confirmar el conteo) y la redacción (PDF y diapositivas). Regresión vigente: 630 cortes, 153,0 e
+inclusión 62,1 %, con HiGHS y con CBC.
+
+### 7.0 Auditoría del 3-nov (`claude/auditoria-m34-3nov.md`): hallazgos abiertos
+
+Lo que **sí se sostiene**: todo lo que está en pesos (u1 y real) y todo el objetivo de equidad usan
+costo ponderado (K = EpF·HW) y la inclusión en pesos está bien ponderada. **Esos son los resultados a
+defender.** Lo que hay que corregir o declarar:
+
+| # | Severidad | Hallazgo | Qué hacer |
+|---|---|---|---|
+| 1 | **Crítico** | Variante `pp`: V = K = HS (personas de la muestra) mientras la meta R7 está ponderada por HS·HW. Curar un hogar de cabecera (FEX ~1.309) cuesta igual que uno rural (~220) y baja M0 ~6× más. Corregido (V = K = HS·HW), M3 pasa del 99–100 % del esfuerzo en cabecera al 4–9 %, su inclusión baja de ~60 % a ~20 % y **la ventaja de M4 en esfuerzo desaparece** (ahorro +1,7 / −0,8 / −11,6 % con metas 5 / 10 / 20 %) | Definir `pp` como HS·HW y repetir el MC del paper (~85 min), o **retirar las columnas pp** de §7.2 y frases como "M3 invierte casi todo en la cabecera" |
+| 2 | Alto | `inclusion_personas` = Σ HS·cub sin HW (la exclusión sí usa HS·HW). Diferencia mediana 4,5 pp, máx. 29,6 pp | `esf_h = (HS*HW*cub).sum(1)` en `m34_mecanismo.metricas` |
+| 3 | Alto | **Placebo de M4:** con clústeres al azar (mismos tamaños), equidad B = 25 da 1,64× las personas de M3 (M4 real 1,78×) y con meta 5 % cuesta el 59 % de M3 (M4 real 51 %). La mayor parte de la ventaja de M4 viene **del cambio de partición**, no de la demografía; la demografía pesa de verdad con B = 10 (1,36× → 1,98×). Solo 10 réplicas | Correr el placebo con 100 réplicas y reformular el hallazgo de M4 |
+| 4 | Alto | Reproducibilidad: **resuelto el 3-nov** para los `m34_*` del 3-nov (commit `450840c`). **Vuelve a aplicar** a los scripts del 4-nov (§4). Falta fijar versiones exactas (`pip freeze`) | Subir lo del 4-nov; fijar versiones |
+| 5 | Medio | Severidad sin censurar (§5.1) | Declararlo o censurarla; confirmar con Martín qué usa el M1 |
+| 6 | Medio | PuLP mapea `kTimeLimit` de HiGHS a `Optimal`; no se guarda el gap (riesgo no materializado: máx. 37,7 s vs. límite 180 s) | Guardar `getModelStatus()` y `mip_gap` por corrida |
+| 7 | Medio | n del MC sin justificar con la ec. (8) del paper; p5/p95 con n = 100 son ruidosos | IC bootstrap de la mediana y de la diferencia pareada M4 − M3 |
+| 8 | Medio | Desviaciones respecto al paper dispersas (unidades de p_jd, cotas 5*/6*, clustering sin privaciones ni ingreso, rezago no intervenible, D = P3) | Tabla "Desviaciones respecto al paper" en el informe |
+| 9 | Bajo | Clustering: `StandardScaler` sin pesos, `educ_jefe` categórico tratado como continuo | Opcional: escalado ponderado, años de educación |
 
 ### 7.1 Verificaciones de base (1-nov, entorno `opti1`, CBC)
 
@@ -206,40 +247,34 @@ con HiGHS y con CBC.
 | `test_cortes.py` T2 | 511 cortes con pesos aleatorios, 0 inconsistentes |
 | `test_cortes.py` T3 | celda Cabecera: 243/243 cubiertos, 243 siguen privados, costo 953 |
 | `correr_m3_equidad.py capa0` | 523 pobres, H0 = 9,45 %, Sev0 = 117.908, 518 cortes con u = 1 |
-| Costo de cubrir todo (u = 1) | $29.358 mm, de los cuales $8.946 mm en hogares pobres |
+| Costo de cubrir todo (u = 1) | $29.358 mm, de los cuales $8.946 mm en hogares pobres (con costos reales: $33,5 billones, +14 %) |
 
-**Tangentes:** el código da 6.048 y Martín 6.571. La diferencia es exactamente 523 (hogares pobres)
-porque el código omite a = 0. Falta confirmarlo con Martín.
+**Tangentes:** el código da 6.048 y Martín 6.571. La diferencia es exactamente 523 porque el código
+omite a = 0 (q_i ≥ 0, redundante con `lowBound = 0`). Inocua; falta confirmarlo con Martín.
 
-### 7.2 Objetivo del paper: MC con desempate, rezago no intervenible (3-nov)
+### 7.2 Objetivo del paper: MC con desempate, rezago no intervenible (3-nov, u1)
 
-2.400 MILP (100 réplicas × 3 metas × 2 costos × 2 modelos × 2 versiones de rezago), todos óptimos.
-Mediana [p5; p95]. Inclusión en personas con `pp` y en pesos con u1.
+2.400 MILP, todos óptimos. Mediana [p5; p95]. **Columnas pp retiradas** por el hallazgo 1 de §7.0
+(están en `resumen_mc_lex.csv` si se corrigen).
 
-| Meta | Modelo | Esfuerzo pp | Inclusión pp | Costo u1 (mil mill. $) | Inclusión u1 | Exclusión |
-|---|---|---|---|---|---|---|
-| 5 % | M3 | 83 [42; 124] | 56 % [29; 76] | 12,2 [6,4; 17,4] | 48 % [24; 77] | 94 % |
-| 5 % | M4 | 57 [30; 79] | 41 % [16; 64] | 6,0 [3,2; 6,6] | 54 % [24; 61] | 92–94 % |
-| 10 % | M3 | 164 [115; 223] | 64 % [44; 79] | 23,5 [15,0; 32,9] | 74 % [39; 78] | 86–88 % |
-| 10 % | M4 | 132 [92; 162] | 44 % [22; 56] | 13,4 [10,3; 16,9] | 57 % [28; 68] | 87–88 % |
-| 20 % | M3 | 364 [303; 420] | 62 % [45; 70] | 44,3 [40,4; 47,8] | 65 % [56; 67] | 74 % |
-| 20 % | M4 | 346 [292; 385] | 36 % [27; 50] | 38,3 [33,5; 41,9] | 41 % [28; 61] | 72 % |
+| Meta | Modelo | Costo u1 (mil mill. $) | Inclusión u1 | Exclusión |
+|---|---|---|---|---|
+| 5 % | M3 | 12,2 [6,4; 17,4] | 48 % [24; 77] | 94 % |
+| 5 % | M4 | 6,0 [3,2; 6,6] | 54 % [24; 61] | 92–94 % |
+| 10 % | M3 | 23,5 [15,0; 32,9] | 74 % [39; 78] | 86–88 % |
+| 10 % | M4 | 13,4 [10,3; 16,9] | 57 % [28; 68] | 87–88 % |
+| 20 % | M3 | 44,3 [40,4; 47,8] | 65 % [56; 67] | 74 % |
+| 20 % | M4 | 38,3 [33,5; 41,9] | 41 % [28; 61] | 72 % |
 
-- **Pareado M4 vs M3 (misma R):** más barato en pesos en 97–99 % de las réplicas (ahorro mediano
-  53 / 43 / 14 %); con `pp`, en 83 / 85 / 73 %. Menos inclusión pp en 76 / 92 / 98 %; en pesos, en
-  50 / 84 / 95 %. **Con meta del 5 % y u1, M4 no reduce la inclusión (48 → 54 %): hay que decirlo.**
-- El desempate casi no cambia las medianas (solo M3 pp 5 %: 59 → 56 %). El MC del 2-nov sigue en pie.
+- Pareado M4 vs M3: más barato en pesos en 97–99 % de las réplicas (ahorro mediano 53 / 43 / 14 %).
+  Menos inclusión en pesos en 50 / 84 / 95 %. **Con meta del 5 %, M4 no reduce la inclusión (48 → 54 %).**
 - Rezago no intervenible: el costo sube en 0–13 % de las réplicas; mediana +0,0 %.
-- Azar: el CV del esfuerzo de M3 baja de 32 % (meta 5 %) a 10 % (meta 20 %). Exclusión del 72 al 94 %:
-  con metas pequeñas sobre M0, la mayoría de los pobres no recibe nada.
-- M3 invierte casi todo en la cabecera (salud y analfabetismo); M4, en el clúster de primera infancia (T3).
-- Corrección ya hecha: "la inclusión crece con la meta" salía de una sola réplica; en el MC tiene forma de campana (§7.5).
+- Exclusión del 72 al 94 %: con metas pequeñas sobre M0, la mayoría de los pobres no recibe nada.
 
-### 7.3 Objetivo de equidad (el del M1): M3 vs M4 vs información perfecta (3-nov)
+### 7.3 Objetivo de equidad: M3 vs M4 vs información perfecta (3-nov, u1)
 
 **Verificado:** `m34_equidad.py` reproduce `modelo3_equidad.py` (B = $500 mm, réplica 0: 419.550
-personas, inclusión 42,6 %). 30 réplicas, u = 1, rezago no intervenible, ρ = 0. Personas que salen
-(mediana); hay 683.406 personas pobres.
+personas, inclusión 42,6 %). 30 réplicas, rezago no intervenible, ρ = 0. Personas que salen (mediana).
 
 | B (mil mill. $) | Info. perfecta | M3 | M4 | M3/IP | M4/IP | Inclusión M3/M4 | Severidad −: IP/M3/M4 |
 |---|---|---|---|---|---|---|---|
@@ -249,37 +284,30 @@ personas, inclusión 42,6 %). 30 réplicas, u = 1, rezago no intervenible, ρ = 
 | 100 | 400.969 | 210.000 [201k; 223k] | 233.000 [228k; 239k] | 52 % | 58 % | 40/39 % | 26,2/18,2/23,7 % |
 | 200 | 545.651 | 319.000 [313k; 329k] | 325.000 [320k; 333k] | 58 % | 60 % | 41/38 % | 41,0/29,3/31,1 % |
 
-- M4 saca más personas que M3 en 90–100 % de las réplicas; razón mediana 1,78 / 1,37 / 1,09 / 1,10 / 1,02.
-- **ρ = 10 %:** infactible con B = 10 en M3 y M4 (0/30; con IP sí es factible). Con B = 25: 0/30
-  en M3 y 6/30 en M4. Con B ≥ 50 siempre es factible y no está activo.
+- M4 saca más personas que M3 en 90–100 % de las réplicas; razón mediana 1,78 / 1,37 / 1,09 / 1,10 / 1,02
+  (recordar el placebo, §7.0 #3).
+- **ρ = 10 %:** infactible con B = 10 en M3 y M4 (con IP sí). Con B = 25: 0/30 en M3 y 6/30 en M4.
 
-### 7.4 Sensibilidad a k en M4 (3-nov tarde; 50 réplicas pareadas, 1.050 MILP óptimos)
+### 7.4 Sensibilidad a k en M4 (3-nov tarde; 50 réplicas pareadas, u1)
 
-Mismas R para todos los k y para M3. Rezago no intervenible, u = 1. Mediana; `resumen_k.csv`,
-`calidad_k.csv`, `sensibilidad_k.png`.
-
-| k | Silueta | η² pobreza | Pares n < 10 | Salen B = 10 (miles) | Salen B = 25 | M4/M3 (B = 10) | Costo meta 10 % (mil mill.) |
+| k | Silueta | η² pobreza | Pares n < 10 | Salen B = 10 (miles) | Salen B = 25 | M4/M3 (B = 10) | Costo meta 10 % |
 |---|---|---|---|---|---|---|---|
-| M3 | — | — | 2 | 31,1 [25; 61] | 74,7 [46; 112] | 1,00 | 23,1 |
-| 2 | 0,260 | 0,002 | 4 | 21,8 [13; 56] | 69,0 [32; 108] | **0,71** | 24,9 |
-| 3 | 0,271 | 0,024 | 4 | 44,6 [18; 70] | 99,8 [88; 115] | 1,19 | 12,9 |
-| **4** | 0,272 | 0,022 | 8 | **61,2 [53; 70]** | **107,6 [103; 118]** | **1,92** | **13,6** |
-| 5 | 0,277 | 0,027 | 14 | 61,4 [55; 74] | 115,7 [104; 123] | 1,93 | 12,5 |
-| 6 | 0,274 | 0,031 | 16 | 64,7 [56; 78] | 117,4 [109; 126] | 1,99 | 11,8 |
-| 8 | 0,283 | 0,061 | **26** | 76,2 [72; 90] | 123,2 [119; 133] | 2,44 | 9,1 |
+| M3 | — | — | 2 | 31,1 | 74,7 | 1,00 | 23,1 |
+| 2 | 0,260 | 0,002 | 4 | 21,8 | 69,0 | **0,71** | 24,9 |
+| 3 | 0,271 | 0,024 | 4 | 44,6 | 99,8 | 1,19 | 12,9 |
+| **4** | 0,272 | 0,022 | 8 | **61,2** | **107,6** | **1,92** | **13,6** |
+| 5 | 0,277 | 0,027 | 14 | 61,4 | 115,7 | 1,93 | 12,5 |
+| 6 | 0,274 | 0,031 | 16 | 64,7 | 117,4 | 1,99 | 11,8 |
+| 8 | 0,283 | 0,061 | **26** | 76,2 | 123,2 | 2,44 | 9,1 |
 
-- **La silueta no decide k** (0,26–0,28): los rasgos tipo Sisbén no forman grupos naturales, así que
-  elegir k es una **decisión de política** (qué tan fino es el sistema de información del Estado).
-- **k = 2 es peor que M3:** ese k-means separa por tamaño del hogar (η² ≈ 0). La información
-  demográfica solo sirve si está correlacionada con la privación.
-- Desde k = 4 la ganancia se aplana y crecen las celdas chicas (Trampa 18). **k = 4 se defiende** por
-  interpretabilidad + tamaño mínimo de celda; k = 5 queda como alternativa.
+- **La silueta no decide k** (0,26–0,28): elegir k es una **decisión de política** (qué tan fino es el
+  sistema de información del Estado). k = 2 es peor que M3 (separa por tamaño, η² ≈ 0).
+- Desde k = 4 la ganancia se aplana y crecen las celdas chicas (Trampa 18). **k = 4 se defiende**;
+  k = 5 queda como alternativa. Parte de la ganancia con k es granularidad (§7.0 #3).
 
 ### 7.5 Curva costo–meta del 2 al 30 % (3-nov tarde; u1, 30 réplicas, 900 MILP óptimos)
 
-`resumen_barrido_v2.csv` (15 metas) y `barrido_v2.png`. Reemplaza al barrido del 2-nov.
-
-| Meta | Costo M3 (mil mill.) | Costo M4 | Ahorro M4 (mediano) | M4 más barato | Inclusión M3 / M4 | Exclusión M3 / M4 |
+| Meta | Costo M3 | Costo M4 | Ahorro M4 | M4 más barato | Inclusión M3 / M4 | Exclusión M3 / M4 |
 |---|---|---|---|---|---|---|
 | 2 % | 3,6 | 3,0 | 6 % | 60 % | 40 / 44 % | 97 / 97 % |
 | 6 % | 12,5 | 6,2 | **53 %** | 97 % | 55 / 55 % | 92 / 92 % |
@@ -289,108 +317,150 @@ Mismas R para todos los k y para M3. Rezago no intervenible, u = 1. Mediana; `re
 | 26 % | 74,3 | 56,9 | 24 % | 100 % | 47 / 45 % | 64 / 63 % |
 | 30 % | 95,2 | 75,4 | 22 % | 100 % | 40 / 38 % | 58 / 57 % |
 
-- **Costo convexo:** el punto de M0 cuesta ~1,8 mil millones al principio y ~5 mil millones entre el
-  26 y el 30 %. Cuando se acaban los pares baratos toca comprar vivienda.
-- **La ventaja de M4 no es monótona:** es máxima con metas del 4–10 % (35–53 %), cae al 11–16 % entre
-  el 16 y el 20 % y sube otra vez al ~22 % con metas altas.
-- **Inclusión en forma de campana**, con un pico de ~75 % en M3 entre el 10 y el 16 %. En ese tramo M4
-  es el que más la reduce (−18 a −24 puntos con metas del 18–22 %).
-- Reproduce el MC del 3-nov: meta 10 % → 22,9 vs 23,5; meta 20 % → 44,7 vs 44,3 (M3).
+Costo convexo (~1,8 → ~5 mil millones por punto de M0). Ventaja de M4 no monótona. Inclusión en
+forma de campana (pico ~75 % en M3 entre el 10 y el 16 %).
 
-### 7.6 Pares con muestra chica (pendiente #5: diagnosticado el 3-nov tarde)
+### 7.6 Pares con muestra chica (pendiente #5)
 
 - M3: 2 de 45 pares con n < 10 (`paredes` en centro poblado, 1 hogar; `trabajo_infantil` en centro poblado, 9).
-- M4 (k = 4): 8 de 57 pares (los más chicos: inasistencia y trabajo infantil en T1, con 2 hogares;
-  hacinamiento en T0, 3 hogares sin pobres).
-- **Impacto medido: 0 %.** En las 900 corridas del barrido el MILP no gasta nada en pares con n < 10.
-  No hace falta fusionar celdas en el caso base. Hay que volver a revisarlo con los costos reales o si se cambia k.
+- M4 (k = 4): 8 de 57 pares.
+- Con u1: **0 %** del costo en esos pares en las 900 corridas. **Con costos reales (4-nov) sí gasta,
+  aunque poco:** en el 8,7 % de las corridas de M3 y el 6,9 % de las de M4 (mediana 0; máximo 17,8 %
+  y 10,3 % del costo). No hace falta fusionar celdas en el caso base, pero **hay que declararlo**. La
+  prueba de blindaje sería fusionar los pares con n < 10 con su vecino y repetir el barrido (decisión
+  de Jerónimo, porque cambia la definición de celdas).
 
-### 7.7 Hallazgos para la sustentación
+### 7.7 Hallazgos para la sustentación (revisados el 4-nov con la auditoría y los costos reales)
 
-1. **Precio de no tener información:** con $10 mil millones M3 logra el 25 % de lo que lograría la
-   información perfecta; con $200 mil millones, el 58 %.
-2. **La focalización demográfica (M4, tipo Sisbén) vale más cuando la plata es poca o la meta es
-   modesta** (× 1,78 con B = 10 y × 1,02 con B = 200; ahorro máximo de 53 % con metas del 4–10 %).
-3. **M4 además es más predecible:** con B = 25 el p5–p95 de M3 va de 47 mil a 113 mil personas; el de
-   M4, de 103 mil a 116 mil.
-4. **No cualquier información demográfica sirve:** k = 2 es peor que focalizar solo por geografía.
-5. **Focalizar sin información individual tiene rendimientos decrecientes:** el costo por punto de M0
-   casi se triplica a lo largo de la curva.
-6. **Los techos de severidad son lo que más se degrada** sin información individual.
-7. **La inclusión es alta (~40–75 %) con ambos objetivos:** la filtración a no pobres es el costo
-   estructural de focalizar sin información individual. M4 no domina a M3 por construcción, porque la
-   demografía es un proxy.
-8. El rezago casi nunca se elige; tratarlo como no intervenible no mueve los resultados.
+1. **Precio de no tener información (el resultado más sólido):** M3 logra el 22–57 % de lo que
+   lograría la información perfecta con costos reales (23–59 % con u = 1); M4 el 43–60 %.
+2. **M4 vale más cuando la plata es poca o la meta es modesta** (× 1,7–1,8 con B ≤ 25; ahorro de
+   34–49 % con metas del 6–10 %), **desde metas del ~4 %** (con meta del 2 % y costos reales, M4 ya no
+   es más barato). Matiz obligatorio: buena parte de la ventaja es por la partición (placebo, §7.0 #3).
+3. **M4 es más predecible:** con B = 25 el p5–p95 de M3 va de 47 mil a 113 mil personas; el de M4, de
+   103 mil a 116 mil.
+4. **No cualquier información demográfica sirve:** k = 2 es peor que solo geografía.
+5. **Rendimientos decrecientes:** el costo por punto de M0 casi se triplica a lo largo de la curva
+   (~2,2 → ~6 mil millones con costos reales).
+6. **Los techos de severidad son lo que más se degrada:** con costos reales, ρ = 10 % es infactible
+   con B = 10 incluso con información perfecta.
+7. **La inclusión es alta (~35–70 % con costos reales)** con ambos objetivos: es el costo estructural
+   de focalizar sin información individual.
+8. **Robustez:** al pasar de u = 1 a costos reales todo cuesta 25–40 % más, pero el precio de la
+   información y la ventaja de M4 casi no cambian (gráfica `u1_vs_real.png`).
+9. El rezago casi nunca se elige; tratarlo como no intervenible no mueve los resultados.
 
-Hilo sugerido de la exposición: (1) información perfecta (techo) → (2) M3, solo geografía → (3) M4,
-geografía + demografía. Gráficas: `equidad_m3_m4_ip.png` (diapositiva central), `sensibilidad_k.png`
-y `barrido_v2.png`.
+Hilo sugerido: información perfecta (techo) → M3 (geografía) → M4 (geografía + demografía, con el
+placebo) → robustez a costos (u1 vs. reales) → k → limitaciones (pares chicos, sin municipio, rezago
+no intervenible, severidad sin censurar). Gráficas: `equidad_m3_m4_ip.png` (central),
+`u1_vs_real.png`, `sensibilidad_k.png`, `barrido_v2.png`.
+
+### 7.8 Costos reales provisionales (4-nov; `resumen-avance-4nov.md`)
+
+Costo de todos los pares privados: 29,4 → 33,5 billones (+14 %; logro × 1,60, empleo formal × 1,47,
+aseguramiento × 1,41, barreras × 1,31; vivienda y servicios no cambian). 1.200 MILP (900 del barrido +
+300 de equidad), todos óptimos, pareados con u1 (mismo sorteo, k = 4, desempate, rezago no intervenible).
+
+**Curva costo–meta (mediana de 30 réplicas, mil millones de $ 2025):**
+
+| Meta | M3 u1 → real | M4 u1 → real | Ahorro M4 u1 → real | M4 más barato (real) | Inclusión M3 u1 → real | Inclusión M4 u1 → real |
+|---|---|---|---|---|---|---|
+| 2 % | 3,6 → 4,4 | 3,0 → 4,5 | 6 % → **−7 %** | 47 % | 40 → 35 % | 44 → 44 % |
+| 6 % | 12,5 → 17,4 | 6,2 → 9,5 | 53 → 49 % | 93 % | 55 → 48 % | 55 → 47 % |
+| 10 % | 22,9 → 31,5 | 13,4 → 19,6 | 35 → 34 % | 97 % | 73 → 62 % | 58 → 50 % |
+| 16 % | 33,4 → 43,4 | 26,8 → 37,2 | 14 → 13 % | 97 % | 75 → 68 % | 62 → 51 % |
+| 20 % | 44,7 → 59,3 | 37,7 → 49,4 | 16 → 16 % | 100 % | 65 → 59 % | 41 → 40 % |
+| 30 % | 95,2 → 119,1 | 75,4 → 93,5 | 22 → 21 % | 100 % | 40 → 36 % | 38 → 38 % |
+
+**Equidad (ρ = 0, 15 réplicas; personas que salen):**
+
+| B | IP u1 → real | M3 u1 → real | M4 u1 → real | M3/IP real | M4/IP real | M4/M3 real |
+|---|---|---|---|---|---|---|
+| 10 | 139.968 → 114.913 | 32.312 → 24.881 | 63.201 → 49.180 | 22 % | 43 % | × 1,70 |
+| 25 | 205.291 → 183.742 | 60.991 → 47.367 | 107.014 → 87.395 | 26 % | 48 % | × 1,80 |
+| 50 | 286.428 → 255.038 | 146.756 → 131.418 | 159.382 → 136.568 | 52 % | 54 % | × 1,05 |
+| 100 | 400.969 → 348.451 | 212.086 → 181.862 | 232.588 → 208.507 | 52 % | 60 % | × 1,14 |
+| 200 | 545.651 → 479.389 | 319.908 → 275.184 | 323.453 → 282.950 | 57 % | 59 % | × 1,03 |
+
+- Con el mismo B salen 10–23 % menos personas, pero el precio de la información casi no cambia.
+- ρ = 10 %: infactible con B = 10 incluso con IP; con B = 25 infactible en M3 y M4 en todas las
+  réplicas; con B = 50, M3 cumple en el 60 % y M4 en el 100 %.
+- En qué se gasta: con meta del 10 %, 86–89 % en salud; con meta del 30 %, ~55–59 % en educación.
+
+**Supuestos a declarar:** logro cuenta adultos con < 9 años (el DANE usa el **promedio** del hogar);
+EpV de los desocupados imputados = $5,12 M; en empleo formal los desocupados entran en las dos
+fórmulas (empleo y desempleo), como en la tabla de Martín → posible doble pago (preguntarle).
 
 ## 8. Modelo 4
 
 - Partición: **V (bienes públicos, por zona) = {acueducto, alcantarillado}**; **U = los otros 13, por
   clúster**. Validada: acueducto discrimina 14,5× por zona y 4,1× por clúster; alcantarillado 4,7× y
   3,2×; atención integral 2.119×, inasistencia 51,7× y hacinamiento 26,6× por clúster.
-- k-means, `random_state` 2026, **k = 4**. El codo apunta a 5 y la silueta es plana (0,26–0,28). Se
-  defendió el 3-nov tarde con la sensibilidad a k (§7.4): k = 2 es peor que M3, la ganancia se aplana
-  desde k = 4 y con k ≥ 5 crecen los pares de 1–3 hogares (Trampa 18).
+- k-means, `random_state` 2026, **k = 4** (defendido con la sensibilidad a k, §7.4).
 - Clústeres: T0 adultos sin dependientes (1.389, H 3,7 %), T1 adultos mayores (1.038, 11,8 %), T2 con
   hijos escolares (849, 9,1 %), T3 primera infancia (456, 16,1 %). Separan la pobreza 4,3× sin usarla.
   Honestidad: parte es estructural (la atención integral solo aplica a hogares con menores de 5).
 - MILP: el mismo de §5 con `grupo` matriz n×J; 57 pares, 713 cortes, 1–6 s.
-- Hecho el 3-nov: M4 con el objetivo de equidad, MC con desempate, sensibilidad a k y curva costo–meta.
+- **Placebo (auditoría):** con etiquetas permutadas al azar la mayor parte de la ventaja persiste
+  (§7.0 #3). Narrativa: "el valor de M4 depende de cuán fino focalice el Estado; la demografía suma
+  sobre todo con presupuestos pequeños", en línea con el paper (p. 10: con granularidad máxima M3 → M2).
+  Variante a considerar: celdas zona × clúster para los privados.
+- Hecho: objetivo del paper, equidad, MC con desempate, sensibilidad a k, curva costo–meta y costos reales.
 
 ## 9. Respuestas a las preguntas de Martín (§8 de `CONTEXTO_DATOS.md`)
 
-Escritas el 3-nov en "Notas de Jerónimo" de `CONTEXTO_DATOS.md` (rama `Contexto`). Resumen:
+Escritas el 3-nov en "Notas de Jerónimo" de `CONTEXTO_DATOS.md` (rama `Contexto`, commit `66bc989`):
 
-1. **SevEdu:** sí, primero como métrica ex post en el MC de M3/M4. El sorteo por niño rompe el prefijo
-   por hogar; como techo con ρ_e = 14 % queda como trabajo futuro.
-2. **Objetivo:** el del paper (min costo s.a. meta de M0) como caso base de M3/M4, porque mide
-   inclusión y exclusión; la equidad (ya implementada para M3 y M4) como puente con el M1. Comparación
-   ex post en H, A, M0, severidad, SevEdu y costo, por zona y total.
+1. **SevEdu:** primero como métrica ex post en el MC de M3/M4; como techo (ρ_e = 14 %), trabajo futuro.
+2. **Objetivo:** el del paper como caso base de M3/M4 (mide inclusión y exclusión); la equidad como
+   puente con el M1. Comparación ex post en H, A, M0, severidad, SevEdu y costo, por zona y total.
 3. **u_ij = 1 en empleo:** como sensibilidad, no como caso base.
 4. **Inasistencia:** costo 3,0/p en la optimización; el cumplimiento p solo en el MC de evaluación.
-5. **Conteo de no pobres en el 05:** imprescindible (es el error de inclusión). Martín ya confirmó que
+5. **Conteo de no pobres en el 05:** imprescindible (es el error de inclusión). Martín confirmó que
    cuenta los 3.732 hogares.
-6. **`parametros.py`:** importar de ahí `IND`, `W` y la semilla; los archivos de Jerónimo usan el
-   prefijo `m34_` (resuelve el choque con `05_conteo_personas.py`).
-7. **Costos:** logro = 3 ciclos CLEI (base); acueducto rural de $43,7 M solo con fuente verificable, y
+6. **`parametros.py`:** importar de ahí `IND`, `W` y la semilla; prefijo `m34_` para Jerónimo.
+7. **Costos:** logro = 3 ciclos CLEI (base); acueducto rural de $43,7 M solo con fuente verificable;
    el BID ($9,7 M) como sensibilidad.
 
 Preguntas de Jerónimo a Martín: u_ij para no pobres → **respondida** (sí). Meta del M2 sobre M0 o H →
-**pendiente**. p de inasistencia (0,369 vs 0,50) y gap del caso base → **pendiente**.
+**pendiente**. p de inasistencia (0,369 vs 0,50) y gap → **pendiente**. Doble cuenta de desocupados
+→ **nueva (4-nov), pendiente**. Martín **no ha respondido** las "Notas de Jerónimo" (1 día en el repo).
 
 ## 10. Decisiones abiertas
 
 1. **Objetivo del caso base de M3/M4** (paper vs equidad). Los dos están implementados; propuesta: paper.
-2. **Meta del Modelo 2 sobre M0 o sobre H.** Si es H, la comparación M2 ↔ M3/M4 no cuadra.
-3. **Caso base común:** p = 0,369 (propuesta) vs 0,50; HiGHS con el gap reportado por corrida
+2. **Costos del caso base:** reales provisionales (propuesta del 4-nov) con u = 1 como sensibilidad,
+   o esperar el `conteo_pares.csv` de Martín.
+3. **Variante `pp`:** corregirla (HS·HW) y repetir el MC, o retirarla de la sustentación (§7.0 #1).
+4. **Cómo presentar M4 tras el placebo** (§7.0 #3); ¿variante zona × clúster?
+5. **Severidad censurada o no** (§5.1), igual que el M1 de Martín.
+6. **Meta del Modelo 2 sobre M0 o sobre H.** Si es H, la comparación M2 ↔ M3/M4 no cuadra.
+7. **Caso base común:** p = 0,369 (propuesta) vs 0,50; HiGHS con el gap reportado por corrida
    (1e-6 en el paper y la etapa 1, 1e-4 en la etapa 2; `presolve="off"` de respaldo); CBC solo para la
    regresión. Martín usa 1e-4.
-4. **Validar el M1 de Martín contra `info_perfecta.csv`** (mismo B, u = 1, rezago no intervenible):
+8. **Validar el M1 de Martín contra `info_perfecta.csv` / `info_perfecta_real.csv`** (mismo B y supuestos):
    una diferencia > 1 % indica diferencia de supuestos (rezago, empleo, tangentes).
-5. **Pares no intervenibles** (columna `intervenible`): `excluir` por par, como constante en s_i (T14).
-6. **Denominador pequeño:** diagnosticado sin impacto en el caso base (§7.6). Revisar con costos reales.
-7. **Pesos w_j:** solo como sensibilidad, en los 4 modelos a la vez y en múltiplos de 0,01.
-8. **k en M4:** k = 4 (defendido); k = 5 como alternativa.
-9. **Cuándo se fusionan `Modelo3` y `Contexto` a `main`.**
+9. **Fusionar o no los pares con n < 10** con costos reales (§7.6).
+10. **Pesos w_j:** solo como sensibilidad, en los 4 modelos a la vez y en múltiplos de 0,01.
+11. **k en M4:** k = 4 (defendido); k = 5 como alternativa.
+12. **Cuándo se fusionan `Modelo3` y `Contexto` a `main`.**
 
 ## 11. Lo que sigue, en orden
 
-1. **Hecho (3-nov):** "Notas de Jerónimo" escritas en `Contexto`; `m34_*` y resultados del 3-nov en `Modelo3`.
-2. **Con Martín, con fecha límite:** M1 y M2 en el repo (aunque sea con u = 1), `parametros.py`,
-   `05_conteo_personas.py` (`conteo_pares.csv`, `empleo_componentes.csv`, `ninos_rezago.csv`),
-   `03_preparar_antioquia.py` y la meta del M2 (sobre M0). Si no llegan, sustentar M3/M4 con u = 1
-   como limitación declarada y usar `info_perfecta.csv` como sustituto provisional del M1.
-3. Actualizar `Seleccion_Variables_Restricciones_Modelo3.pdf` / `Modelo4.pdf` (carpeta Opti1, un nivel
-   arriba) con T1, T13–T18, M4, equidad y k; verificar contra el Apéndice 1 del paper el error de
-   unidades de p_jd.
-4. Diapositivas con las tablas de §7 y las gráficas `equidad_m3_m4_ip.png`, `sensibilidad_k.png` y
-   `barrido_v2.png`.
-5. Cuando lleguen los costos reales (V = u·HW, K = costo_ij): repetir los dos MC y el barrido
-   (~2,5 h con 2 núcleos) y revisar otra vez los pares chicos.
-6. Comparación final de los 4 modelos: tabla común H, A, M0, severidad, SevEdu y costo, por zona y
+1. **Subir a `Modelo3`** los 3 scripts del 4-nov (`m34_costos_reales.py`, `m34_corridas_costos_reales.py`,
+   `m34_comparar_u1_real.py`) y sus resultados. Bajarlos primero del Project (no están en el clon).
+   Jerónimo hace el commit y el push.
+2. **Corregir los hallazgos 1 y 2 de la auditoría** (`pp` con HS·HW e `inclusion_personas` con HW) o
+   retirar las cifras `pp`. Correr el placebo con 100 réplicas.
+3. **Con Martín, con fecha límite:** M1 y M2 en el repo, `parametros.py`, `05_conteo_personas.py`
+   (`conteo_pares.csv`), meta del M2, doble cuenta de desocupados y severidad censurada. Avisarle que
+   M3/M4 ya tienen costos reales provisionales y pedirle que compare su conteo con `costos_reales_tabla.csv`.
+   Si no llega el M1, usar `info_perfecta_real.csv` como techo.
+4. Actualizar `Seleccion_Variables_Restricciones_Modelo3.pdf` / `Modelo4.pdf` (carpeta Opti1, un nivel
+   arriba) con T1, T13–T19, M4, equidad, k, costos reales y la tabla de desviaciones respecto al paper.
+5. Diapositivas con las tablas de §7 y las gráficas (hilo de §7.7).
+6. Opcional: guardar estado/gap de HiGHS por corrida, IC bootstrap, fijar versiones con `pip freeze`.
+7. Comparación final de los 4 modelos: tabla común H, A, M0, severidad, SevEdu y costo, por zona y
    total, con la misma meta para M2, M3 y M4. Reparto de la sustentación y fecha del ensayo.
 
 ## 12. Entorno y cómo correrlo
@@ -404,7 +474,7 @@ $PY test_cortes.py
 $PY 06_modelo3_cortes.py 0.10          # producción + control de equivalencia ("solo" = sin control)
 $PY m34_test_regresion.py $R                                       # 630 cortes, 153,0, 62,1 %
 $PY m34_montecarlo.py $R m3 0 100 out/mc_m3.csv                    # MC 2-nov, ~25 s/réplica
-# Scripts del 3-nov:
+# 3-nov
 $PY m34_montecarlo_lex.py $R 100 out/mc_lex                        # 800 tareas, ~85 min con 2 núcleos
 $PY m34_correr_equidad.py $R 0 30 out/equidad_m34.csv 10 25 50 100 200    # ~30 min
 $PY m34_referencia_info_perfecta.py $R out/info_perfecta.csv 10 25 50 100 200   # ~1 min
@@ -415,10 +485,17 @@ $PY m34_resumen_barrido_v2.py out/barrido_v2 out/resumen_barrido_v2.csv out/barr
 $PY m34_pares_pequenos.py $R out/pares_pequenos.csv                # segundos
 $PY m34_resumen_3nov.py out/mc_lex out/equidad_m34.csv out/info_perfecta.csv resultados/m34/mc_m3.csv resultados/m34/mc_m4.csv
 $PY m34_grafica_equidad.py out/equidad_m34.csv out/info_perfecta.csv out/equidad_m3_m4_ip.png
+# 4-nov: costos reales provisionales (scripts en el Project, claude/codigo-m34/)
+$PY m34_costos_reales.py $R out/costos_reales_tabla.csv            # validación y tabla, segundos
+$PY m34_corridas_costos_reales.py ip $R out/info_perfecta_real.csv 10 25 50 100 200   # ~2 min
+$PY m34_corridas_costos_reales.py barrido $R 30 out/barrido_real                      # 60 tareas, ~30 min
+$PY m34_corridas_costos_reales.py equidad $R 15 out/equidad_real.csv 10 25 50 100 200 # ~8 min
+$PY m34_comparar_u1_real.py resultados/m34/barrido_v2_crudo.csv out/barrido_real resultados/m34/equidad_m34.csv \
+    out/equidad_real.csv resultados/m34/info_perfecta.csv out/info_perfecta_real.csv out/comparacion
 ```
 
 - `opti1`: Python 3.10.18, PuLP 2.9.0 con CBC y HiGHS (`highspy`). `requirements.txt`:
-  `pulp>=2.9,<4`, `highspy>=1.7`. También probado con PuLP 3.3.2 + highspy (Python 3.13).
+  `pulp>=2.9,<4`, `highspy>=1.7` (rangos, no versiones exactas). También probado con PuLP 3.3.2 + highspy.
 - El `python3` por defecto trae PuLP 4.0.0 sin solvers: no usarlo (T16).
 - El `timeLimit` de CBC no es confiable y este Mac no tiene `timeout`: `perl -e 'alarm 240; exec @ARGV' <cmd>`.
 - CSV del DANE: coma y UTF-8 con BOM. `utils_dane.leer()` lo detecta; no hardcodear.
@@ -427,45 +504,48 @@ $PY m34_grafica_equidad.py out/equidad_m34.csv out/info_perfecta.csv out/equidad
 
 - Nada derivado de los datos va hardcodeado: un `0.038684` literal es un bug (en `m34_datos` solo vive como assert).
 - Los comentarios explican el porqué y son material de sustentación: ampliarlos, no limpiarlos.
-- Cambios metodológicos (umbral, pesos, D, k) → también en los PDF de selección de variables.
+- Cambios metodológicos (umbral, pesos, D, k, costos) → también en los PDF de selección de variables.
 - Con Martín: y_i = 1 ⇔ el hogar **sale**; HW_i siempre multiplica el costo, HS_i nunca (las personas
   ya están en u_ij); reportar H, A, M0 y severidad por zona `P3` y total; sensibilidades mínimas
   compartidas: caso base y u_ij = 1.
 - Repo compartido: **no hacer commit, push, pull, fetch ni cambiar de rama sin que Jerónimo lo pida.**
   Jerónimo hace los commits a mano. Sin atribución de Claude en los commits.
-- Problemas relevantes resueltos → `bitacora-problemas-y-soluciones.md` y
-  `bitacora-adenda-noviembre.md` (Project "Opti1").
+- Problemas resueltos → `bitacora-problemas-y-soluciones.md` y `bitacora-adenda-noviembre.md` (Project "Opti1").
 - Docs del Project: `decision-fuente-de-datos`, `revision-formulacion-modelo3`,
   `bitacora-problemas-y-soluciones`, `bitacora-adenda-noviembre`, `resumen-avance-2nov`,
-  `resumen-avance-3nov`, `resumen-avance-3nov-tarde`, `CLAUDE-contexto-pendiente-de-push`,
-  `respaldo-CLAUDE-2nov`, `codigo-m34/`.
+  `resumen-avance-3nov`, `resumen-avance-3nov-tarde`, `resumen-avance-4nov`, `auditoria-m34-3nov`,
+  `CLAUDE-contexto-pendiente-de-push` (versión para la rama `Contexto`, al 4-nov), `respaldo-CLAUDE-2nov`,
+  `codigo-m34/`.
 
 ## 14. Cambios de Martín que pueden modificar el plan
 
-Revisión del 3-nov-2026, 21:00 UTC, sobre las referencias locales del clon. No se hizo fetch: el
-último fetch es del 3-nov a las 00:56 UTC, así que lo que Martín haya subido después no se ve aquí.
+Revisión del 4-nov-2026, noche, con `git fetch origin`. **Martín subió trabajo nuevo a `main`.**
+Las §4, §7, §9, §10 y §11 se escribieron antes de esto y dan por pendiente parte de lo que ya
+existe: **falta revisarlas.** Todavía no se ha leído el código nuevo ni se ha comparado con M3/M4.
 
 | Rama | Último commit | Autor |
 |---|---|---|
-| `main` / `origin/main` | `91e7b97` (6-oct) | Martín |
-| `Contexto` / `origin/Contexto` | `8bd01d1` (1-nov) | Jerónimo. El último cambio a `CONTEXTO_DATOS.md` es `72c9d02` (2-nov, solo documentación, ya incorporado) |
-| `Modelo3` / `origin/Modelo3` | `055be94` (1-nov) | Jerónimo |
+| `origin/main` | `0389805` (4-nov), antes `51082ad` (4-nov) y `91e7b97` (6-oct) | Martín |
+| `origin/Contexto` | `ba8fc47`: actualiza el grafo de `perspectiva_equidad`; solo toca `graphify-out/` | Claude. `CONTEXTO_DATOS.md` no cambia desde `66bc989` ("Notas de Jerónimo") |
+| `origin/Modelo3` | `b552525` (3-nov), sin los commits nuevos de `main` | Jerónimo |
 
-- `parametros.py`, `05_conteo_personas.py` y `03_preparar_antioquia.py` siguen sin existir en ninguna
-  rama, y **no hay código de M1 ni M2**.
-- El último cambio de Martín a `CONTEXTO_DATOS.md` es `72c9d02`; su §8 sigue con la meta del M2, la p de
-  inasistencia y el gap pendientes. "Notas de Jerónimo" ya quedó escrita (3-nov, noche).
-- No hay archivos `NOTAS_*.md` en el repo.
+- **Ya existen en `main`:** `Modelos/parametros.py`, `Modelos/05_conteo_personas.py`,
+  `Modelos/03_preparar_antioquia.py`, `Modelos/Modelo_2/modelo2.py`, `data/processed/conteo_pares.csv`,
+  `docs/reglas_conteo_personas.md`, `docs/formulacion_modelo1.md`, `docs/formulacion_modelo2.md` y
+  `docs/informe_modelo1.md`.
+- **Modelo 1:** `main` trae su formulación y su informe, pero ningún script con ese nombre.
+- **Martín movió** `utils_dane.py` y los scripts 02–04 a `Modelos/`. Un merge de `main` en `Modelo3`
+  rompería los imports de M3/M4: hacerlo aparte y con cuidado.
+- No hay archivos `NOTAS_*.md` en `main` ni en `Contexto`. Falta ver si los docs nuevos responden
+  las "Notas de Jerónimo"; en `CONTEXTO_DATOS.md` no hay respuesta.
 
-**Sin cambios relevantes** desde la última revisión (3-nov, tarde).
-
-Riesgo que se mantiene (no es un cambio, pero condiciona el plan): sin M1/M2 en el repo no hay
-comparación oficial de los 4 modelos; mientras tanto, M3/M4 se comparan con `info_perfecta.csv`.
+Lo siguiente: comparar `conteo_pares.csv` con `costos_reales_tabla.csv`, revisar la meta del M2 en
+`docs/formulacion_modelo2.md` y validar `info_perfecta_real.csv` contra `docs/informe_modelo1.md`.
 
 Lo ya incorporado del 2-nov, por si hay que recordarlo:
 
 | Cambio | Por qué afecta a M3/M4 | Ajuste |
 |---|---|---|
-| Rezago: ningún niño sale en un año; estrategias E0–E3; ρ_e = 14 % (base) / 20 % (con E3) | El rezago deja de curarse con un año regular | **Hecho (3-nov):** rezago no intervenible como caso base, constante en s_i (T14); impacto en las medianas +0,0 % |
-| u_ij para los 3.732 hogares | Permite medir la inclusión en pesos | Usar V = u·HW y K = costo_ij cuando llegue `conteo_pares.csv` |
+| Rezago: ningún niño sale en un año; estrategias E0–E3; ρ_e = 14 % (base) / 20 % (con E3) | El rezago deja de curarse con un año regular | **Hecho (3-nov):** no intervenible, constante en s_i (T14); medianas +0,0 % |
+| u_ij para los 3.732 hogares | Permite medir la inclusión en pesos | **Hecho provisionalmente (4-nov)** con `m34_costos_reales.py`; `conteo_pares.csv` ya está en `main`: comparar par por par (si difiere > ~1 % del costo total, repetir las corridas, ~40 min) |
 | p de inasistencia 0,37 (0,50 y 0,75 como sensibilidad) | Cambia el costo de inasistencia (3,0/p) | Los MC usan 0,369; confirmarlo como caso base |

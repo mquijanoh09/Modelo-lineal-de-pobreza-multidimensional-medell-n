@@ -119,3 +119,12 @@ contexto de por qué en `graphify-out/perspectiva_equidad/GRAPH_REPORT.md`.
 08_modelo1.py              presupuesto fijo, con parámetro r de equidad
 09_modelo2.py              meta política, con metas por zona
 ```
+
+## Resultados de los Modelos 1 y 2 (5-nov-2026, programados por Jerónimo desde el commit 0389805 de Martín)
+
+Detalle, verificaciones y puntos abiertos en `docs/estado_modelos_1_2.md`.
+- **Rango de B recalculado con los costos verificados:** $B_{piso}$ = $105.9 mm (E-7 + SevEdu 14 %); los 523 hogares pueden salir y $B_{sat}$ = **$658.9 mm** (reemplaza los ≈ $0.50 billones); quitar todas las privaciones simples cuesta $8.26 billones (reemplaza $7.29 billones).
+- **Modelo 1, caso base** (B = $271.8 mm, provisional): salen 467,764 personas; H 9.45 % → 2.98 %; M0 0.0387 → 0.0131; **A sube** a 43.86 % con ρ = 0. ρ_max = 39.9 %, codo en ρ ≈ 33 %, y la regla "la brecha no crece" solo se cumple en ρ_max.
+- **Modelo 2:** piso de E-7 = $104.4 mm; metas de 5 / 10 / 20 % = $105.6 / $108.7 / $118.6 mm con meta por zona ($104.7 / $105.4 / $109.1 mm solo global); 100 % = $657.4 mm.
+- Validación cruzada M1 ≥ M2 con el mismo B: cumple.
+- `07_eficiencia_por_zona.py` y `06_parametros.py` ya no hacen falta: los reemplazan `datos_modelo.py` y `parametros.py`.

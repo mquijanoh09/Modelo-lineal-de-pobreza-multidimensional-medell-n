@@ -280,6 +280,9 @@ SENSIBILIDADES_M2 = {
 # Solver (F2-2): una sola etapa. Con un costo de ~$100 mil millones, gap 1e-4
 # deja ~$10 M de holgura (un hogar); 1e-6 la baja a ~$0.1 M (igual que M3/M4).
 SOLVER_M2 = {"gap_rel": 1e-6, "time_limit": 300}
+# Barridos: metas intermedias (30-80 %) pueden tardar minutos en cerrar el gap 1e-6.
+# En los barridos se corta a 60 s y se reporta el gap alcanzado de cada punto.
+SOLVER_M2_BARRIDO = {"gap_rel": 1e-6, "time_limit": 60}
 
 # F2-1: el objetivo se escribe en millones de pesos para que los coeficientes
 # del MILP queden en escalas parecidas; los resultados se reportan en pesos.
@@ -308,6 +311,28 @@ def malla_m2(m_max, paso=PASO_MALLA_M2):
     """
     n = int(m_max / paso + 1e-9)
     return [round(i * paso, 6) for i in range(n + 1)]
+
+
+# ==================================================================
+# 11. Modelo 1: presupuesto fijo, max H en dos etapas (D1)
+#     Decisiones en docs/justificacion_decisiones.md
+# ==================================================================
+# D1: dos etapas. Etapa 1 max sum p_i y_i; etapa 2 min sum p_i q_i con sum p_i y_i >= H*.
+# Con ~683 mil pobres, gap 1e-4 dejaría ~68 personas de holgura; 1e-6 la baja a < 1.
+SOLVER_M1 = {"gap_rel": 1e-6, "time_limit": 300}
+# Tolerancia relativa al fijar H* en la etapa 2 (H* es la incumbente de la etapa 1, así que es factible;
+# el margen solo evita que el redondeo de HiGHS la vuelva infactible).
+TOL_H_ETAPA2 = 1e-9
+# Malla de r (equidad por zona) y de rho (techo de severidad): se barren entre sus extremos.
+# MALLA_B se arma en 08_modelo1_barridos.py como B = B_piso + f (B_sat - B_piso), porque depende
+# de los datos (P5): B_piso = costo con H = 0 (E-7 + SevEdu) y B_sat = mínimo para el H máximo.
+FRACCIONES_B = [0.0, 0.05, 0.10, 0.20, 0.30, 0.50, 0.75, 1.00]
+PASOS_RHO = 5                    # puntos interiores del barrido de rho entre 0 y rho_max(B)
+# B de referencia para los barridos de r y rho y las sensibilidades: fracción del rango B_piso-B_sat.
+# PROVISIONAL (5-nov-2026, al completar el código): no hay decisión de Martín sobre el B
+# del caso base; 0.30 queda en la zona de la curva B -> H donde todavía hay rendimientos
+# decrecientes claros. Cambiar aquí si se acuerda otro valor.
+FRACCION_B_REF = 0.30
 
 
 # ==================================================================

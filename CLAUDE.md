@@ -29,12 +29,14 @@ Modelos/                       lo común a los Modelos 1 y 2
   02_validar_ipm.py            valida pesos w_j, umbral k, FEX_C (base completa DANE, lento)
   03_preparar_antioquia.py     pruebas A/B de P3 → genera data/processed/hogares_antioquia.csv
   04_linea_base.py             H0, A0, M0, contribuciones, distancia al umbral, por zona
-  05_conteo_personas.py        (por hacer) u_ij, tablas de niños y adultos
-  datos_modelo.py              (por hacer) datos del MILP: A_i, M_i, Sev0, SevEdu
-  modelo_base.py               (por hacer) clase ModeloIPMBase (reglas comunes M1/M2)
+  05_conteo_personas.py        u_ij, tablas de niños y adultos
+  datos_modelo.py              datos del MILP: A_i, M_i, Sev0, SevEdu, costos por escenario
+  modelo_base.py               clase ModeloIPMBase (reglas comunes M1/M2, costo, recalcular)
   Modelo_1/                    modelo1.py (clase Modelo1), 08_modelo1.py, 08_modelo1_barridos.py
   Modelo_2/                    modelo2.py (clase Modelo2), 09_modelo2.py, 09_modelo2_barridos.py
 ```
+Estado (5-nov-2026): Modelos 1 y 2 programados y corridos; ver `docs/estado_modelos_1_2.md` (resultados, pendientes y
+puntos para auditar). Requiere PuLP 3.3 (PuLP 4 cambió la firma de `LpVariable`).
 `Modelo_1/` y `Modelo_2/` no llevan espacio (cambio de Martín, 5-nov), así que sus módulos se importan como paquete
 desde `Modelos/` (`from Modelo_1.modelo1 import Modelo1`). Los scripts numerados de esas carpetas igual empiezan con
 `sys.path.insert(0, str(Path(__file__).resolve().parents[1]))`, para poder correrlos directamente (`python Modelos/Modelo_1/08_modelo1.py`).

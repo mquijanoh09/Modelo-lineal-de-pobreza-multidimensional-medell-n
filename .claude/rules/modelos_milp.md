@@ -1,11 +1,10 @@
 ---
 paths:
-  - "05_*.py"
-  - "06_*.py"
-  - "07_*.py"
-  - "08_*.py"
-  - "09_*.py"
-  - "1*_*.py"
+  - "Modelos/05_*.py"
+  - "Modelos/datos_modelo.py"
+  - "Modelos/modelo_base.py"
+  - "Modelos/Modelo_1/**"
+  - "Modelos/Modelo_2/**"
 ---
 
 # Reglas para los scripts de modelación (05 en adelante)
@@ -20,5 +19,5 @@ paths:
   1. imprime el estado y el valor objetivo;
   2. recalcula H, A, M0 y severidad desde $N_{ij}$ con la misma fórmula de `resumen()` en `04_linea_base.py`, sin confiar en $C_i$. Como `04_linea_base.py` es un script y no se puede importar, propón mover esa función a `utils_dane.py`;
   3. reporta por zona (P3).
-- Lee los parámetros de `05_parametros.py`; no escribas números a mano en los modelos.
+- Lee los parámetros de `Modelos/parametros.py`; no escribas números a mano en los modelos.
 - Prueba primero con una muestra pequeña (p. ej. 50 hogares pobres) y solo después con los 523.

@@ -21,18 +21,24 @@ Equipo: Modelos 1-2 (Tomás, hogar por hogar) · Modelos 3-4 (Jerónimo, por zon
 | `referencias/*.pdf` | Solo si piden una página concreta del paper. |
 
 ## Mapa del código
+Todo el código vive en `Modelos/` (decisión de Martín, 5-nov-2026). Los datos siguen en `data/` y los documentos en `docs/`, en la raíz.
 ```
-utils_dane.py              leer(sub, columnas, raiz), leer_cabecera, a_numero, RAIZ_DEP/RAIZ_NAC/OUT
-02_validar_ipm.py          valida pesos w_j, umbral k, FEX_C (base completa DANE, lento)
-03_preparar_antioquia.py   pruebas A/B de P3 → genera data/processed/hogares_antioquia.csv
-04_linea_base.py           H0, A0, M0, contribuciones, distancia al umbral, por zona
-05_conteo_personas.py      (por hacer) u_ij por hogar desde PERSONAS (reglas en docs/reglas_conteo_personas.md)
-06_parametros.py           (por hacer) costos urbano/rural, unidades, pesos y k en UN solo lugar
-07_eficiencia_por_zona.py  (por hacer) diagnóstico HS_i / c_i
-08_modelo1.py              (por hacer) presupuesto fijo + equidad r (ver docs/informe_modelo1.md)
-09_modelo2.py              (por hacer) meta política, metas por zona
+Modelos/                       lo común a los Modelos 1 y 2
+  parametros.py                pesos, k, costos con fuente, escenarios (sección 10: Modelo 2)
+  utils_dane.py                leer, a_numero, puntaje, resumen_ipm, rutas RAIZ/RAIZ_DEP/RAIZ_NAC/OUT
+  02_validar_ipm.py            valida pesos w_j, umbral k, FEX_C (base completa DANE, lento)
+  03_preparar_antioquia.py     pruebas A/B de P3 → genera data/processed/hogares_antioquia.csv
+  04_linea_base.py             H0, A0, M0, contribuciones, distancia al umbral, por zona
+  05_conteo_personas.py        (por hacer) u_ij, tablas de niños y adultos
+  datos_modelo.py              (por hacer) datos del MILP: A_i, M_i, Sev0, SevEdu
+  modelo_base.py               (por hacer) clase ModeloIPMBase (reglas comunes M1/M2)
+  Modelo_1/                    modelo1.py (clase Modelo1), 08_modelo1.py, 08_modelo1_barridos.py
+  Modelo_2/                    modelo2.py (clase Modelo2), 09_modelo2.py, 09_modelo2_barridos.py
 ```
-Scripts numerados, uno por etapa, ejecutables desde la raíz del repositorio.
+`Modelo_1/` y `Modelo_2/` no llevan espacio (cambio de Martín, 5-nov), así que sus módulos se importan como paquete
+desde `Modelos/` (`from Modelo_1.modelo1 import Modelo1`). Los scripts numerados de esas carpetas igual empiezan con
+`sys.path.insert(0, str(Path(__file__).resolve().parents[1]))`, para poder correrlos directamente (`python Modelos/Modelo_1/08_modelo1.py`).
+Las rutas a `data/` salen de `utils_dane` (desde `__file__`), así que los scripts corren desde cualquier carpeta.
 
 ## Datos
 - **Entrada de los modelos:** `data/processed/hogares_antioquia.csv`, con 3,732 hogares y 24 columnas: `ID_HOGAR, DIRECTORIO, SECUENCIA_P, DEPARTAMENTO, P3`, las 15 privaciones, `PERSONAS, FEX_C, IPM, POBRE`.
@@ -44,7 +50,7 @@ Scripts numerados, uno por etapa, ejecutables desde la raíz del repositorio.
 ## Convenciones técnicas
 - Python 3.13 en `.venv`. En Windows: `.venv\Scripts\python.exe <script>.py`. Librerías: pandas 3, numpy 2, **PuLP 3.3 + HiGHS** (`highspy`), matplotlib.
 - Solver: `pulp.HiGHS(msg=False)`. Reporta el estado de la solución y el gap.
-- Los parámetros (pesos, k, costos) deben vivir en `05_parametros.py`. Hoy `DIMENSIONES`/`PESOS` están duplicados en 02 y 04, y `INDICADORES` en 03: no los dupliques otra vez.
+- Los parámetros (pesos, k, costos) viven en `Modelos/parametros.py`. El 04 ya los importa; 02 y 03 aún tienen copias de `DIMENSIONES`/`PESOS`/`INDICADORES`: no las dupliques otra vez.
 - Puntajes en múltiplos de 0.01: pobre ⇔ puntaje ≥ 0.34. Una desigualdad estricta $< k$ se programa como $\le 0.33$.
 - Reporta **siempre** los resultados por zona (P3) además del total.
 

@@ -93,3 +93,73 @@ Base del modelo: `modelo1/formulacion_modelo1.md`. Plan de programación: https:
 - El Modelo 1 no puede correr sin u_ij (costos por hogar), sin la tabla por niño (SevEdu, rezago e inasistencia) y sin la tabla por adulto (logro y analfabetismo).
 - Jerónimo necesita esta semana `parametros.py`, `conteo_pares.csv` y `ninos_rezago.csv` para los Modelos 3 y 4. Si los hace una sola persona con las mismas reglas, los cuatro modelos usan exactamente los mismos datos.
 - `parametros.py` se construye sobre el archivo que ya existe (trabajo infantil, CLEI y barreras de salud), sin duplicar valores.
+
+---
+
+# Fase 3 — decisiones al programar
+
+## P1. `parametros.py`: costos calculados desde el dato de la fuente (5-nov-2026)
+
+**Qué se hizo:** los costos que vienen de una cuenta (acueducto y alcantarillado rurales, pisos y paredes urbanos, hacinamiento, PCI urbano, aporte a pensión, Empleos para la Vida) se escriben como la cuenta, no como el resultado redondeado. Ejemplo: `5_789e6 / 551 * 3.3 * IPC_2022_A_2025` en vez de `43_700_000`.
+
+**Por qué:** si la profesora pregunta de dónde sale un número, la línea de código muestra la fuente y la operación. Si cambia un insumo (el SMMLV o el factor IPC), todos los costos que dependen de él cambian solos.
+
+**Consecuencia:** el acueducto rural queda en $43,685,412 (el informe lo redondea a $43.7 M) y el alcantarillado rural en $15,280,851 ($15.3 M).
+
+## P2. p = 0.369, no 0.37 (5-nov-2026)
+
+**Qué se hizo:** se usa el cumplimiento del ciclo 4 de 2025 de Renta Ciudadana con tres decimales, 0.369, igual que en los modelos de Jerónimo.
+
+**Por qué:** es el valor verificado (Prosperidad Social) y así los cuatro modelos usan el mismo número. Con 0.369 la transferencia por regreso logrado cuesta $8,130,081 por hogar.
+
+## P3. Escenarios como "caso base + cambios" (5-nov-2026)
+
+**Qué se hizo:** `CASO_BASE` es un diccionario con todos los supuestos, y cada sensibilidad solo dice qué cambia (`{"p": 0.50}`). La función `escenario(nombre)` arma el escenario completo.
+
+**Por qué:** una sensibilidad nunca puede olvidar un supuesto del caso base, porque lo hereda. Para correr una sensibilidad nueva basta agregar una línea.
+
+## P4. Empleo y desempleo se costean persona por persona en el 05 (5-nov-2026)
+
+**Qué se hizo:** `empleo_formal` y `desempleo_larga_duracion` no tienen un EpF fijo en la tabla. `parametros.py` da los precios unitarios (aporte a pensión y `costo_desocupado(edad, mujer)`), y el 05 suma el costo de cada persona del hogar según los tres casos del informe §6.5.
+
+**Por qué:** el costo depende de quién es cada persona (ocupado sin pensión, desocupado joven, mujer en edad de pensión...). Un solo precio por hogar no lo puede representar.
+
+## P5. La malla de B queda vacía por ahora (5-nov-2026)
+
+**Qué se hizo:** `MALLA_B = None`.
+
+**Por qué:** los rangos viejos ($0.50 y $7.29 billones) se calcularon con costos que ya cambiaron. La malla se fija después de calcular con los datos el costo mínimo de sacar a los 523 hogares (validación 2 del plan). Escribir números ahora sería escribirlos a ojo.
+
+## P6. `resumen_ipm()` y `puntaje()` pasan a `utils_dane.py` (5-nov-2026)
+
+**Qué se hizo:** la fórmula de H, A y M0 que vivía dentro de `04_linea_base.py` pasó a `utils_dane.resumen_ipm(p, puntaje, k)`, y el redondeo del puntaje a `utils_dane.puntaje(M, w)`. El 04 ahora importa esas funciones y los pesos de `parametros.py`.
+
+**Por qué:**
+- Python no puede importar `04_linea_base.py` porque su nombre empieza por un dígito. Sin moverla, el Modelo 1 tendría que copiar la fórmula, y dos copias pueden terminar diciendo cosas distintas.
+- La misma función sirve antes de intervenir (línea base) y después de resolver (recalcular H, A y M0 desde x_ij). Así se cumple la regla de no confiar en el valor del objetivo.
+- Recibe el puntaje y calcula quién es pobre con `>= k`, en vez de recibir una columna `POBRE` ya hecha: después de intervenir esa columna no existe.
+
+**Verificación:** la salida completa del 04 es idéntica antes y después del cambio (comparada con `diff`). El ejemplo de 10 personas del informe §3.3 da H = 0.20, A = 0.60 y M0 = 0.12.
+
+## P7. Modelos 1 y 2 comparten una clase madre (decidido por Martín, 5-nov-2026)
+
+**Qué se hará:** `modelo_base.py` con la clase `ModeloIPMBase(datos, esc)`. `construir()` sigue siempre el mismo orden (patrón *template method*): `crear_variables()` (x, y, z, t, v), `agregar_reglas_intervencion()` (salida, E-2, E-3, E-7, rezago, inasistencia, logro y analfabetismo), `agregar_restricciones_propias()` y `definir_objetivo()`. Los dos últimos los escribe cada hija. La clase madre también tiene `costo_total()`, `agregar_sevedu(rho_e)`, `resolver()`, `solucion()` y `recalcular()`.
+- `Modelo1(ModeloIPMBase)`, en `modelo1.py`: presupuesto, equidad por zona, tangentes, techo de severidad, techo de SevEdu y las dos etapas.
+- `Modelo2(ModeloIPMBase)`, en `modelo2.py` (hilo del Modelo 2): C_i, censura, meta de M0 por zona y mínimo costo.
+
+**Por qué:** las reglas que traducen el IPM y las estrategias educativas a restricciones son las mismas en los dos modelos. Si cada uno las copiara, un arreglo en uno podría no llegar al otro y los resultados dejarían de ser comparables. SevEdu queda como método aparte porque en el Modelo 2 solo es sensibilidad.
+
+## P8. Todo el código pasa a `Modelos/` (decidido por Martín, 5-nov-2026)
+
+**Qué se hizo:**
+- `parametros.py`, `utils_dane.py`, `02_validar_ipm.py`, `03_preparar_antioquia.py` y `04_linea_base.py` pasaron de la raíz a `Modelos/`. Lo común a los dos modelos (`05_conteo_personas.py`, `datos_modelo.py`, `modelo_base.py`) también irá ahí; lo del Modelo 1 en `Modelos/Modelo_1/` y lo del Modelo 2 en `Modelos/Modelo_2/` (Martín quitó el espacio de los nombres el mismo día).
+- `data/`, `docs/` y `graphify-out/` se quedan en la raíz.
+- `utils_dane.py` arma las rutas desde su propia ubicación: `RAIZ = Path(__file__).resolve().parents[1]`. El 04 lee el CSV desde `utils_dane.OUT`. Así los scripts funcionan sin importar desde qué carpeta se corran.
+- Los scripts numerados de `Modelo_1/` y `Modelo_2/` empiezan con `sys.path.insert(0, str(Path(__file__).resolve().parents[1]))` para importar lo común. Es la misma convención que usa el hilo del Modelo 2.
+- Se actualizaron el mapa del código de `CLAUDE.md` y las rutas de `.claude/rules/modelos_milp.md`.
+
+**Por qué el `sys.path`:** sin espacio, `Modelo_1` y `Modelo_2` ya se pueden importar como paquetes desde `Modelos/` (`from Modelo_1.modelo1 import Modelo1`). Pero un script que se corre directamente (`python Modelos/Modelo_1/08_modelo1.py`) solo ve su propia carpeta, así que agrega `Modelos/` al path para encontrar `parametros.py` y `modelo_base.py`. En PyCharm también se puede marcar `Modelos/` como *Sources Root*.
+
+**Por qué `mv` y no `git mv`:** desde aquí git no puede borrar sus archivos de bloqueo. Cuando hagas el commit con `git add -A`, git detecta el movimiento como un *rename* porque el contenido es casi igual, así que el historial de cada archivo se conserva.
+
+**Verificación:** la salida de `04_linea_base.py` es idéntica a la de antes, corrida desde la raíz y desde `Modelos/`; la de `parametros.py` también. 02 y 03 compilan. Desde `Modelos/Modelo_1/` se importan `parametros` y `utils_dane` sin error.

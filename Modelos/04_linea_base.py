@@ -12,45 +12,32 @@ Alkire-Foster / IPM-Colombia:
 
 Entrada: data/processed/hogares_antioquia.csv  (generado por 03_preparar_antioquia.py)
 """
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-ARCHIVO = Path(__file__).resolve().parent / "data" / "processed" / "hogares_antioquia.csv"
 
-DIMENSIONES = {
-    "Educación":        ["logro_educativo", "analfabetismo"],
-    "Niñez y juventud": ["inasistencia_escolar", "rezago_escolar",
-                         "atencion_integral", "trabajo_infantil"],
-    "Trabajo":          ["desempleo_larga_duracion", "empleo_formal"],
-    "Salud":            ["aseguramiento_salud", "barreras_acceso_salud"],
-    "Vivienda":         ["acueducto", "alcantarillado", "pisos",
-                         "paredes", "hacinamiento"],
-}
-PESOS = {ind: 0.2 / len(inds) for inds in DIMENSIONES.values() for ind in inds}
-INDICADORES = list(PESOS)
+from parametros import DIMENSIONES, PESOS, INDICADORES, K, ZONAS
+from utils_dane import puntaje, resumen_ipm, OUT
+
+ARCHIVO = OUT / "hogares_antioquia.csv"   # data/processed/ en la raíz del repo
+
 W = np.array([PESOS[i] for i in INDICADORES])
-K = 1 / 3
-ZONAS = {1: "Cabecera", 2: "Centro poblado", 3: "Rural disperso"}
 
 # ------------------------------------------------------------------
 # Datos
 # ------------------------------------------------------------------
 df = pd.read_csv(ARCHIVO)
 M_total = df[INDICADORES].to_numpy(dtype=float)
-df["puntaje"] = np.round(M_total @ W, 2)
+df["puntaje"] = puntaje(M_total, W)
 df["pobre_calc"] = (df["puntaje"] >= K).astype(int)
 assert (df["pobre_calc"] == df["POBRE"]).all(), "POBRE no coincide con el puntaje"
 df["p"] = df["FEX_C"] * df["PERSONAS"]          # personas representadas por hogar
 
 
 def resumen(d):
-    """H0, A0, M0 de un subconjunto de hogares."""
-    p, pobre, s = d["p"].to_numpy(), d["pobre_calc"].to_numpy(), d["puntaje"].to_numpy()
-    H = (p * pobre).sum() / p.sum()
-    A = (p * pobre * s).sum() / (p * pobre).sum() if pobre.any() else 0.0
-    return H, A, H * A
+    """H0, A0, M0 de un subconjunto de hogares (fórmula en utils_dane.resumen_ipm)."""
+    return resumen_ipm(d["p"], d["puntaje"])
 
 
 def contribuciones(d):

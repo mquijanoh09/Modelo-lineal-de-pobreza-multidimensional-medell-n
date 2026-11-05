@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./data/DANE/**)",
+      "Read(./data/processed/*.csv)",
+      "Read(./.venv/**)",
+      "Read(./.idea/**)",
+      "Read(**/__pycache__/**)",
+      "Read(./graphify-out/graph.json)",
+      "Read(./graphify-out/graph.html)",
+      "Read(./graphify-out/cache/**)",
+      "Read(**/*.dta)",
+      "Read(**/*.sav)"
+    ]
+  }
+}

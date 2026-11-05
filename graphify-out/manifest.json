@@ -1,0 +1,98 @@
+{
+  "02_validar_ipm.py": {
+    "mtime": 1791237814.7111099,
+    "seen": 1792619430.4832556,
+    "ast_hash": "1038a953058c50713dc11836e4bc13af",
+    "semantic_hash": "1038a953058c50713dc11836e4bc13af"
+  },
+  "03_preparar_antioquia.py": {
+    "mtime": 1792071122.2379062,
+    "seen": 1792619430.4832602,
+    "ast_hash": "d61c6a77256c54b1769793afc8946759",
+    "semantic_hash": "d61c6a77256c54b1769793afc8946759"
+  },
+  "04_linea_base.py": {
+    "mtime": 1792103918.5466847,
+    "seen": 1792619430.4832625,
+    "ast_hash": "4d525b9ab4bd23b907f986fa279451f7",
+    "semantic_hash": "4d525b9ab4bd23b907f986fa279451f7"
+  },
+  "utils_dane.py": {
+    "mtime": 1790377421.819086,
+    "seen": 1792619430.4832642,
+    "ast_hash": "632fa51ae4e2a4d26bb5c630ead5f6d0",
+    "semantic_hash": "632fa51ae4e2a4d26bb5c630ead5f6d0"
+  },
+  "README.md": {
+    "mtime": 1792094638.201917,
+    "seen": 1792094773.5719018,
+    "ast_hash": "ca54194a7f96b6004d0c334ca755b1f1",
+    "semantic_hash": "ca54194a7f96b6004d0c334ca755b1f1"
+  },
+  "referencias/paper_pobreza_multidimensional_opti1.pdf": {
+    "mtime": 1792094649.6890879,
+    "seen": 1792094773.571903,
+    "ast_hash": "6fc27740acad12f12ee1e59694e35738",
+    "semantic_hash": "6fc27740acad12f12ee1e59694e35738"
+  },
+  "docs/resumen_proyecto_ipm.md": {
+    "mtime": 1792618356.494434,
+    "seen": 1792619430.4832776,
+    "ast_hash": "8a5f45db75a9e7518c647cf1a075f4e5",
+    "semantic_hash": "8a5f45db75a9e7518c647cf1a075f4e5"
+  },
+  ".claude/settings.json": {
+    "mtime": 1792102975.171622,
+    "seen": 1792619430.4832435,
+    "ast_hash": "0782aba999ff580285848b2c697e99dd",
+    "semantic_hash": "0782aba999ff580285848b2c697e99dd"
+  },
+  ".claude/rules/modelos_milp.md": {
+    "mtime": 1792102975.546723,
+    "seen": 1792619430.4832664,
+    "ast_hash": "2db410a4887c7faa11b5d44a98f11d73",
+    "semantic_hash": "2db410a4887c7faa11b5d44a98f11d73"
+  },
+  "CLAUDE.md": {
+    "mtime": 1792618368.5282886,
+    "seen": 1792619430.483268,
+    "ast_hash": "47278f1b971a96f0ebfb6051b62d753f",
+    "semantic_hash": "47278f1b971a96f0ebfb6051b62d753f"
+  },
+  "docs/informe_modelo1.md": {
+    "mtime": 1792618569.4301512,
+    "seen": 1792619430.4832704,
+    "ast_hash": "f1771fd205d0037b7311358160831b66",
+    "semantic_hash": "f1771fd205d0037b7311358160831b66"
+  },
+  "docs/paper_modelos.md": {
+    "mtime": 1792102965.2606645,
+    "seen": 1792619430.4832728,
+    "ast_hash": "7e7c5cc844e9d50ee70f0d464293f6e8",
+    "semantic_hash": "7e7c5cc844e9d50ee70f0d464293f6e8"
+  },
+  "docs/reglas_conteo_personas.md": {
+    "mtime": 1792617414.8725028,
+    "seen": 1792619430.4832742,
+    "ast_hash": "5d3ed5b0cf9cd50aa640acaca7e60b1d",
+    "semantic_hash": "5d3ed5b0cf9cd50aa640acaca7e60b1d"
+  },
+  "docs/img/modelo1/contribucion_dimension_zona.png": {
+    "mtime": 1792618437.1603541,
+    "seen": 1792619430.4832797,
+    "ast_hash": "05ef058fd1115153ce440078c2075088",
+    "semantic_hash": "05ef058fd1115153ce440078c2075088"
+  },
+  "docs/img/modelo1/costo_por_punto.png": {
+    "mtime": 1792618437.633503,
+    "seen": 1792619430.4832811,
+    "ast_hash": "fd5bd4760e3393edcecb47d4d3120887",
+    "semantic_hash": "fd5bd4760e3393edcecb47d4d3120887"
+  },
+  "docs/img/modelo1/distribucion_puntajes.png": {
+    "mtime": 1792618437.3170204,
+    "seen": 1792619430.483283,
+    "ast_hash": "488351edb9912b6320d688efc4dba2e0",
+    "semantic_hash": "488351edb9912b6320d688efc4dba2e0"
+  }
+}

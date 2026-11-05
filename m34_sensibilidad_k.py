@@ -17,7 +17,7 @@ Uso: python3 m34_sensibilidad_k.py <raiz_DEPARTAMENTAL> <n_replicas> <dir_salida
 """
 import sys
 import time
-from multiprocessing import Pool
+from multiprocessing import get_context
 from pathlib import Path
 
 import numpy as np
@@ -120,7 +120,8 @@ def main():
     hechas = {p.stem for p in out.glob("t_*.csv")}
     tareas = [t for t in tareas if f"t_{t[0]}_{t[1]}" not in hechas]
     print(len(tareas), "tareas", flush=True)
-    with Pool(2) as pool:
+    # fork: las tareas heredan G_ del proceso padre; con spawn (defecto en macOS) llega vacio
+    with get_context("fork").Pool(2) as pool:
         for filas in pool.imap_unordered(tarea, tareas):
             f0 = filas[0]
             pd.DataFrame(filas).to_csv(out / f"t_{f0['modelo']}_{f0['replica']}.csv", index=False)

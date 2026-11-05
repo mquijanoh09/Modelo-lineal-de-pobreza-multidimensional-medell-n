@@ -28,6 +28,7 @@ import numpy as np
 import pulp
 
 from m34_datos import K_GRID
+from m34_mecanismo import estado_real
 
 
 def valores_alcanzables(pesos_cent):
@@ -95,9 +96,9 @@ def resolver(info, dat, B, r=0.0, rho=0.0, tiempo=180):
     t0 = time.time()
     m, z = construir(info, dat, B, r, rho, etapa=1)
     m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=1e-6))
-    est = pulp.LpStatus[m.status]
+    est, st_h, gap1 = estado_real(m, pulp.LpStatus[m.status])
     if est != "Optimal":
-        return dict(estado=est + "_etapa1", segundos=time.time() - t0)
+        return dict(estado=est + "_etapa1", segundos=time.time() - t0, estado_highs=st_h, gap_etapa1=gap1)
     H_star = pulp.value(m.objective)
     # Etapa 2. En 2 de 300 corridas (3-nov) el presolve de HiGHS declara infactible
     # "salen >= H*" aunque la solucion de la etapa 1 la cumple (verificado: gasto 49.024 <=
@@ -106,14 +107,15 @@ def resolver(info, dat, B, r=0.0, rho=0.0, tiempo=180):
     for opciones in [{}, {"presolve": "off"}]:
         m, z = construir(info, dat, B, r, rho, etapa=2, H_star=H_star)
         m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=1e-4, **opciones))
-        est = pulp.LpStatus[m.status]
+        est, st_h, gap2 = estado_real(m, pulp.LpStatus[m.status])
         if est == "Optimal":
             break
     corte = {}
     if est == "Optimal":
         for (jj, g), v in info.items():
             corte[(jj, g)] = next(c for c in v["F"] if round(z[(jj, g, c)].value()) == 1)
-    return dict(estado=est, H_star=H_star, corte=corte, presolve_off=bool(opciones), segundos=time.time() - t0)
+    return dict(estado=est, H_star=H_star, corte=corte, presolve_off=bool(opciones), segundos=time.time() - t0,
+                estado_highs=st_h, gap_etapa1=gap1, gap_etapa2=gap2)
 
 
 def severidad(N1, dat):

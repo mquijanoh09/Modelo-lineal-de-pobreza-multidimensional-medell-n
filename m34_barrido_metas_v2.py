@@ -14,7 +14,7 @@ Uso: python3 m34_barrido_metas_v2.py <raiz_DEPARTAMENTAL> <n_replicas> <dir_sali
 """
 import sys
 import time
-from multiprocessing import Pool
+from multiprocessing import get_context
 from pathlib import Path
 
 import numpy as np
@@ -36,11 +36,10 @@ def preparar(raiz):
     etq, _ = CL.clusters(hog, raiz)
     assert sorted(np.bincount(etq)) == [456, 849, 1038, 1389]
     Kp = precios_u1(hog)
-    HSm = np.repeat(HS[:, None], 15, 1)
     HWm = np.repeat(HW[:, None], 15, 1)
     G_.update(hog=hog, b=b, M=M, HS=HS, HW=HW, w=w, Kp=Kp, zona=hog.CELDA.to_numpy(),
               G={"m3": matriz_grupo(hog, "m3"), "m4": matriz_grupo(hog, "m4", etq)},
-              var={"pp": (HSm, HSm), "u1": (HWm, Kp)})
+              var={"u1": (HWm, Kp)})   # variante "pp" (V = K = HS) retirada: auditoria 4-nov, h12
 
 
 def tarea(args):
@@ -55,7 +54,8 @@ def tarea(args):
         res = X.resolver_paper(g["M"], g["w"], g["b"]["pers"], g["b"]["pobre0"], g["b"]["M0"], info, meta,
                                solver="highs", gap=1e-6, tmax=180, desempate=True)
         f = dict(modelo=modelo, variante=var, replica=rep, meta=meta, estado=res["estado"],
-                 objetivo=res["obj"], segundos=res["segundos"])
+                 objetivo=res["obj"], segundos=res["segundos"],
+                 estado_highs=res.get("estado_highs"), gap=res.get("gap"))
         if res["estado"] == "Optimal":
             cub, N1 = X.reconstruir(info, res["corte"], g["M"])
             f.update(X.metricas(cub, N1, g["M"], g["w"], g["HS"], g["HW"], g["b"]["pobre0"], g["zona"],
@@ -78,12 +78,11 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     preparar(raiz)
     tareas = [(m, v, rep) for rep in range(nrep) for m in ["m3", "m4"] for v in ["u1"]]
-    # pp (personas-privacion) es ~2x mas lento y no cambia la lectura en pesos: solo replica 0
-    tareas += [(m, "pp", 0) for m in ["m3", "m4"]]
     hechas = {p.stem for p in out.glob("*.csv")}
     tareas = [t for t in tareas if f"{t[0]}_{t[1]}_{t[2]}" not in hechas]
     print(len(tareas), "tareas", flush=True)
-    with Pool(2) as pool:
+    # fork: las tareas heredan G_ del proceso padre; con spawn (defecto en macOS) llega vacio
+    with get_context("fork").Pool(2) as pool:
         for filas in pool.imap_unordered(tarea, tareas):
             f0 = filas[0]
             pd.DataFrame(filas).to_csv(out / f"{f0['modelo']}_{f0['variante']}_{f0['replica']}.csv", index=False)

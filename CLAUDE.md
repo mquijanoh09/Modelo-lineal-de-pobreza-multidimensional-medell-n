@@ -89,7 +89,7 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 | `m34_clusters.py` | `Modelo3` | k-means idéntico a 07 (reproduce 1.389 / 1.038 / 849 / 456) |
 | `m34_montecarlo.py` | `Modelo3` | MC del 2-nov (sin desempate). Define `EPF`, `precios_u1`, `matriz_grupo` |
 | `m34_optimos_alternos.py` | `Modelo3` | rango del error de inclusión entre óptimos alternos |
-| `m34_test_regresion.py`, `m34_resumen_mc.py` | `Modelo3` | regresión contra 06 (630 cortes, 153,0, 62,1 %) y tabla/gráfica del MC del 2-nov |
+| `m34_test_regresion.py`, `m34_resumen_mc.py` | `Modelo3` | regresión contra 06 (630 cortes, 153,0, 59,6 %; 62,1 % antes del 5-nov) y tabla/gráfica del MC del 2-nov |
 | `m34_montecarlo_lex.py` | `Modelo3` | MC con desempate × rezago {intervenible, no_intervenible}, Pool(2) |
 | `m34_equidad.py`, `m34_correr_equidad.py` | `Modelo3` | objetivo de equidad del M1 para M3 **y** M4 |
 | `m34_referencia_info_perfecta.py` | `Modelo3` | mismo objetivo de equidad con información perfecta (techo propio; **no** es el M1) |
@@ -99,15 +99,18 @@ indicadores y no cruzan (intersección de `DIRECTORIO` = 0). Detalle: doc `decis
 | `m34_pares_pequenos.py` | `Modelo3` | lista los pares (j, g) con pocos hogares privados |
 | `docs/m34_README.md` | `Modelo3` | cómo correr los `m34_*` |
 | `resultados/m34/` | `Modelo3` | resultados del 2 y 3-nov (MC, equidad, IP, k, barrido, pares chicos, 4 gráficas) |
-| **`m34_costos_reales.py`** | **solo Project (4-nov)** | u_ij y costo_ij provisionales con las reglas de Martín (§2.6, §3, §4 de `CONTEXTO_DATOS.md`), validados contra el DANE. V = u·HW, K = costo_hogar·HW. **Si existe `data/processed/conteo_pares.csv`, usa el de Martín** |
-| **`m34_corridas_costos_reales.py`** | **solo Project (4-nov)** | modos `barrido` / `equidad` / `ip` con costos reales (mismo sorteo, k = 4, desempate, rezago no intervenible) |
-| **`m34_comparar_u1_real.py`** | **solo Project (4-nov)** | tablas pareadas u1 vs. real y gráfica `u1_vs_real.png` |
-| Resultados 4-nov (`costos_reales_tabla.csv`, `comparacion_barrido_u1_real.csv`, `comparacion_equidad_u1_real.csv`, `info_perfecta_real.csv`, `equidad_real.csv`) | **solo Project** (`claude/codigo-m34/`) | cifras de §7.8. `barrido_real_crudo.csv` y `u1_vs_real.png` se regeneran (~40 min) |
+| `m34_costos_reales.py` | `Modelo3` (4-nov, ajustado el 5-nov) | u_ij y costo_ij provisionales con las reglas de Martín (§2.6, §3, §4 de `CONTEXTO_DATOS.md`), validados contra el DANE. V = u·HW, K = costo_hogar·HW. El conteo de Martín solo entra con `fuente="martin"` (§7.0a) |
+| `m34_corridas_costos_reales.py` | `Modelo3` (4-nov, ajustado el 5-nov) | modos `barrido` / `equidad` / `ip` con costos reales (mismo sorteo, k = 4, desempate, rezago no intervenible) |
+| `m34_comparar_u1_real.py` | `Modelo3` (4-nov) | tablas pareadas u1 vs. real y gráfica `u1_vs_real.png` |
+| Resultados 4-nov (`costos_reales_tabla.csv`, `comparacion_barrido_u1_real.csv`, `comparacion_equidad_u1_real.csv`, `info_perfecta_real.csv`, `equidad_real.csv`, `barrido_real_crudo.csv`, `u1_vs_real.png`) | `Modelo3` (`resultados/m34/`) | cifras de §7.8 |
 | "Notas de Jerónimo" | `Contexto` (`CONTEXTO_DATOS.md`) | respuestas a las 7 preguntas de Martín y pendientes con fecha |
 | ~~`m34_barrido_sensibilidad.py`~~ + `barrido_sensibilidad.csv` | solo Project (2-nov) | **Reemplazado por `m34_barrido_metas_v2.py`.** Sus filas `no_intervenible` no sirven (Trampa 14) |
 
-**Ojo (4-nov):** los 3 scripts del 4-nov y sus resultados **no están en este clon** (ni en la raíz ni
-en `resultados/m34/`). Hay que bajarlos del Project (`claude/codigo-m34/`) antes de hacer el commit.
+**Ojo (5-nov):** los resultados del 4-nov se generaron con el código anterior a la limpieza del 5-nov
+(§7.0a). El barrido real se repitió en el Mac y dio idéntico al del Project en las 900 corridas (2 de
+ellas hubo que repetirlas, Trampa 21). Sus CSV traen `inclusion_personas` sin HW y no traen
+`estado_highs` ni `gap`. Las tablas y la gráfica usan `inclusion_pesos`, que no cambia; una corrida
+nueva sí daría esa columna distinta.
 
 Sin seguimiento en git (no subir): `.vscode/`, `Collaborator.txt`, `Soloparasercolaborador.txt`,
 `hello.py`, `contexto_jeronimo/` (copia vieja del 29-oct), `data/processed/hogares_con_cluster.csv`,
@@ -213,13 +216,36 @@ Etapa 2  min Σ p_i q_i   s.a. Σ p_i y_i ≥ H*·(1 − 1e-7)
     se pierde el 6,9 % de los hogares privados. En barreras el DANE usa `P8563 ≥ 3` (el promotor o
     enfermero, 2, cuenta como atendido); con `!= 1` sobran 307 hogares. Desocupados = no ocupados con
     `P6351 = 1`; con esa regla el 98 % de los hogares privados en desempleo queda imputado (u = 1).
+20. **(5-nov) `Pool` con `fork`.** Las tareas leen `G_`/`EQ` heredados del proceso padre. Con `spawn`,
+    el defecto en macOS, llegan vacíos (`KeyError: 'hog'`). Usar `get_context("fork").Pool(2)`.
+21. **(5-nov) `Optimal` falso por el reloj.** Dos corridas del barrido marcaron ~2.700–2.900 s con
+    límite de 180 s, probablemente por una suspensión del Mac (no comprobado): una dio `Not Solved` y
+    otra `Optimal` con costo 128.327, cuando el óptimo es 117.342 (+9,4 %). Revisar `segundos` y
+    `estado_highs`; repetir lo sospechoso.
 
 ## 7. Estado y resultados (4-nov-2026)
 
 **M3 y M4 técnicamente completos**, con u = 1 y, desde el 4-nov, con **costos reales provisionales**.
-Quedan abiertos los hallazgos de la auditoría (§7.0), lo que depende de Martín (M1/M2 en el repo,
-confirmar el conteo) y la redacción (PDF y diapositivas). Regresión vigente: 630 cortes, 153,0 e
-inclusión 62,1 %, con HiGHS y con CBC.
+M1 y M2 **sí existen**: están en la rama `origin/modelos-1-2` (carpeta `Modelos/`, con `parametros.py`,
+`modelo_base.py` y `data/processed/conteo_pares.csv`), aún sin fusionar con `Modelo3`. Quedan abiertos
+los hallazgos de las auditorías (§7.0 y `claude/auditoria-4modelos-4nov.md`) y la redacción.
+Regresión vigente (5-nov): 630 cortes y 153,0 con HiGHS y con CBC; inclusión **59,6 %** (antes 62,1 %:
+desde el 5-nov `inclusion_personas` usa personas expandidas HS·HW).
+
+### 7.0a Limpieza del 5-nov (auditoría de los cuatro modelos, 4-nov)
+
+- **Hallazgo 2 (cerrado):** `cargar_costos(hog, raiz, fuente="provisional")`. El conteo de Martín solo
+  entra con `fuente="martin"` y se valida: hoy falla con un error claro porque trae u = 0 en
+  1.940 pares privados (1.939 de logro y **1 de inasistencia**). `enumerar_cortes` tiene `assert Den > 0`.
+- **Hallazgo 9 (cerrado):** `m34_mecanismo.estado_real` lee el estado y el `mip_gap` de HiGHS; si HiGHS no
+  certificó optimalidad (p. ej. tiempo), el estado pasa a `NoOptimo:<motivo>` y la fila no se cuenta como
+  óptima. `resolver_paper` y `m34_equidad.resolver` devuelven `estado_highs` y `gap`; el barrido v2 y la
+  equidad real los guardan por fila.
+- **Hallazgo 12 (parcial):** `inclusion_personas` con HS·HW; la variante `pp` salió de
+  `m34_barrido_metas_v2`. Sigue en los scripts históricos `m34_montecarlo.py` y `m34_montecarlo_lex.py`.
+- Pendientes que dependen de Martín: escenario común (h1, h3, h4), jóvenes en z y v (h7), doble pago del
+  desocupado (h8), fusión de ramas. Pendientes propios: placebo M4 (h6), equidad real a 30 réplicas (h10),
+  `requirements-lock.txt` desde el Mac (h5).
 
 ### 7.0 Auditoría del 3-nov (`claude/auditoria-m34-3nov.md`): hallazgos abiertos
 
@@ -232,9 +258,9 @@ defender.** Lo que hay que corregir o declarar:
 | 1 | **Crítico** | Variante `pp`: V = K = HS (personas de la muestra) mientras la meta R7 está ponderada por HS·HW. Curar un hogar de cabecera (FEX ~1.309) cuesta igual que uno rural (~220) y baja M0 ~6× más. Corregido (V = K = HS·HW), M3 pasa del 99–100 % del esfuerzo en cabecera al 4–9 %, su inclusión baja de ~60 % a ~20 % y **la ventaja de M4 en esfuerzo desaparece** (ahorro +1,7 / −0,8 / −11,6 % con metas 5 / 10 / 20 %) | Definir `pp` como HS·HW y repetir el MC del paper (~85 min), o **retirar las columnas pp** de §7.2 y frases como "M3 invierte casi todo en la cabecera" |
 | 2 | Alto | `inclusion_personas` = Σ HS·cub sin HW (la exclusión sí usa HS·HW). Diferencia mediana 4,5 pp, máx. 29,6 pp | `esf_h = (HS*HW*cub).sum(1)` en `m34_mecanismo.metricas` |
 | 3 | Alto | **Placebo de M4:** con clústeres al azar (mismos tamaños), equidad B = 25 da 1,64× las personas de M3 (M4 real 1,78×) y con meta 5 % cuesta el 59 % de M3 (M4 real 51 %). La mayor parte de la ventaja de M4 viene **del cambio de partición**, no de la demografía; la demografía pesa de verdad con B = 10 (1,36× → 1,98×). Solo 10 réplicas | Correr el placebo con 100 réplicas y reformular el hallazgo de M4 |
-| 4 | Alto | Reproducibilidad: **resuelto el 3-nov** para los `m34_*` del 3-nov (commit `450840c`). **Vuelve a aplicar** a los scripts del 4-nov (§4). Falta fijar versiones exactas (`pip freeze`) | Subir lo del 4-nov; fijar versiones |
+| 4 | Alto | Reproducibilidad: **resuelto el 3-nov** para los `m34_*` del 3-nov (commit `450840c`). Los scripts del 4-nov se subieron el 5-nov. Falta fijar versiones exactas (`pip freeze`) | Fijar versiones |
 | 5 | Medio | Severidad sin censurar (§5.1) | Declararlo o censurarla; confirmar con Martín qué usa el M1 |
-| 6 | Medio | PuLP mapea `kTimeLimit` de HiGHS a `Optimal`; no se guarda el gap (riesgo no materializado: máx. 37,7 s vs. límite 180 s) | Guardar `getModelStatus()` y `mip_gap` por corrida |
+| 6 | Medio | PuLP mapea `kTimeLimit` de HiGHS a `Optimal`; no se guarda el gap. **Se materializó el 5-nov** con el reloj alterado (Trampa 21) | **Cerrado:** `estado_real` (§7.0a) |
 | 7 | Medio | n del MC sin justificar con la ec. (8) del paper; p5/p95 con n = 100 son ruidosos | IC bootstrap de la mediana y de la diferencia pareada M4 − M3 |
 | 8 | Medio | Desviaciones respecto al paper dispersas (unidades de p_jd, cotas 5*/6*, clustering sin privaciones ni ingreso, rezago no intervenible, D = P3) | Tabla "Desviaciones respecto al paper" en el informe |
 | 9 | Bajo | Clustering: `StandardScaler` sin pesos, `educ_jefe` categórico tratado como continuo | Opcional: escalado ponderado, años de educación |
@@ -447,9 +473,7 @@ Preguntas de Jerónimo a Martín: u_ij para no pobres → **respondida** (sí). 
 
 ## 11. Lo que sigue, en orden
 
-1. **Subir a `Modelo3`** los 3 scripts del 4-nov (`m34_costos_reales.py`, `m34_corridas_costos_reales.py`,
-   `m34_comparar_u1_real.py`) y sus resultados. Bajarlos primero del Project (no están en el clon).
-   Jerónimo hace el commit y el push.
+1. **Hecho (5-nov):** los 3 scripts del 4-nov y sus resultados están en `Modelo3`.
 2. **Corregir los hallazgos 1 y 2 de la auditoría** (`pp` con HS·HW e `inclusion_personas` con HW) o
    retirar las cifras `pp`. Correr el placebo con 100 réplicas.
 3. **Con Martín, con fecha límite:** M1 y M2 en el repo, `parametros.py`, `05_conteo_personas.py`
@@ -472,7 +496,7 @@ PY=/opt/anaconda3/envs/opti1/bin/python
 R=data/DANE/DEPARTAMENTAL
 $PY test_cortes.py
 $PY 06_modelo3_cortes.py 0.10          # producción + control de equivalencia ("solo" = sin control)
-$PY m34_test_regresion.py $R                                       # 630 cortes, 153,0, 62,1 %
+$PY m34_test_regresion.py $R                                       # 630 cortes, 153,0, 59,6 %
 $PY m34_montecarlo.py $R m3 0 100 out/mc_m3.csv                    # MC 2-nov, ~25 s/réplica
 # 3-nov
 $PY m34_montecarlo_lex.py $R 100 out/mc_lex                        # 800 tareas, ~85 min con 2 núcleos
@@ -497,6 +521,8 @@ $PY m34_comparar_u1_real.py resultados/m34/barrido_v2_crudo.csv out/barrido_real
 - `opti1`: Python 3.10.18, PuLP 2.9.0 con CBC y HiGHS (`highspy`). `requirements.txt`:
   `pulp>=2.9,<4`, `highspy>=1.7` (rangos, no versiones exactas). También probado con PuLP 3.3.2 + highspy.
 - El `python3` por defecto trae PuLP 4.0.0 sin solvers: no usarlo (T16).
+- Las gráficas necesitan `matplotlib`, que no está en `requirements.txt` (instalado en `opti1` el 4-nov: 3.10.9).
+- Corridas largas en el Mac: `caffeinate -i <cmd>` y la tapa abierta. Si se suspende, repetir lo afectado (T21).
 - El `timeLimit` de CBC no es confiable y este Mac no tiene `timeout`: `perl -e 'alarm 240; exec @ARGV' <cmd>`.
 - CSV del DANE: coma y UTF-8 con BOM. `utils_dane.leer()` lo detecta; no hardcodear.
 
@@ -527,7 +553,8 @@ existe: **falta revisarlas.** Todavía no se ha leído el código nuevo ni se ha
 |---|---|---|
 | `origin/main` | `0389805` (4-nov), antes `51082ad` (4-nov) y `91e7b97` (6-oct) | Martín |
 | `origin/Contexto` | `ba8fc47`: actualiza el grafo de `perspectiva_equidad`; solo toca `graphify-out/` | Claude. `CONTEXTO_DATOS.md` no cambia desde `66bc989` ("Notas de Jerónimo") |
-| `origin/Modelo3` | `b552525` (3-nov), sin los commits nuevos de `main` | Jerónimo |
+| `origin/modelos-1-2` | `c94365b` (4-nov): M1 y M2 con pruebas y resultados; no revisada aquí | `jero020` |
+| `origin/Modelo3` | 5-nov: incluye lo del 4-nov y la limpieza; sin los commits nuevos de `main` | Jerónimo |
 
 - **Ya existen en `main`:** `Modelos/parametros.py`, `Modelos/05_conteo_personas.py`,
   `Modelos/03_preparar_antioquia.py`, `Modelos/Modelo_2/modelo2.py`, `data/processed/conteo_pares.csv`,

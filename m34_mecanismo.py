@@ -20,6 +20,24 @@ import pulp
 from m34_datos import EPS, K_GRID
 
 
+def info_highs(m):
+    """(estado del modelo segun HiGHS, mip_gap). Auditoria 4-nov, hallazgo 9: PuLP reporta
+    "Optimal" aunque HiGHS pare por tiempo con una solucion factible; esto lo distingue."""
+    try:
+        h = m.solverModel
+        return h.modelStatusToString(h.getModelStatus()), float(h.getInfo().mip_gap)
+    except Exception:
+        return None, None
+
+
+def estado_real(m, estado_pulp):
+    """Baja el "Optimal" de PuLP a "NoOptimo:<motivo>" si HiGHS no certifico optimalidad."""
+    st, gap = info_highs(m)
+    if estado_pulp == "Optimal" and st is not None and st != "Optimal":
+        estado_pulp = f"NoOptimo:{st}"
+    return estado_pulp, st, gap
+
+
 def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None):
     """Para cada (j, g) con privados: orden por R y cortes auto-consistentes.
 
@@ -47,6 +65,9 @@ def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None):
             cumV = np.concatenate([[0.0], np.cumsum(V[orden, jj])])
             cumK = np.concatenate([[0.0], np.cumsum(K[orden, jj])])
             Den = cumV[-1]
+            # Auditoria 4-nov (hallazgo 2): con Den = 0 la cobertura es 0/0, F queda vacio y el
+            # MILP es infactible sin ningun error visible. Se corta aqui.
+            assert Den > 0, f"Den = 0 en el par (indicador {jj}, grupo {g}): cobertura V nula en sus privados"
             m = orden.size
             p = cumV / Den
             c = np.arange(m + 1)
@@ -111,6 +132,9 @@ def resolver_paper(M, w, pers, pobre0, M0, info, mpi_r, solver="highs", gap=1e-6
     m.solve(sv)
     dt = time.time() - t0
     estado = pulp.LpStatus[m.status]
+    st_h, gap_h = None, None
+    if solver == "highs":
+        estado, st_h, gap_h = estado_real(m, estado)
     obj1 = pulp.value(m.objective)
     if desempate and estado == "Optimal":
         costo = pulp.lpSum(v["cumK"][c] * z[(jj, g, c)] for (jj, g), v in info.items() for c in v["F"])
@@ -125,6 +149,8 @@ def resolver_paper(M, w, pers, pobre0, M0, info, mpi_r, solver="highs", gap=1e-6
             # sin presolve, que si encuentra el optimo.
             m.solve(pulp.HiGHS(msg=False, gapRel=gap, timeLimit=tmax, presolve="off"))
             estado = pulp.LpStatus[m.status]
+        if solver == "highs":
+            estado, st_h, gap_h = estado_real(m, estado)
         dt = time.time() - t0
     corte = {}
     if estado == "Optimal":
@@ -132,7 +158,7 @@ def resolver_paper(M, w, pers, pobre0, M0, info, mpi_r, solver="highs", gap=1e-6
             corte[(jj, g)] = next(c for c in v["F"] if round(z[(jj, g, c)].value()) == 1)
     obj = sum(info[k]["cumK"][c] for k, c in corte.items()) if corte else obj1
     return dict(estado=estado, obj=obj, obj_etapa1=obj1, segundos=dt, corte=corte,
-                n_bin=len(z) + len(b1), n_cortes=len(z))
+                n_bin=len(z) + len(b1), n_cortes=len(z), estado_highs=st_h, gap=gap_h)
 
 
 def reconstruir(info, corte, M):
@@ -152,8 +178,9 @@ def metricas(cub, N1, M, w, HS, HW, pobre0, celda, Kpesos=None):
     out = dict(H1=(pers * pobre1).sum() / pob, M01=(pers * pobre1 * score1).sum() / pob,
                privaciones_resueltas=int(cub.sum()),
                hogares_que_salen=int(((pobre0 == 1) & (pobre1 == 0)).sum()))
-    # error de inclusion: fraccion del esfuerzo (personas-privacion) en hogares NO pobres
-    esf_h = (HS[:, None] * cub).sum(1)
+    # error de inclusion: fraccion del esfuerzo (personas-privacion) en hogares NO pobres.
+    # Personas expandidas HS*HW (auditoria 3-nov h2 / 4-nov h12); antes era HS sin expandir.
+    esf_h = (pers[:, None] * cub).sum(1)
     out["inclusion_personas"] = esf_h[pobre0 == 0].sum() / esf_h.sum() if esf_h.sum() else np.nan
     if Kpesos is not None:
         gasto_h = (Kpesos * cub).sum(1)

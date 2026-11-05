@@ -115,13 +115,51 @@ def reconstruir(hog, raiz):
     return U, Kh, imput
 
 
+RUTA_COMUN = "data/processed/costos_comunes_m34.csv"
+
+
+def _tabla_comun(hog, ruta=RUTA_COMUN):
+    """Matrices n x J de u, costo por hogar ($) y fijos desde costos_comunes_m34.csv
+    (lo genera m34_costos_comunes.py con parametros.py y las reglas de Martin)."""
+    if not Path(ruta).exists():
+        raise FileNotFoundError(f"falta {ruta}: correr m34_costos_comunes.py <Modelos/ de Martin>")
+    t = pd.read_csv(ruta)
+    ids = (hog.DIRECTORIO.astype(str) + "_" + hog.SECUENCIA_P.astype(str)).tolist()
+    idx = {k: n for n, k in enumerate(ids)}
+    n, J = len(hog), len(D.IND)
+    U, C, F = np.zeros((n, J)), np.zeros((n, J)), np.zeros((n, J), bool)
+    fi, fj = t.ID_HOGAR.map(idx).to_numpy(), t.indicador.map(D.IND.index).to_numpy()
+    U[fi, fj] = t.u.to_numpy(float)
+    C[fi, fj] = t.costo_hogar.fillna(0).to_numpy(float)
+    F[fi, fj] = ~t.intervenible.to_numpy(bool)
+    M = D.matrices(hog)[0] == 1
+    cubre = np.zeros((n, J), bool); cubre[fi, fj] = True
+    assert (cubre == M).all(), "costos_comunes_m34.csv no cubre exactamente los pares privados"
+    assert (U[M & ~F] > 0).all() and (C[M & ~F] > 0).all()
+    return dict(u=U, costo=C, fijos=F)
+
+
+def pares_fijos(hog, fuente):
+    """Pares privados no intervenibles hogar por hogar (solo existen en el escenario comun)."""
+    if fuente == "comun":
+        return _tabla_comun(hog)["fijos"]
+    return np.zeros((len(hog), len(D.IND)), bool)
+
+
 def cargar_costos(hog, raiz, fuente="provisional", ruta_martin="data/processed/conteo_pares.csv"):
     """V (cobertura) y K (pesos) n x J.
 
     fuente="provisional" (defecto): reconstruccion de este modulo.
     fuente="martin": conteo de Martin; solo si se pide explicitamente (hallazgo 2 del 4-nov).
+    fuente="comun": escenario comun del 5-nov (parametros.py + reglas de Martin, educacion incluida);
+                    usar junto con pares_fijos(hog, "comun").
     """
     HW = hog.FEX_C.to_numpy(float)
+    if fuente == "comun":
+        t = _tabla_comun(hog)
+        V = t["u"] * HW[:, None]
+        K = t["costo"] / 1e6 * HW[:, None]          # millones de $, como la reconstruccion
+        return V, K, fuente
     if fuente not in ("provisional", "martin"):
         raise ValueError(f"fuente desconocida: {fuente!r}")
     if fuente == "martin":

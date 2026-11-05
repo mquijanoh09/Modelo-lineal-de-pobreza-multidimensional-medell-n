@@ -1,0 +1,23 @@
+prueba,ok,detalle
+V1 mismos hogares pobres,True,"M2 523, M3/M4 523, iguales"
+V1 mismas privaciones de los pobres,True,J_i del M1 = M_ij de M3/M4 en los 523
+V1 mismos pesos w_j,True,15 indicadores
+V1 mismo M0,True,"M2 0.038684431, M3/M4 0.038684431"
+V1 misma poblacion,True,"7,231,754.0 personas"
+V1 misma severidad inicial,True,"Sev0 117,908.5"
+V1 misma meta,True,M2 meta_global: sum C_i <= (1-m) sum p_i c0_i = (1-m) M0 Pob (R7)
+V2 costo de los pares simples = costo de x_ij del M1,True,"1586 pares de los pobres, diferencia relativa maxima 1.5e-16"
+V2 todos los pares simples del M1 estan,True,faltan 0
+V3 educacion por fuerza bruta (pobres),True,"857 pares de logro/analfabetismo/inasistencia, 0 discrepancias"
+V3 educacion por fuerza bruta (no pobres),True,"1602 pares de logro/analfabetismo/inasistencia, 0 discrepancias"
+V3 caso limite de logro,True,1 hogar con D_i = 0 marcado por el DANE
+V4 rezago: la informacion perfecta no lo quita,True,"149 pobres con rezago; 0 cumplen la regla (10a) del M1; M2 lo quita en [0, 0, 0] hogares con metas 10/20/30 %"
+"V5 granularidad maxima, meta 2%",True,"M3 un grupo por hogar $0.185 mm vs M2 $0.185 mm (exceso -0.00 %, Optimal, 3 s)"
+"V5 granularidad maxima, meta 6%",True,"M3 un grupo por hogar $0.506 mm vs M2 $0.506 mm (exceso 0.00 %, Optimal, 1 s)"
+"V5 granularidad maxima, meta 10%",True,"M3 un grupo por hogar $1.324 mm vs M2 $1.324 mm (exceso -0.00 %, Optimal, 2 s)"
+"V5 granularidad maxima, meta 20%",True,"M3 un grupo por hogar $6.847 mm vs M2 $6.466 mm (exceso 5.90 %, Optimal, 2 s)"
+"V5 granularidad maxima, meta 30%",True,"M3 un grupo por hogar $24.845 mm vs M2 $24.179 mm (exceso 2.75 %, Optimal, 3 s)"
+"V5 granularidad maxima, equidad B = 2",True,"M3 un grupo por hogar 97,286 personas vs M1 97,286 (0.00 %)"
+"V5 granularidad maxima, equidad B = 10",True,"M3 un grupo por hogar 160,212 personas vs M1 161,254 (-0.65 %)"
+"V5 granularidad maxima, equidad B = 50",True,"M3 un grupo por hogar 284,082 personas vs M1 285,621 (-0.54 %)"
+V6 desviacion declarada (doble pago CLEI) es menor,True,"cota superior del doble pago: 0.00 % del costo (peor caso, replica 0, M3 y M4)"

@@ -1,0 +1,16 @@
+modelo,escenario,meta,estado,gap,costo_mm,segundos
+M2_info_perfecta,comun,0.02,Optimal,0.0,0.18494103731204212,3.0
+M2_info_perfecta,comun,0.04,Optimal,0.0,0.2667925079786674,2.8
+M2_info_perfecta,comun,0.06,Optimal,0.0,0.5058234613188138,4.6
+M2_info_perfecta,comun,0.08,Optimal,0.0,0.898678337118723,4.3
+M2_info_perfecta,comun,0.1,Optimal,0.0,1.3235050451314452,3.4
+M2_info_perfecta,comun,0.12,Optimal,0.0,1.8024532744456818,4.4
+M2_info_perfecta,comun,0.14,Optimal,0.0,2.3733328048216182,4.2
+M2_info_perfecta,comun,0.16,Optimal,0.0,2.973191796065432,3.9
+M2_info_perfecta,comun,0.18,Optimal,0.0,4.255702777578186,4.3
+M2_info_perfecta,comun,0.2,Optimal,0.0,6.465510638346385,5.7
+M2_info_perfecta,comun,0.22,Optimal,0.0,9.325781562232551,5.7
+M2_info_perfecta,comun,0.24,Optimal,0.0,12.485404538462893,5.7
+M2_info_perfecta,comun,0.26,Optimal,0.0,15.930162782278888,5.9
+M2_info_perfecta,comun,0.28,Optimal,0.0,19.766926093801267,5.4
+M2_info_perfecta,comun,0.3,Optimal,8.893049531328501e-07,24.178768007987486,5.4

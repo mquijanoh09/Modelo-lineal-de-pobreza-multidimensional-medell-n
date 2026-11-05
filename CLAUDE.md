@@ -243,8 +243,19 @@ desde el 5-nov `inclusion_personas` usa personas expandidas HS·HW).
   equidad real los guardan por fila.
 - **Hallazgo 12 (parcial):** `inclusion_personas` con HS·HW; la variante `pp` salió de
   `m34_barrido_metas_v2`. Sigue en los scripts históricos `m34_montecarlo.py` y `m34_montecarlo_lex.py`.
-- Pendientes que dependen de Martín: escenario común (h1, h3, h4), jóvenes en z y v (h7), doble pago del
-  desocupado (h8), fusión de ramas. Pendientes propios: placebo M4 (h6), equidad real a 30 réplicas (h10),
+- **Escenario común (decidido el 5-nov; validado, 22/22 pruebas, `m34_validar_escenario_comun.py`, bitácora §6.9):** sin E-7 ni SevEdu, meta global
+  de M0, costos de `parametros.py` para los cuatro; respaldo: `ip_paper_costos_m34.py`. Ver bitácora §6.4.
+- **Fuente de costos `comun` (5-nov):** `m34_costos_comunes.py <Modelos/ de Martín>` genera
+  `data/processed/costos_comunes_m34.csv`; M3/M4 con `--fuente comun`. 1.647 de 1.939 pares de logro quedan
+  fijos (no se quitan en un año, ec. 11). Bitácora §6.5.
+- **Placebo M4 (h6, cerrado 5-nov):** `m34_placebo.py` + `m34_analisis_placebo.py`, 100 réplicas, fuente
+  común. Metas 2–18 %: M4 ≈ placebo (la ventaja es de la partición). Metas ≥ 20 %: M4 5–31 % más barato
+  que el placebo (la demografía focaliza la educación). Meta 16 %: efecto de saltos de M3. Bitácora §6.7.
+- **Equidad común (h10, cerrado 5-nov):** `m34_equidad_comun.py` + `m34_analisis_equidad_comun.py`, 30 réplicas,
+  B = 2–100, con placebo; techo = M1 sin E-7. M3 logra 16–65 % y M4 20–67 % del techo; demografía pesa con
+  B ≥ 50. Bitácora §6.8.
+- Pendientes que dependen de Martín: revisar el escenario común (ya validado), jóvenes en z y v (h7), doble pago del
+  desocupado (h8), fusión de ramas. Pendientes propios:
   `requirements-lock.txt` desde el Mac (h5).
 
 ### 7.0 Auditoría del 3-nov (`claude/auditoria-m34-3nov.md`): hallazgos abiertos

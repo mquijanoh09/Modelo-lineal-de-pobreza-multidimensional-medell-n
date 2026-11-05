@@ -48,7 +48,7 @@ def tarea(args):
     R = D.sortear_R(g["hog"], rep)
     V, Kc = g["var"][var]
     info = X.enumerar_cortes(g["M"], R, V, Kc, g["G"][modelo], excluir=(D.IND.index("rezago_escolar"),),
-                             pobre0=g["b"]["pobre0"])
+                             pobre0=g["b"]["pobre0"], fijos=g.get("fijos"))
     filas = []
     for meta in METAS:
         res = X.resolver_paper(g["M"], g["w"], g["b"]["pers"], g["b"]["pobre0"], g["b"]["M0"], info, meta,

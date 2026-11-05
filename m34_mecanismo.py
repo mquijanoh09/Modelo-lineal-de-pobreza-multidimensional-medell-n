@@ -38,7 +38,7 @@ def estado_real(m, estado_pulp):
     return estado_pulp, st, gap
 
 
-def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None):
+def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None, fijos=None):
     """Para cada (j, g) con privados: orden por R y cortes auto-consistentes.
 
     R_(c) <= p(c) <= R_(c+1) - eps,  p(c) = cumV(c) / Den_jg
@@ -49,6 +49,9 @@ def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None):
              nino sale del rezago en un año; elig = 0 equivale a excluirlo, porque pagar
              sin curar nunca es optimo).
     pobre0: si se pasa, guarda cumNP = costo acumulado en hogares NO pobres (desempate).
+    fijos: matriz n x J booleana de pares privados que NO se pueden quitar en un año (escenario
+           comun, 5-nov: p. ej. logro con deficit mayor a un ciclo CLEI por adulto). Quedan fuera
+           del orden del par: la privacion se mantiene y no se paga (igual que x = 0 en M1).
     """
     n, J = M.shape
     info = {}
@@ -57,7 +60,10 @@ def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None):
             continue
         col = grupo[:, jj]
         for g in sorted(np.unique(col)):
-            idx = np.where((col == g) & (M[:, jj] == 1))[0]
+            sel = (col == g) & (M[:, jj] == 1)
+            if fijos is not None:
+                sel &= ~fijos[:, jj]
+            idx = np.where(sel)[0]
             if idx.size == 0:
                 continue
             orden = idx[np.argsort(R[idx, jj], kind="stable")]

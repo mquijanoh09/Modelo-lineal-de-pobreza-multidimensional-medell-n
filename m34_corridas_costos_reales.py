@@ -33,13 +33,19 @@ import m34_equidad as E
 import m34_mecanismo as X
 
 EQ = {}
+FUENTE = "provisional"     # --fuente comun  -> escenario comun del 5-nov (bitacora §6.4)
+
+
+def _variante():
+    return "comun" if FUENTE == "comun" else "real"
 
 
 def _preparar_barrido(raiz):
     BV.preparar(raiz)
-    V, K, fuente = CR.cargar_costos(BV.G_["hog"], raiz)
+    V, K, fuente = CR.cargar_costos(BV.G_["hog"], raiz, fuente=FUENTE)
     BV.G_["Kp"] = K                      # metricas y gasto por dimension en pesos reales
-    BV.G_["var"]["real"] = (V, K)
+    BV.G_["var"][_variante()] = (V, K)
+    BV.G_["fijos"] = CR.pares_fijos(BV.G_["hog"], FUENTE)
     print("fuente de costos:", fuente, flush=True)
 
 
@@ -47,7 +53,7 @@ def barrido(raiz, nrep, out):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     _preparar_barrido(raiz)
-    tareas = [(m, "real", rep) for rep in range(nrep) for m in ["m3", "m4"]]
+    tareas = [(m, _variante(), rep) for rep in range(nrep) for m in ["m3", "m4"]]
     hechas = {p.stem for p in out.glob("*.csv")}
     tareas = [t for t in tareas if f"{t[0]}_{t[1]}_{t[2]}" not in hechas]
     print(len(tareas), "tareas", flush=True)
@@ -68,8 +74,9 @@ def _preparar_equidad(raiz, Bs):
     M, HS, HW, w = D.matrices(hog)
     etq, _ = CL.clusters(hog, raiz)
     assert sorted(np.bincount(etq)) == [456, 849, 1038, 1389]
-    V, K, fuente = CR.cargar_costos(hog, raiz)
+    V, K, fuente = CR.cargar_costos(hog, raiz, fuente=FUENTE)
     EQ.update(hog=hog, b=b, M=M, HS=HS, HW=HW, w=w, V=V, K=K, Bs=Bs, celda=hog.CELDA.to_numpy(),
+              fijos=CR.pares_fijos(hog, FUENTE),
               G={"m3": matriz_grupo(hog, "m3"), "m4": matriz_grupo(hog, "m4", etq)},
               dat=E.preparar(M, w, HS, HW, hog.CELDA.to_numpy()))
     print("fuente de costos:", fuente, flush=True)
@@ -80,13 +87,13 @@ def tarea_equidad(args):
     g = EQ
     R = D.sortear_R(g["hog"], rep)
     info = X.enumerar_cortes(g["M"], R, g["V"], g["K"], g["G"][mod], excluir=(D.IND.index("rezago_escolar"),),
-                             pobre0=g["dat"]["pobre0"])
+                             pobre0=g["dat"]["pobre0"], fijos=g["fijos"])
     filas = []
     for B in g["Bs"]:
         for rho in [0.0, 0.10]:
             s = E.resolver(info, g["dat"], B=B * 1e3, rho=rho)
             f = dict(modelo=mod, replica=rep, B=B, rho=rho, estado=s["estado"], segundos=s["segundos"],
-                     costos="real", estado_highs=s.get("estado_highs"),
+                     costos=_variante(), estado_highs=s.get("estado_highs"),
                      gap_etapa1=s.get("gap_etapa1"), gap_etapa2=s.get("gap_etapa2"))
             if s["estado"] == "Optimal":
                 cub, N1 = X.reconstruir(info, s["corte"], g["M"])
@@ -128,6 +135,10 @@ def ip(raiz, salida, Bs):
 
 
 if __name__ == "__main__":
+    if "--fuente" in sys.argv:
+        k = sys.argv.index("--fuente")
+        FUENTE = sys.argv[k + 1]
+        del sys.argv[k:k + 2]
     modo = sys.argv[1]
     if modo == "barrido":
         barrido(sys.argv[2], int(sys.argv[3]), sys.argv[4])

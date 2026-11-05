@@ -163,3 +163,42 @@ Base del modelo: `modelo1/formulacion_modelo1.md`. Plan de programación: https:
 **Por qué `mv` y no `git mv`:** desde aquí git no puede borrar sus archivos de bloqueo. Cuando hagas el commit con `git add -A`, git detecta el movimiento como un *rename* porque el contenido es casi igual, así que el historial de cada archivo se conserva.
 
 **Verificación:** la salida de `04_linea_base.py` es idéntica a la de antes, corrida desde la raíz y desde `Modelos/`; la de `parametros.py` también. 02 y 03 compilan. Desde `Modelos/Modelo_1/` se importan `parametros` y `utils_dane` sin error.
+
+---
+
+# Fase 4 — programación completada (Jerónimo, 5-nov-2026)
+
+*Martín no pudo terminar la programación de los Modelos 1 y 2. Jerónimo la completó a partir del commit `0389805`
+siguiendo las formulaciones y las decisiones D1–D5 y P1–P8 de este archivo. Lo que se decidió al programar y no estaba
+escrito antes queda aquí, marcado como **provisional** cuando requiere acuerdo del equipo.*
+
+## P9. `datos_modelo.py` recalcula los costos simples con la tabla del escenario
+
+**Qué se hizo:** vivienda, salud, atención integral y trabajo infantil se recalculan como $EpF_j^{d}(\text{esc}) \cdot u_{ij} \cdot HW_i$ con `parametros.tabla_epf(esc)`; empleo y desempleo se toman de `conteo_pares.csv` (el 05 los costea persona por persona, P4). Con `u_igual_1` se paga una unidad por hogar.
+
+**Por qué:** las sensibilidades `acueducto_bid` y `ti_psicosocial` cambian un precio unitario; si se usara el `costo_ij` ya guardado por el 05, esas sensibilidades no cambiarían nada.
+
+## P10. La regla (E-1) se impone al crear las variables
+
+**Qué se hizo:** $z_{ks}$ solo se crea si $\text{elig}_{ks} = 1$. Es equivalente a $z_{ks} \le \text{elig}_{ks}$ y deja el MILP más pequeño. Los no asistentes con rezago (10b) y la inasistencia sin niño identificable quedan con $x = 0$ explícito (`Rez10b_i`, `Inas0_i`).
+
+**Verificación:** los 149 hogares con rezago caen en (10b), como dice la síntesis del 2-nov ("con reglas oficiales ningún niño sale del rezago binario en un año"). Un hogar marcado con inasistencia por el DANE no tiene ningún niño de 6 a 16 años que no asista en la tabla del 05 → su $x_{inas}$ queda en 0.
+
+## P11. Rango de B y presupuesto de referencia (provisional)
+
+**Qué se hizo:** `08_modelo1.py` calcula con los costos verificados:
+- $B_{piso}$ = costo mínimo con H = 0 (lo exigen E-7 y el techo de SevEdu aunque nadie salga);
+- $B_{sat}$ = costo mínimo de alcanzar el H máximo factible;
+- la malla es $B = B_{piso} + f\,(B_{sat} - B_{piso})$ con `FRACCIONES_B`.
+
+**Provisional:** el caso base usa `FRACCION_B_REF = 0.30`. No había una decisión sobre el $B$ del caso base; hay que acordarlo en el equipo.
+
+## P12. Etapa 2 con tolerancia `TOL_H_ETAPA2 = 1e-9`
+
+**Qué se hizo:** la restricción de la etapa 2 es $\sum p_i y_i \ge H^*(1 - 10^{-9})$, con $H^*$ calculado desde los $y_i$ redondeados de la incumbente.
+
+**Por qué:** D1 ya pedía usar la incumbente para que la etapa 2 sea factible; el margen de $10^{-9}$ (menos de una persona) solo absorbe el redondeo de punto flotante de HiGHS.
+
+## P13. PuLP 3.3, no 4
+
+PuLP 4 cambió la firma de `LpVariable` (ya no acepta `cat=`). El código usa la API de PuLP 3.3, que es la del `.venv` del proyecto.

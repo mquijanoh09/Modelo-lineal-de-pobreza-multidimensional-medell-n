@@ -105,3 +105,14 @@ El hilo del Modelo 1 escribe `modelo_base.py` después del 05 y de `datos_modelo
 - **F3-8. meta_maxima() resuelve un solo problema.** Minimiza Σ C_i sin meta. Como las zonas no se tocan, minimizar el total minimiza también cada zona, y de ahí salen la reducción máxima por zona y la total. El barrido de m se detiene en la menor de las tres. Con una meta apenas por encima el modelo es infactible; apenas por debajo, factible (ambos comprobados).
 - **F3-9. Error encontrado por la prueba.** En PuLP una variable con `cat="Binary"` ignora `upBound` y vuelve a quedar en 0..1. La primera versión de `meta_maxima` creía haber fijado x = 0, pero no lo hacía, y daba 100 % contra 65 % del método exacto. Ahora las privaciones fijas se declaran enteras con cotas 0..0 (`crear_x`). Esto vale también para las reglas de la 3.4: lo que no se puede quitar (rezago binario, logro en 470 hogares) debe usar `crear_x`.
 - **F3-10. Alcance de la prueba.** Usa 6 indicadores no removibles (caso extremo, solo para la prueba). Con solo 3, todos los hogares podían salir igual de la pobreza quitando otras privaciones, el máximo daba 100 % y la prueba no discriminaba. En el modelo real el máximo será menor que 100 % por el rezago binario y el logro.
+
+## Fase 3.4–3.7 — programación completada (Jerónimo, 5-nov-2026)
+
+*Completado a partir del commit `0389805` de Martín. Las funciones de núcleo de las subfases 3.2 y 3.3 se conservan tal
+cual (las usan `prueba_3_2.py` y `prueba_3_3.py`, que siguen pasando); se agregaron `fijos_cero` y `meta_maxima()`, que la
+prueba 3.3 ya importaba.*
+
+- **F3-1. Clase `Modelo2(ModeloIPMBase)`.** Hereda las reglas comunes (2), E-1 a E-3, E-7, (10a)/(10b), (Inas), (11) y (12). Agrega solo (3), la meta (M) o (M-d) y el objetivo de costo. La (2) ya no se duplica: la pone la madre.
+- **F3-2. `meta_maxima` en una sola corrida.** Min $\sum_i C_i$ sin meta ni costo. Todas las restricciones son por hogar (o por niño dentro del hogar), así que el problema se separa: cada hogar llega a su menor $C_i$ y la suma por zona es la menor posible en cada zona. Una corrida da las tres zonas.
+- **F3-3. Piso de E-7.** El barrido empieza en m = 0, que da el costo de E-7 sin meta. `09_modelo2_barridos.py` reporta el costo total y el costo sobre ese piso.
+- **F3-4. Validación cruzada con el Modelo 1** (formulación §6). Se usa el plan del M2 *con SevEdu*, porque el Modelo 1 tiene E-5 fijo y el plan sin SevEdu podría no ser factible allí.

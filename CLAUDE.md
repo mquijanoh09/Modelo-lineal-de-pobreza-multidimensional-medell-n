@@ -1,9 +1,13 @@
 # Contexto del proyecto — Modelos 3 y 4 de reducción del IPM (MILP)
 
 > Rama `Contexto`. Ver también `CONTEXTO_DATOS.md` (Martín, actualizado 2-nov) y `graphify-out/`.
-> **Actualizado: 3-nov-2026, tarde** (segunda corrida automática del día). Resúmenes en el Project:
-> `claude/resumen-avance-3nov-tarde.md` (el más reciente), `claude/resumen-avance-3nov.md` y `claude/resumen-avance-2nov.md`.
-> Código `m34_*` y resultados del 3-nov (incluidos la sensibilidad a k y el barrido v2): rama `Modelo3`.
+> **Actualizado: 4-nov-2026** (corrida automática). Resúmenes en el Project:
+> `claude/resumen-avance-4nov.md` (el más reciente), `claude/resumen-avance-3nov-tarde.md`, `claude/resumen-avance-3nov.md`
+> y `claude/resumen-avance-2nov.md`.
+> Código `m34_*` y resultados del 3 y 4-nov (costos reales provisionales: `m34_costos_reales.py`,
+> `m34_corridas_costos_reales.py`, `m34_comparar_u1_real.py`): rama `Modelo3`.
+> **Nota del 5-nov:** Martín subió trabajo a `main` y M1/M2 están en `origin/modelos-1-2`. Las partes de
+> este archivo que los dan por pendientes (agenda incluida) están por revisar.
 
 ## Qué es esto
 
@@ -88,6 +92,9 @@ Personas representadas: 7.231.754; personas pobres: 683.406. Sev0 = 117.908. Man
 | `m34_pares_pequenos.py` | `Modelo3` | lista los pares (j, g) con pocos hogares privados |
 | **`m34_optimos_alternos.py`** | `Modelo3` | rango del error de inclusión entre óptimos alternos |
 | **`m34_test_regresion.py`**, **`m34_resumen_mc.py`** | `Modelo3` | regresión contra 06 (630 cortes, 153,0) y tabla/gráficas del MC del 2-nov |
+| **`m34_costos_reales.py`** | Project (4-nov) | u_ij y costo_ij **provisionales** con las reglas de Martín (§2.6, §3, §4), validados contra el DANE; usa `conteo_pares.csv` de Martín si existe. V = u·HW, K = costo_hogar·HW |
+| **`m34_corridas_costos_reales.py`** | Project (4-nov) | modos `barrido` / `equidad` / `ip` con costos reales (mismo sorteo, k = 4, desempate, rezago no intervenible) |
+| **`m34_comparar_u1_real.py`** | Project (4-nov) | tablas pareadas u1 vs real y gráfica `u1_vs_real.png` |
 | ~~`m34_barrido_sensibilidad.py`~~ | Project (2-nov) | **Reemplazado por `m34_barrido_metas_v2.py`.** Sus filas `no_intervenible` no sirven (Trampa 14) |
 
 Los `m34_*` son autocontenidos (no importan 05/06/07) y usan el prefijo `m34_` propuesto a Martín.
@@ -142,8 +149,49 @@ M3: g(i,j) = zona P3. M4: g(i,j) = zona si j ∈ V, clúster si j ∈ U.
     10 hogares privados, y uno de solo 81 hogares en total. En un par de 1–3 hogares el corte equivale a escoger hogar
     por hogar. La "ganancia" de subir k más allá de 4 es en buena parte un artefacto de muestra. **No presentar
     k = 8 como mejor.** Regla: < 15 % de pares con n < 10 (k = 4: 8/53; k = 5: 14/64).
+18. **(4-nov) Reglas de conteo u_ij: no usar `P6090 == 2` ni `P8563 != 1`.** El DANE cuenta como no asegurado a
+    `P6090 != 1` (incluye "no sabe", 9) y solo a las personas de 6 años o más (100 % de concordancia; con `== 2` se pierden
+    el 6,9 % de los hogares privados). En barreras, el DANE usa `P8563 ≥ 3` (acudir a un promotor o enfermero, 2, cuenta
+    como atendido); con `!= 1` sobran 307 hogares. Los desocupados son los no ocupados con `P6351 = 1`; con esa regla el
+    98 % de los hogares privados en desempleo queda imputado (u = 1), igual que en el conteo de Martín (86,5 %).
 
-## Estado actual (3-nov-2026, tarde)
+## Estado actual (4-nov-2026)
+
+### Costos reales provisionales (4-nov): los hallazgos son robustos
+
+`m34_costos_reales.py` reconstruye u_ij para los 3.732 hogares y lo valida en los 87.060 del país: analfabetismo,
+aseguramiento (≥ 6 años, `P6090 ≠ 1`) y barreras (`P5665 = 1` y `P8563 ≥ 3`) coinciden al 100 % con el DANE; logro
+educativo (adultos ≥ 15 con < 9 años) y atención integral (niños de 0 a 5) cubren el 99,5 % y el 100 % de los privados; y
+desempleo da el 86,5 %, igual que Martín. El costo de todos los pares privados pasa de 29,4 a 33,5 billones (+14 %; logro
+× 1,60, empleo × 1,47). 1.200 MILP (900 del barrido + 300 de equidad), todos óptimos. La regresión sigue pasando.
+
+| Meta | M3 u1 → real (mil mill.) | M4 u1 → real | Ahorro M4 u1 → real | Inclusión M3 u1 → real | Inclusión M4 u1 → real |
+|---|---|---|---|---|---|
+| 2 % | 3,6 → 4,4 | 3,0 → 4,5 | 6 % → **−7 %** | 40 → 35 % | 44 → 44 % |
+| 6 % | 12,5 → 17,4 | 6,2 → 9,5 | 53 → 49 % | 55 → 48 % | 55 → 47 % |
+| 10 % | 22,9 → 31,5 | 13,4 → 19,6 | 35 → 34 % | 73 → 62 % | 58 → 50 % |
+| 20 % | 44,7 → 59,3 | 37,7 → 49,4 | 16 → 16 % | 65 → 59 % | 41 → 40 % |
+| 30 % | 95,2 → 119,1 | 75,4 → 93,5 | 22 → 21 % | 40 → 36 % | 38 → 38 % |
+
+Equidad (ρ = 0, 15 réplicas): con el mismo B salen 10–23 % menos personas, pero **el precio de la información no cambia**
+(M3/IP = 22–57 %; M4/IP = 43–60 %; M4/M3 = × 1,70 con B = 10). Info perfecta con costos reales: 114.913 / 183.742 /
+255.038 / 348.451 / 479.389 personas con B = 10 / 25 / 50 / 100 / 200. **ρ = 10 % es infactible con B = 10 incluso con
+información perfecta**, y con B = 25 en M3 y M4 en todas las réplicas.
+
+Qué cambia: (a) con meta del 2 %, M4 ya no es más barato que M3 (decir "M4 vale desde metas del ~4 %"); (b) **pares con
+n < 10: ahora el MILP sí les gasta** en el 7–9 % de las corridas (mediana 0, máximo 18 % del costo en M3). No hace falta
+fusionar celdas en el caso base, pero hay que declararlo. Archivos: `costos_reales_tabla.csv`,
+`comparacion_barrido_u1_real.csv`, `comparacion_equidad_u1_real.csv`, `info_perfecta_real.csv`, `equidad_real.csv`
+(Project) y `barrido_real_crudo.csv` + `u1_vs_real.png` (repo local; se regeneran).
+
+**Propuesta de caso base:** costos reales (conteo reconstruido); u = 1 como sensibilidad. Si Martín sube
+`conteo_pares.csv`, `cargar_costos` lo usa solo y hay que comparar par por par.
+
+Supuestos de la reconstrucción que hay que declarar: logro cuenta adultos con < 9 años (el DANE usa el promedio del
+hogar); la EpV de los desocupados imputados se fija en $5,12 M; en empleo formal los desocupados entran en las dos
+fórmulas (empleo y desempleo), como en la tabla de Martín, así que puede haber doble pago (preguntarle).
+
+### Con u = 1 (3-nov)
 
 **Modelos 3 y 4 técnicamente completos con u = 1:** objetivo del paper + MC con desempate, objetivo de equidad
 + MC, referencia de información perfecta, **sensibilidad a k** y **curva costo–meta del 2 al 30 %**. Caso base:
@@ -245,6 +293,13 @@ revisarlo con los costos reales o si se cambia k.
 
 ## Lo que cambió en el equipo
 
+**5-nov (corrección).** `main` avanzó a `0389805` con `Modelos/parametros.py`, `Modelos/05_conteo_personas.py`,
+`data/processed/conteo_pares.csv`, el Modelo 2 y los documentos del M1. M1 y M2 también están en la rama
+`origin/modelos-1-2`, aún sin fusionar con `Modelo3`. Martín movió `utils_dane.py` y los scripts 02–04 a `Modelos/`.
+
+**4-nov (antes de esos commits).** Martín **no subió nada** (su último commit sigue siendo `72c9d02`, del 2-nov; `main` sigue en el 6-oct). Tampoco
+están `docs/reglas_conteo_personas.md` ni el conteo. Para no seguir bloqueados, M3/M4 ya tienen costos reales provisionales.
+
 **3-nov (tarde).** Martín **sigue sin subir nada** desde el 2-nov (`72c9d02`). `main` sigue en el 6-oct. No hay
 código de M1 ni M2 en el repo.
 
@@ -287,20 +342,25 @@ abajo; Trampa 1). `m34_mecanismo.enumerar_cortes` ya acepta V y K por separado, 
 | 12 | **Formato de la comparación final** | Tabla H, A, M0, severidad, costo por zona y total + la gráfica IP/M4/M3 | Diapositiva central |
 | 13 | **Respuestas a sus 7 preguntas** | Pegar `notas_jeronimo_borrador.md` en "Notas de Jerónimo" | Martín no las ha visto |
 | 14 | **Reparto de la sustentación** | Hilo: información perfecta → imperfecta → demográfica; fecha del ensayo | Quedan pocas semanas |
+| 15 | **Costos reales en M3/M4** | Caso base con `m34_costos_reales` hasta que llegue su conteo; él compara con `costos_reales_tabla.csv` | Que M1/M2 y M3/M4 usen los mismos u_ij |
+| 16 | **Doble cuenta de desocupados** (empleo formal + desempleo) | ¿Es intencional? Si no, sacarlos de la fórmula de empleo | Sobrecosto en hogares privados en los dos |
 
 ## Lo que sigue, en orden
 
 1. **Hecho (3-nov):** "Notas de Jerónimo" escritas y `m34_*` del 3-nov en la rama `Modelo3`.
-2. Cerrar con Martín los puntos 1–4 de la agenda.
-3. Actualizar los PDF de selección de variables (T1, T13–T17, M4, equidad, k) y armar las diapositivas
-   (tablas del 3-nov + `equidad_m3_m4_ip.png`, `sensibilidad_k.png`, `barrido_v2.png`).
-4. Cambiar a costos reales cuando lleguen (V = u·HW, K = costo_ij) y repetir los dos MC y el barrido (~2,5 h de cómputo).
-5. Volver a revisar los pares chicos (n < 10) con los costos reales.
-6. Comparación final de los 4 modelos sobre el mismo universo.
+2. **Hecho (5-nov):** costos reales provisionales y corridas con ellos, ya en `Modelo3` (scripts y resultados).
+3. Cerrar con Martín los puntos 1–4, 15 y 16 de la agenda.
+4. Actualizar los PDF de selección de variables (T1, T13–T18, M4, equidad, k, costos reales) y armar las diapositivas
+   (tablas del 3-nov y del 4-nov + `equidad_m3_m4_ip.png`, `sensibilidad_k.png`, `barrido_v2.png`, `u1_vs_real.png`).
+5. `conteo_pares.csv` ya está en `main`: compararlo con `costos_reales_tabla.csv` y, si difiere en más de ~1 %,
+   repetir `m34_corridas_costos_reales.py` (~40 min).
+6. Opcional: fusionar los pares con n < 10 y repetir el barrido real, para blindar el pendiente #5.
+7. Comparación final de los 4 modelos sobre el mismo universo.
 
 ## Decisiones abiertas
 
 - Objetivo del caso base de M3/M4 (paper vs equidad). Ya están los dos implementados.
+- Costos del caso base: reales provisionales (propuesta del 4-nov) o esperar el conteo de Martín.
 - Pesos w_j: solo como sensibilidad (múltiplos de 0,01).
 - Valle de Aburrá: solo con los módulos ECV 2025 (catálogo 905) cruzados por `DIRECTORIO`. Descartado por ahora.
 - Solver único: HiGHS (gap 1e-6 en el paper y en la etapa 1 de equidad, 1e-4 en la etapa 2); CBC solo para la regresión.
@@ -319,6 +379,13 @@ python3 m34_resumen_k.py out/sens_k out/resumen_k.csv && python3 m34_grafica_k.p
 python3 m34_barrido_metas_v2.py $R 30 out/barrido_v2               # 62 tareas, ~32 min
 python3 m34_resumen_barrido_v2.py out/barrido_v2 out/resumen_barrido_v2.csv out/barrido_v2.png
 python3 m34_pares_pequenos.py $R out/pares_pequenos.csv            # segundos
+# 4-nov: costos reales provisionales
+python3 m34_costos_reales.py $R out/costos_reales_tabla.csv        # validacion y tabla, segundos
+python3 m34_corridas_costos_reales.py ip $R out/info_perfecta_real.csv 10 25 50 100 200   # ~2 min
+python3 m34_corridas_costos_reales.py barrido $R 30 out/barrido_real                      # 60 tareas, ~30 min
+python3 m34_corridas_costos_reales.py equidad $R 15 out/equidad_real.csv 10 25 50 100 200 # ~8 min
+python3 m34_comparar_u1_real.py resultados/m34/barrido_v2_crudo.csv out/barrido_real resultados/m34/equidad_m34.csv \
+    out/equidad_real.csv resultados/m34/info_perfecta.csv out/info_perfecta_real.csv out/comparacion
 python3 m34_resumen_3nov.py out/mc_lex out/equidad_m34.csv out/info_perfecta.csv resultados/m34/mc_m3.csv resultados/m34/mc_m4.csv
 python3 m34_grafica_equidad.py out/equidad_m34.csv out/info_perfecta.csv out/equidad_m3_m4_ip.png
 ```
@@ -335,7 +402,7 @@ python3 m34_grafica_equidad.py out/equidad_m34.csv out/info_perfecta.csv out/equ
 - Repo compartido: no hacer commit ni push sin que Jerónimo lo pida; sin atribución de Claude.
 - Documentos del Project "Opti1": `decision-fuente-de-datos`, `revision-formulacion-modelo3`,
   `bitacora-problemas-y-soluciones`, `bitacora-adenda-noviembre`, `resumen-avance-2nov`, `resumen-avance-3nov`,
-  `resumen-avance-3nov-tarde`, `codigo-m34/`.
+  `resumen-avance-3nov-tarde`, `resumen-avance-4nov`, `codigo-m34/`.
 
 ## Reglas de trabajo
 

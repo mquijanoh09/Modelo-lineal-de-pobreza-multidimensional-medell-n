@@ -1,0 +1,423 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Del LEPI a la severidad</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de lectura (≈760px) con figuras que se abren un poco más; cada figura es una "lámina" numerada en el orden de la conversación */
+:root{
+  --bg:#f3f5f6; --panel:#ffffff; --ink:#18222d; --muted:#5b6672; --rule:#d9dfe4;
+  --accent:#0e6e6a; --accent-soft:#cfe7e4; --poor:#c4513b; --poor-soft:#f3d6cf;
+  --amber:#b07a12; --neg:#4f6fb3; --grid:#e6eaee; --gray:#a9b2bb;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12181e; --panel:#1a222a; --ink:#e6ebef; --muted:#9aa6b1; --rule:#2c3640;
+  --accent:#4fb8b1; --accent-soft:#1d3d3b; --poor:#e57c64; --poor-soft:#4a2a23;
+  --amber:#e0a93f; --neg:#86a3e0; --grid:#26303a; --gray:#5d6873; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12181e; --panel:#1a222a; --ink:#e6ebef; --muted:#9aa6b1; --rule:#2c3640;
+  --accent:#4fb8b1; --accent-soft:#1d3d3b; --poor:#e57c64; --poor-soft:#4a2a23;
+  --amber:#e0a93f; --neg:#86a3e0; --grid:#26303a; --gray:#5d6873; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+main{max-width:860px;margin:0 auto;display:grid;gap:40px}
+header{display:grid;gap:8px}
+h1{font:650 clamp(28px,5vw,40px)/1.1 var(--f-display);margin:0;text-wrap:balance}
+h2{font:650 22px/1.25 var(--f-display);margin:0;text-wrap:balance}
+h3{font:600 15px/1.3 var(--f-body);margin:0}
+p{margin:0;max-width:68ch}
+.lede{color:var(--muted);font-size:16px}
+.part{display:grid;gap:20px}
+.part-h{display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:8px}
+.part-h .tag{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+figure{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:20px;display:grid;gap:14px;min-width:0}
+figcaption{display:grid;gap:4px}
+.num{font:500 12px var(--f-mono);color:var(--muted);letter-spacing:.06em}
+.note{font-size:13px;color:var(--muted);max-width:72ch}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--ink);font-family:var(--f-body);font-size:12px}
+svg .m{fill:var(--muted)}
+.scroll{overflow-x:auto}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.row>*{flex:1 1 220px;min-width:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:500 13px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.ctl{display:grid;gap:4px}
+.ctl label{font-size:13px;display:flex;justify-content:space-between;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat{border-top:2px solid var(--rule);padding-top:6px;display:grid;gap:2px}
+.stat b{font:500 20px var(--f-mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;counter-reset:s}
+.step{border:1px solid var(--rule);border-radius:4px;padding:12px;display:grid;gap:6px;align-content:start;background:var(--bg)}
+.step .k{font:500 11px var(--f-mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.step p{font-size:13px}
+.step .f{font:12px var(--f-mono);color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.pipe .st{border:1px solid var(--rule);border-radius:4px;padding:10px;display:grid;gap:6px;align-content:start;background:var(--bg)}
+.pipe .st h3{font:500 13px var(--f-mono)}
+.pipe .st p{font-size:12px;color:var(--muted)}
+.chip{display:inline-block;font:600 11px var(--f-mono);padding:2px 6px;border-radius:3px;background:var(--accent-soft);color:var(--ink)}
+.chip.none{background:transparent;border:1px dashed var(--rule);color:var(--muted)}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.cmp .c{border:1px solid var(--rule);border-radius:4px;padding:14px;display:grid;gap:6px;align-content:start}
+.cmp .c .q{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cmp .c.on{border-color:var(--accent);background:var(--accent-soft)}
+.cmp .c p{font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main>
+<header>
+  <h1>Del LEPI a la severidad</h1>
+  <p class="lede">Los gráficos y simuladores del análisis del paper de González, Rivera y Manotas (2024) y de la discusión sobre cómo llevar la idea de "hacer menos pobre al más pobre" a tu modelo. Están en el mismo orden en que salieron en la conversación.</p>
+</header>
+
+<!-- ================= PARTE 1 ================= -->
+<section class="part">
+  <div class="part-h"><span class="tag">Parte 1</span><h2>Qué hace el paper</h2></div>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 1</span><h3>Cómo se construye el LEPI</h3></figcaption>
+    <div class="steps">
+      <div class="step"><span class="k">Paso 1 · Entropía</span><p>Pesos para los 12 criterios según qué tan desigual es cada uno entre las 5 zonas.</p><span class="f">w_j = (1−e_j) / Σ(1−e_j)</span></div>
+      <div class="step"><span class="k">Paso 2 · TOPSIS</span><p>Ordena las zonas por cercanía al ideal y lejanía del anti-ideal. Gana Amazonía.</p><span class="f">C_i = d⁻ / (d⁺ + d⁻)</span></div>
+      <div class="step"><span class="k">Paso 3 · Criterios EP</span><p>Se escogen 7 criterios de pobreza energética y se vuelven a pesar con entropía (Tabla 5).</p><span class="f">7 de 12 criterios</span></div>
+      <div class="step"><span class="k">Paso 4 · LEPI</span><p>Cada zona se compara con Amazonía, que queda en 0 por construcción (Tabla 6).</p><span class="f">|Σ w_j (x_ij − x_A,j) / x_A,j|</span></div>
+    </div>
+    <p class="note">La fórmula del paso 4 no está escrita en el paper. La reconstruí y reproduce la Tabla 6 exactamente: 0, 0.02, 3.93, 0.56 y 0.16.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 2</span><h3>Qué hay dentro de cada LEPI: aporte de cada criterio antes del valor absoluto</h3></figcaption>
+    <div class="legend" id="lepiLegend"></div>
+    <div class="scroll"><svg id="lepi" viewBox="0 0 830 300" role="img" aria-label="Aportes por criterio al LEPI de cada zona"></svg></div>
+    <p class="note">Pacífico = 3.93 sale casi todo de un solo dato: las interrupciones aportan 3.59 (129 contra 11 en Amazonía, por un peso de 0.335). En Orinoquía, +0.16 y −0.18 se cancelan y queda −0.02. Norte da −0.56, es decir, mejor que la referencia, pero el valor absoluto lo reporta como 0.56 de pobreza. El eje está cortado en Pacífico para que se vean las otras zonas.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 3</span><h3>Dónde puede entrar el paper en tu proyecto</h3></figcaption>
+    <div class="pipe">
+      <div class="st"><h3>04 · Línea base</h3><p>IPM, H, A, M0 y contribuciones (medición)</p><span class="chip none">sin cambio</span></div>
+      <div class="st"><h3>06 · Parámetros</h3><p>Pesos, costos y presupuesto</p><span class="chip">A · entropía como sensibilidad</span></div>
+      <div class="st"><h3>07 · Modelo</h3><p>MILP: variables, objetivo y restricciones</p><span class="chip">B · brecha contra la mejor zona</span></div>
+      <div class="st"><h3>08 · Resultados</h3><p>Corridas con varios presupuestos y valores de r</p><span class="chip">C · TOPSIS para escoger entre soluciones</span></div>
+    </div>
+    <p class="note">C es la que menos choca con la formulación ya decidida: el MILP genera las alternativas y el método multicriterio solo ayuda a escoger entre ellas.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 4</span><h3>Simulador de entropía: cinco zonas que se reparten un criterio</h3></figcaption>
+    <div class="btns" id="entPresets"></div>
+    <div class="row">
+      <div class="ctl-group" id="entSliders" style="display:grid;gap:8px"></div>
+      <div><svg id="ent" viewBox="0 0 360 220" role="img" aria-label="Porciones de cada zona"></svg></div>
+    </div>
+    <div class="stats" id="entStats"></div>
+    <p class="note">Mueve una barra a la vez. La entropía solo reacciona a qué tan desigual es el reparto. Si multiplicas todos los valores por 10, no cambia: es ciega a la gravedad.</p>
+  </figure>
+</section>
+
+<!-- ================= PARTE 2 ================= -->
+<section class="part">
+  <div class="part-h"><span class="tag">Parte 2</span><h2>Por qué es un método de evaluación</h2></div>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 5</span><h3>Tres preguntas distintas que se le hacen a los datos</h3></figcaption>
+    <div class="cmp">
+      <div class="c on"><span class="q">Medir · la báscula</span><h3>¿Cuánto hay?</h3><p>Un número por alternativa. Ejemplos: IPM, H, A, M0, el LEPI.</p></div>
+      <div class="c on"><span class="q">Evaluar · el jurado</span><h3>¿Cuál es mejor de las que hay?</h3><p>Ordena alternativas que ya existen. Ejemplos: TOPSIS, AHP, entropía (MADM).</p></div>
+      <div class="c"><span class="q">Optimizar · el chef</span><h3>¿Qué hago con lo que tengo?</h3><p>Construye la mejor alternativa con variables y restricciones. Ejemplo: tu MILP (MODM).</p></div>
+    </div>
+    <p class="note">Resaltado: lo que hace el paper. Nunca hace de chef.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 6</span><h3>Evaluar contra optimizar</h3></figcaption>
+    <div class="row">
+      <div><h3 style="margin-bottom:6px">Paper: 5 opciones dadas</h3><svg id="evalL" viewBox="0 0 340 220" role="img" aria-label="LEPI de las cinco zonas"></svg><p class="note">Basta mirar cuál es la mayor (Tabla 6).</p></div>
+      <div><h3 style="margin-bottom:6px">Tu MILP: el solver construye la decisión</h3><svg id="evalR" viewBox="0 0 340 220" role="img" aria-label="Región factible de un modelo de optimización"></svg><p class="note">Cada punto es una combinación posible. Las restricciones (presupuesto, equidad) descartan las grises; el objetivo escoge la mejor de las que quedan.</p></div>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= PARTE 3 ================= -->
+<section class="part">
+  <div class="part-h"><span class="tag">Parte 3</span><h2>Tu propuesta con los datos de Antioquia</h2></div>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 7</span><h3>Qué premia cada función objetivo al quitar 0.10 de privaciones</h3></figcaption>
+    <div class="legend"><span><i style="background:var(--accent)"></i>Hogar en 0.40 que pasa a 0.30 (cruza el umbral)</span><span><i style="background:var(--poor)"></i>Hogar en 0.80 que pasa a 0.70 (sigue pobre)</span></div>
+    <svg id="reward" viewBox="0 0 760 230" role="img" aria-label="Premio de cada objetivo"></svg>
+    <p class="note">Cada objetivo está en sus propias unidades; lo que importa es cuál de las dos barras es más alta. H solo premia el cruce. M0 premia más el cruce (el puntaje censurado cae de 0.40 a 0). Solo la severidad, con el puntaje al cuadrado, premia más al más pobre: 0.64 − 0.49 = 0.15 contra 0.16 − 0.09 = 0.07.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 8</span><h3>Dónde están las personas pobres de Antioquia respecto al umbral</h3></figcaption>
+    <svg id="hist" viewBox="0 0 760 240" role="img" aria-label="Distribución de puntajes de las personas pobres"></svg>
+    <p class="note">El 49% de los 523 hogares pobres está a 0.05 o menos del umbral, y el 51% de las personas pobres tiene un puntaje entre 0.34 y 0.40. Un modelo que maximiza H va a gastar el presupuesto ahí. Personas ponderadas con FEX_C, datos de <span class="mono">hogares_antioquia.csv</span>.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 9</span><h3>La entropía premia la rareza, no la importancia</h3></figcaption>
+    <div class="legend"><span><i style="background:var(--gray)"></i>Prevalencia (personas)</span><span><i style="background:var(--accent)"></i>Contribución a M0</span><span><i style="background:var(--poor)"></i>Peso por entropía</span><span><i style="background:transparent;border:1px solid var(--muted)"></i>Peso oficial</span></div>
+    <div class="scroll"><svg id="entA" viewBox="0 0 760 560" role="img" aria-label="Prevalencia, contribución y peso por entropía de los 15 indicadores"></svg></div>
+    <p class="note">Ordenados por prevalencia. Empleo formal afecta al 67% y explica el 24% de M0, y la entropía le da el peso más bajo (0.021). Trabajo infantil afecta al 2% y recibe uno de los más altos (0.098). La correlación de rangos entre prevalencia y peso por entropía es −0.94. Con pesos por entropía y el mismo k, H pasaría de 9.5% a 2.2%.</p>
+  </figure>
+</section>
+
+<!-- ================= PARTE 4 ================= -->
+<section class="part">
+  <div class="part-h"><span class="tag">Parte 4</span><h2>La opción C: ε-restricción</h2></div>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 10</span><h3>Simulador ε: 4 hogares y presupuesto para 3 intervenciones</h3></figcaption>
+    <div class="ctl"><label for="eps"><span>Tope de severidad ε</span><span class="mono" id="epsV"></span></label><input id="eps" type="range" min="0.70" max="1.12" step="0.01" value="1.12"></div>
+    <div class="row">
+      <div><svg id="epsChart" viewBox="0 0 360 250" role="img" aria-label="Frontera de Pareto de los 4 planes"></svg></div>
+      <div><svg id="epsHh" viewBox="0 0 360 250" role="img" aria-label="Puntajes de los hogares con el plan escogido"></svg></div>
+    </div>
+    <p class="note" id="epsMsg"></p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 11</span><h3>La severidad es un área: cada hogar es un cuadrado de lado igual a su puntaje</h3></figcaption>
+    <div class="row">
+      <div><svg id="sq0" viewBox="0 0 240 200"></svg></div>
+      <div><svg id="sq1" viewBox="0 0 240 200"></svg></div>
+      <div><svg id="sq2" viewBox="0 0 240 200"></svg></div>
+    </div>
+    <p class="note">El Plan 1 saca a 3 hogares, pero el cuadrado grande de D sigue intacto. El Plan 2 no saca a nadie y deja menos área, porque encoge el cuadrado más grande.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 12</span><h3>A quién mira cada opción (hogares con puntajes 0.40, 0.40, 0.60 y 0.80)</h3></figcaption>
+    <svg id="opts" viewBox="0 0 760 270" role="img" aria-label="Qué hogares prioriza cada opción"></svg>
+    <p class="note">En A, el ancho de la franja es la prioridad marginal (≈2c): D vale el doble que A. En B solo cuenta D. En C, el objetivo mira a quien puede salir (A y B) y el techo de severidad obliga a gastar parte en D.</p>
+  </figure>
+
+  <figure>
+    <figcaption><span class="num">FIGURA 13</span><h3>Simulador ρ: 8 hogares pobres de 20, presupuesto para 6 intervenciones de −0.10</h3></figcaption>
+    <div class="ctl"><label for="rho"><span>Reducción mínima de severidad exigida ρ</span><span class="mono" id="rhoV"></span></label><input id="rho" type="range" min="0" max="0.31" step="0.005" value="0"></div>
+    <div class="row">
+      <div><svg id="rhoChart" viewBox="0 0 380 260" role="img" aria-label="Frontera entre personas que salen y reducción de severidad"></svg></div>
+      <div><svg id="rhoHh" viewBox="0 0 380 260" role="img" aria-label="Puntajes antes y después"></svg></div>
+    </div>
+    <div class="stats" id="rhoStats"></div>
+    <p class="note" id="rhoMsg"></p>
+    <p class="note">El simulador evalúa los 1,716 planes posibles (puntos grises), así que la frontera es exacta. Entre planes empatados en hogares que salen escoge el de menor severidad (desempate lexicográfico). La severidad se mide sin censurar sobre los 8 hogares que eran pobres al inicio.</p>
+  </figure>
+</section>
+</main>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs={},parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function txt(parent,x,y,s,attrs={}){const t=el("text",Object.assign({x,y},attrs),parent);t.textContent=s;return t}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild)}
+const v=n=>`var(--${n})`;
+const f2=x=>x.toFixed(2), pct=x=>(x*100).toFixed(1)+"%";
+
+/* ---------- Fig 2: LEPI ---------- */
+(function(){
+  const crit=["Cobertura","Gasto familiar","Disp. de pago","Facturación","Subsidios","Costo unitario","Interrupciones"];
+  const cols=["#7c8a96","#b07a12","#0e6e6a","#4f6fb3","#8f5aa8","#3d8f4e","#c4513b"];
+  const zones=[["Orinoquía",[0.007,-0.010,0.152,-0.023,-0.042,-0.013,-0.091]],["Pacífico",[0.049,-0.067,0.047,0.089,0.207,0.007,3.594]],["Norte",[0.043,-0.062,0.003,-0.119,-0.151,-0.028,-0.244]],["Insular",[0.065,-0.067,0,0.114,0.086,-0.028,-0.335]]];
+  const reported={"Orinoquía":0.02,"Pacífico":3.93,"Norte":0.56,"Insular":0.16};
+  const lg=document.getElementById("lepiLegend");
+  crit.forEach((c,i)=>{const s=document.createElement("span");s.innerHTML=`<i style="background:${cols[i]}"></i>${c}`;lg.appendChild(s)});
+  const s=document.getElementById("lepi");const L=120,R=700,lo=-0.8,hi=0.8;const X=x=>L+(Math.max(lo,Math.min(hi,x))-lo)/(hi-lo)*(R-L);
+  for(let t=-0.8;t<=0.81;t+=0.4){el("line",{x1:X(t),x2:X(t),y1:20,y2:270,stroke:v("grid")},s);txt(s,X(t),290,(t>0?"+":"")+t.toFixed(1),{"text-anchor":"middle",class:"m"})}
+  el("line",{x1:X(0),x2:X(0),y1:16,y2:272,stroke:v("muted")},s);
+  txt(s,R+8,16,"neto → reportado",{class:"m","font-size":11});
+  zones.forEach(([z,c],k)=>{const y=34+k*62;txt(s,L-10,y+16,z,{"text-anchor":"end"});
+    let pos=0,neg=0;c.forEach((a,i)=>{if(a===0)return;let x0,x1;if(a>0){x0=pos;pos+=a;x1=pos}else{x1=neg;neg+=a;x0=neg}
+      const xa=X(x0),xb=X(x1);el("rect",{x:xa,y,width:Math.max(0.5,xb-xa),height:24,fill:cols[i]},s);});
+    if(pos>hi){el("path",{d:`M${X(hi)-6} ${y-3} l6 15 l-6 15`,stroke:v("panel"),"stroke-width":4,fill:"none"},s);txt(s,X(hi)-4,y-6,"interrupciones +3.59 →",{"text-anchor":"end","font-size":11,fill:cols[6]})}
+    const net=c.reduce((a,b)=>a+b,0);txt(s,R+8,y+16,`${net>=0?"+":""}${net.toFixed(2)} → ${reported[z].toFixed(2)}`,{class:"mono","font-family":"IBM Plex Mono, monospace"});
+  });
+})();
+
+/* ---------- Fig 4: entropía ---------- */
+(function(){
+  const Z=["Amazonía","Orinoquía","Pacífico","Norte","Insular"];
+  const presets={"Reparto parejo":[20,20,20,20,20],"Una zona concentra":[2,2,92,2,2],"Interrupciones (paper)":[11,8,129,3,0],"Cobertura (paper)":[57.1,61.4,89,85,100]};
+  let vals=presets["Interrupciones (paper)"].slice(), active="Interrupciones (paper)";
+  const box=document.getElementById("entSliders"),pb=document.getElementById("entPresets"),btns={};
+  Object.keys(presets).forEach(k=>{const b=document.createElement("button");b.textContent=k;b.onclick=()=>{vals=presets[k].slice();active=k;sync();draw()};pb.appendChild(b);btns[k]=b});
+  const inputs=Z.map((z,i)=>{const d=document.createElement("div");d.className="ctl";d.innerHTML=`<label for="ez${i}"><span>${z}</span><span class="mono" id="ezv${i}"></span></label><input id="ez${i}" type="range" min="0" max="130" step="1">`;box.appendChild(d);const inp=d.querySelector("input");inp.oninput=()=>{vals[i]=+inp.value;active=null;draw()};return inp});
+  function sync(){inputs.forEach((inp,i)=>inp.value=vals[i])}
+  const s=document.getElementById("ent"),st=document.getElementById("entStats");
+  function draw(){
+    for(const k in btns)btns[k].setAttribute("aria-pressed",k===active);
+    vals.forEach((x,i)=>document.getElementById("ezv"+i).textContent=x);
+    const tot=vals.reduce((a,b)=>a+b,0)||1,r=vals.map(x=>x/tot);
+    const H=-r.reduce((a,p)=>a+(p>0?p*Math.log(p):0),0),e=H/Math.log(5);
+    clear(s);const L=36,B=180,T=14,W=300;
+    [0,0.5,1].forEach(t=>{const y=B-t*(B-T);el("line",{x1:L,x2:L+W,y1:y,y2:y,stroke:v("grid")},s);txt(s,L-6,y+4,t.toFixed(1),{"text-anchor":"end",class:"m"})});
+    const yEq=B-0.2*(B-T);el("line",{x1:L,x2:L+W,y1:yEq,y2:yEq,stroke:v("amber"),"stroke-dasharray":"4 3"},s);txt(s,L+W,yEq-4,"reparto parejo (0.2)",{"text-anchor":"end","font-size":10,fill:v("amber")});
+    r.forEach((p,i)=>{const bw=W/5-14,x=L+i*W/5+7,h=p*(B-T);el("rect",{x,y:B-h,width:bw,height:h,fill:v("accent"),rx:2},s);txt(s,x+bw/2,B-h-5,p.toFixed(2),{"text-anchor":"middle","font-size":11});txt(s,x+bw/2,B+16,Z[i].slice(0,4)+".",{"text-anchor":"middle",class:"m","font-size":11})});
+    txt(s,L,T-2,"porción r_i = valor / total",{class:"m","font-size":11});
+    st.innerHTML=`<div class="stat"><b>${H.toFixed(3)}</b><span>Σ −r ln r</span></div><div class="stat"><b>${e.toFixed(2)}</b><span>entropía e = Σ / ln 5</span></div><div class="stat"><b>${(1-e).toFixed(2)}</b><span>1 − e: cuánto distingue</span></div>`;
+  }
+  sync();draw();
+})();
+
+/* ---------- Fig 6: evaluar vs optimizar ---------- */
+(function(){
+  const s=document.getElementById("evalL");const d=[["Amazonía",0],["Orinoquía",0.02],["Pacífico",3.93],["Norte",0.56],["Insular",0.16]];
+  const L=80,R=300;d.forEach(([z,x],i)=>{const y=18+i*38;txt(s,L-8,y+15,z,{"text-anchor":"end"});const w=Math.max(1.5,x/4*(R-L));el("rect",{x:L,y,width:w,height:22,fill:z==="Pacífico"?v("poor"):v("gray"),rx:2},s);txt(s,L+w+6,y+15,x.toFixed(2),{"font-family":"IBM Plex Mono, monospace","font-size":11})});
+  txt(s,L,212,"LEPI (Tabla 6)",{class:"m","font-size":11});
+  const r=document.getElementById("evalR");const L2=34,B=190,T=14,S=24;
+  el("line",{x1:L2,x2:330,y1:B,y2:B,stroke:v("muted")},r);el("line",{x1:L2,x2:L2,y1:T,y2:B,stroke:v("muted")},r);
+  txt(r,330,B+16,"x₁ (intervención 1)",{"text-anchor":"end",class:"m","font-size":11});txt(r,L2+4,T,"x₂",{class:"m","font-size":11});
+  // presupuesto: 2x1 + 3x2 <= 24 ; equidad: x2 >= 1
+  const X=a=>L2+a*S,Y=b=>B-b*S*0.95;
+  el("polygon",{points:`${X(0)},${Y(1)} ${X(10.5)},${Y(1)} ${X(0)},${Y(8)}`,fill:v("accent-soft"),stroke:v("accent")},r);
+  let best=null;for(let a=0;a<=12;a++)for(let b=0;b<=7;b++){const ok=2*a+3*b<=24&&b>=1;const z=3*a+5*b;if(ok&&(!best||z>best[2]))best=[a,b,z];el("circle",{cx:X(a),cy:Y(b),r:2.6,fill:ok?v("accent"):v("gray")},r)}
+  el("circle",{cx:X(best[0]),cy:Y(best[1]),r:6,fill:"none",stroke:v("poor"),"stroke-width":2},r);
+  txt(r,X(best[0])+9,Y(best[1])-6,"óptimo",{fill:v("poor"),"font-size":11});
+  txt(r,X(5.6),Y(4.6),"presupuesto",{class:"m","font-size":11,transform:`rotate(-36 ${X(5.6)} ${Y(4.6)})`});
+  txt(r,X(7.4),Y(1)+14,"equidad",{class:"m","font-size":11});
+})();
+
+/* ---------- Fig 7: premio por objetivo ---------- */
+(function(){
+  const s=document.getElementById("reward");
+  const groups=[["H (conteo)",1,0,"1 hogar sale","0"],["M0 (censurado)",0.40,0.10,"0.40 → 0","0.80 → 0.70"],["Severidad (c², sin censurar)",0.07,0.15,"0.16 − 0.09","0.64 − 0.49"]];
+  const B=180,T=20,H=B-T;groups.forEach(([g,a,b,la,lb],k)=>{const x0=40+k*245,mx=Math.max(a,b);
+    [[a,v("accent"),la],[b,v("poor"),lb]].forEach(([val,c,l],j)=>{const h=val/mx*H,x=x0+j*90;el("rect",{x,y:B-h,width:70,height:Math.max(h,1),fill:c,rx:2},s);txt(s,x+35,B-h-6,val.toFixed(2),{"text-anchor":"middle","font-family":"IBM Plex Mono, monospace"});txt(s,x+35,B+16,l,{"text-anchor":"middle",class:"m","font-size":11})});
+    txt(s,x0+80,B+40,g,{"text-anchor":"middle","font-weight":600})});
+  el("line",{x1:20,x2:740,y1:B,y2:B,stroke:v("muted")},s);
+})();
+
+/* ---------- Fig 8: histograma Antioquia ---------- */
+(function(){
+  const d={"0.34":0.1741,"0.35":0.1512,"0.36":0.0102,"0.37":0.032,"0.38":0.0691,"0.39":0.0714,"0.40":0.1488,"0.41":0.0132,"0.42":0.0174,"0.43":0.042,"0.44":0.0305,"0.45":0.0155,"0.46":0.0122,"0.47":0.0378,"0.48":0.0151,"0.49":0.0077,"0.50":0.0239,"0.51":0.0427,"0.52":0.0126,"0.53":0.0171,"0.55":0.0029,"0.56":0.0023,"0.57":0.0103,"0.58":0.0044,"0.61":0.0234,"0.62":0.0098,"0.65":0.0023};
+  const s=document.getElementById("hist"),L=50,R=740,B=190,T=16,lo=0.33,hi=0.66,X=x=>L+(x-lo)/(hi-lo)*(R-L),mx=0.21,Y=y=>B-y/mx*(B-T),bw=(R-L)/33-2;
+  [0,0.05,0.10,0.15].forEach(t=>{el("line",{x1:L,x2:R,y1:Y(t),y2:Y(t),stroke:v("grid")},s);txt(s,L-6,Y(t)+4,(t*100)+"%",{"text-anchor":"end",class:"m"})});
+  el("rect",{x:X(1/3),y:T+6,width:X(0.405)-X(1/3),height:B-T-6,fill:v("accent-soft"),opacity:0.7},s);
+  txt(s,X(0.37),T+2,"51% de las personas pobres",{"text-anchor":"middle","font-size":11,"font-weight":600});
+  for(const k in d){const x=+k,val=d[k];el("rect",{x:X(x)-bw/2,y:Y(val),width:bw,height:B-Y(val),fill:x>=0.6?v("poor"):v("accent"),rx:1},s)}
+  el("line",{x1:X(1/3),x2:X(1/3),y1:T-6,y2:B,stroke:v("amber"),"stroke-width":2},s);txt(s,X(1/3)+4,B+30,"umbral k = 0.33",{fill:v("amber"),"font-size":11});
+  [0.35,0.40,0.45,0.50,0.55,0.60,0.65].forEach(t=>txt(s,X(t),B+16,t.toFixed(2),{"text-anchor":"middle",class:"m"}));
+  txt(s,X(0.62),Y(0.05),"3.5% con ≥ 0.60",{"text-anchor":"middle","font-size":11,fill:v("poor")});
+  txt(s,R,B+30,"puntaje de privación c_i",{"text-anchor":"end",class:"m","font-size":11});
+})();
+
+/* ---------- Fig 9: entropía vs prevalencia ---------- */
+(function(){
+  const names={logro_educativo:"Logro educativo",analfabetismo:"Analfabetismo",inasistencia_escolar:"Inasistencia escolar",rezago_escolar:"Rezago escolar",atencion_integral:"Atención primera infancia",trabajo_infantil:"Trabajo infantil",desempleo_larga_duracion:"Desempleo larga duración",empleo_formal:"Empleo formal",aseguramiento_salud:"Aseguramiento en salud",barreras_acceso_salud:"Barreras acceso salud",acueducto:"Acueducto",alcantarillado:"Alcantarillado",pisos:"Pisos",paredes:"Paredes",hacinamiento:"Hacinamiento"};
+  const D={cols:["logro_educativo","analfabetismo","inasistencia_escolar","rezago_escolar","atencion_integral","trabajo_infantil","desempleo_larga_duracion","empleo_formal","aseguramiento_salud","barreras_acceso_salud","acueducto","alcantarillado","pisos","paredes","hacinamiento"],w:[0.1,0.1,0.05,0.05,0.05,0.05,0.1,0.1,0.1,0.1,0.04,0.04,0.04,0.04,0.04],we:[0.0275,0.0604,0.0938,0.0487,0.0845,0.0976,0.0514,0.0212,0.0814,0.0787,0.0521,0.0496,0.073,0.0992,0.0808],prev:[0.3459,0.0761,0.0211,0.2443,0.0577,0.0191,0.0965,0.671,0.0702,0.0789,0.0825,0.1173,0.0352,0.0221,0.0561],contrib:[0.2174,0.1263,0.0147,0.0618,0.0132,0.0117,0.0675,0.2443,0.0454,0.0607,0.0381,0.0478,0.0213,0.0123,0.0175]};
+  const idx=D.cols.map((_,i)=>i).sort((a,b)=>D.prev[b]-D.prev[a]);
+  const s=document.getElementById("entA");const L=190,M=470,R=740,T=30,rh=34;
+  txt(s,L,T-12,"Prevalencia y contribución a M0",{"font-weight":600,"font-size":12});txt(s,M+20,T-12,"Pesos",{"font-weight":600,"font-size":12});
+  const X1=x=>L+x/0.7*(M-L-10),X2=x=>M+20+x/0.12*(R-M-20);
+  [0,0.2,0.4,0.6].forEach(t=>{el("line",{x1:X1(t),x2:X1(t),y1:T,y2:T+15*rh,stroke:v("grid")},s);txt(s,X1(t),T+15*rh+14,(t*100)+"%",{"text-anchor":"middle",class:"m"})});
+  [0,0.05,0.10].forEach(t=>{el("line",{x1:X2(t),x2:X2(t),y1:T,y2:T+15*rh,stroke:v("grid")},s);txt(s,X2(t),T+15*rh+14,t.toFixed(2),{"text-anchor":"middle",class:"m"})});
+  idx.forEach((i,k)=>{const y=T+k*rh;txt(s,L-8,y+20,names[D.cols[i]],{"text-anchor":"end"});
+    el("rect",{x:L,y:y+5,width:X1(D.prev[i])-L,height:11,fill:v("gray"),rx:1},s);
+    el("rect",{x:L,y:y+18,width:X1(D.contrib[i])-L,height:11,fill:v("accent"),rx:1},s);
+    el("rect",{x:M+20,y:y+8,width:X2(D.we[i])-M-20,height:16,fill:v("poor"),rx:1},s);
+    el("line",{x1:X2(D.w[i]),x2:X2(D.w[i]),y1:y+4,y2:y+28,stroke:v("ink"),"stroke-width":2},s);
+  });
+})();
+
+/* ---------- Fig 10: simulador ε ---------- */
+(function(){
+  const plans=[{d:0,out:3,sev:0.91,c:[0.30,0.30,0.30,0.80]},{d:1,out:2,sev:0.83,c:[0.30,0.30,0.40,0.70]},{d:2,out:1,sev:0.77,c:[0.30,0.40,0.40,0.60]},{d:3,out:0,sev:0.73,c:[0.40,0.40,0.40,0.50]}];
+  const inp=document.getElementById("eps"),s=document.getElementById("epsChart"),h=document.getElementById("epsHh"),msg=document.getElementById("epsMsg");
+  function draw(){const eps=+inp.value;document.getElementById("epsV").textContent=eps.toFixed(2);
+    const feas=plans.filter(p=>p.sev<=eps+1e-9);const pick=feas.length?feas.reduce((a,b)=>b.out>a.out?b:a):null;
+    clear(s);const L=44,R=340,T=16,B=200,X=x=>L+(x-0.70)/(0.95-0.70)*(R-L),Y=y=>B-y/3.4*(B-T);
+    [0,1,2,3].forEach(t=>{el("line",{x1:L,x2:R,y1:Y(t),y2:Y(t),stroke:v("grid")},s);txt(s,L-8,Y(t)+4,t,{"text-anchor":"end",class:"m"})});
+    [0.70,0.75,0.80,0.85,0.90,0.95].forEach(t=>txt(s,X(t),B+16,t.toFixed(2),{"text-anchor":"middle",class:"m"}));
+    txt(s,R,B+34,"severidad después de invertir",{"text-anchor":"end",class:"m","font-size":11});txt(s,L,T-4,"ΔH (hogares que salen)",{class:"m","font-size":11});
+    if(eps<0.95){el("rect",{x:X(Math.max(0.70,eps)),y:T,width:R-X(Math.max(0.70,eps)),height:B-T,fill:v("poor-soft"),opacity:0.6},s);el("line",{x1:X(Math.max(0.70,eps)),x2:X(Math.max(0.70,eps)),y1:T,y2:B,stroke:v("poor"),"stroke-dasharray":"4 3"},s);txt(s,X(Math.max(0.70,eps))+4,T+12,"no cabe bajo el techo",{fill:v("poor"),"font-size":11})}
+    el("polyline",{points:plans.map(p=>`${X(p.sev)},${Y(p.out)}`).join(" "),fill:"none",stroke:v("muted"),"stroke-dasharray":"3 3"},s);
+    plans.forEach(p=>{const ok=p.sev<=eps+1e-9;el("circle",{cx:X(p.sev),cy:Y(p.out),r:p===pick?8:5,fill:ok?v("accent"):v("gray"),stroke:p===pick?v("ink"):"none","stroke-width":2},s);txt(s,X(p.sev),Y(p.out)-12,`${p.d} a D`,{"text-anchor":"middle","font-size":11})});
+    clear(h);const L2=40,B2=200,T2=16,Y2=y=>B2-y/0.9*(B2-T2);
+    [0,0.3,0.6,0.9].forEach(t=>{el("line",{x1:L2,x2:350,y1:Y2(t),y2:Y2(t),stroke:v("grid")},h);txt(h,L2-6,Y2(t)+4,t.toFixed(1),{"text-anchor":"end",class:"m"})});
+    const init=[0.40,0.40,0.40,0.80];["A","B","C","D"].forEach((n,i)=>{const x=L2+20+i*76,c=pick?pick.c[i]:init[i];
+      el("rect",{x,y:Y2(init[i]),width:44,height:B2-Y2(init[i]),fill:"none",stroke:v("gray"),"stroke-dasharray":"3 2"},h);
+      el("rect",{x,y:Y2(c),width:44,height:B2-Y2(c),fill:c<1/3?v("accent"):v("poor"),rx:2},h);txt(h,x+22,Y2(c)-6,c.toFixed(2),{"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":11});txt(h,x+22,B2+16,n,{"text-anchor":"middle"})});
+    el("line",{x1:L2,x2:350,y1:Y2(1/3),y2:Y2(1/3),stroke:v("amber"),"stroke-width":1.5},h);txt(h,L2+2,Y2(1/3)-4,"umbral",{"text-anchor":"start",fill:v("amber"),"font-size":11});
+    msg.textContent=pick?`Con ε = ${eps.toFixed(2)} el modelo escoge "${pick.d} a D": salen ${pick.out} hogares y la severidad queda en ${pick.sev.toFixed(2)}.`:`Con ε = ${eps.toFixed(2)} el problema es infactible: ningún uso del presupuesto baja la severidad por debajo de 0.73.`;
+  }
+  inp.oninput=draw;draw();
+})();
+
+/* ---------- Fig 11: cuadrados ---------- */
+(function(){
+  const sets=[["Inicial",[0.40,0.40,0.40,0.80]],["Plan 1: todo a A, B y C",[0.30,0.30,0.30,0.80]],["Plan 2: todo a D",[0.40,0.40,0.40,0.50]]];
+  sets.forEach(([t,c],k)=>{const s=document.getElementById("sq"+k);const S=150;let x=8;const base=170;
+    txt(s,8,14,t,{"font-weight":600});
+    c.forEach((p,i)=>{const w=p*105;el("rect",{x,y:base-w,width:w,height:w,fill:p<1/3?v("accent"):(i===3?v("poor"):v("poor-soft")),stroke:v("panel")},s);txt(s,x+w/2,base+14,"ABCD"[i],{"text-anchor":"middle",class:"m","font-size":11});x+=w+4});
+    const area=c.reduce((a,p)=>a+p*p,0);txt(s,8,196,`área = ${area.toFixed(2)}`,{"font-family":"IBM Plex Mono, monospace"});});
+})();
+
+/* ---------- Fig 12: opciones ---------- */
+(function(){
+  const s=document.getElementById("opts"),c=[0.40,0.40,0.60,0.80];const rows=[["A · Severidad","reduce privaciones con prioridad ≈ 2c"],["B · Minimax","solo baja el puntaje más alto"],["C · ε-restricción","el techo obliga a atender a D"]];
+  const L=210,cw=130;["A (0.40)","B (0.40)","C (0.60)","D (0.80)"].forEach((n,i)=>txt(s,L+i*cw+cw/2-8,16,n,{"text-anchor":"middle",class:"m"}));
+  rows.forEach(([r,d],k)=>{const y=30+k*78;txt(s,8,y+24,r,{"font-weight":600});txt(s,8,y+42,d,{class:"m","font-size":11});
+    c.forEach((p,i)=>{const x=L+i*cw;let fill=v("grid"),w=0,label="";
+      if(k===0){w=(2*p)/1.6*(cw-24);fill=v("accent");label="peso "+(2*p).toFixed(1)}
+      if(k===1){if(i===3){w=cw-24;fill=v("poor");label="único objetivo"}else{label="indiferente"}}
+      if(k===2){if(i<2){w=cw-24;fill=v("accent");label="objetivo: salir"}else if(i===3){w=(cw-24)*0.6;fill=v("poor");label="lo exige el techo"}else{label="—"}}
+      el("rect",{x,y:y+8,width:cw-24,height:30,fill:v("grid"),rx:3},s);if(w)el("rect",{x,y:y+8,width:w,height:30,fill,rx:3},s);
+      txt(s,x,y+56,label,{class:"m","font-size":11})});});
+})();
+
+/* ---------- Fig 13: simulador ρ ---------- */
+(function(){
+  const S=[0.36,0.38,0.42,0.47,0.52,0.56,0.63,0.80],N=20,BUD=6,K=1/3,n=S.length;
+  const plans=[];(function rec(i,b,acc){if(i===n-1){plans.push(acc.concat([b]));return}for(let k=0;k<=b;k++)rec(i+1,b-k,acc.concat([k]))})(0,BUD,[]);
+  const S0=S.reduce((a,x)=>a+x*x,0),A0=S.reduce((a,b)=>a+b,0)/n;
+  const ev=plans.map(pl=>{const c=S.map((x,i)=>Math.max(0,Math.round((x-0.1*pl[i])*100)/100));const out=c.filter(x=>x<K-1e-9).length;const sev=c.reduce((a,x)=>a+x*x,0);const rem=c.filter(x=>x>=K-1e-9);const A=rem.length?rem.reduce((a,b)=>a+b,0)/rem.length:0;return{pl,c,out,sev,red:1-sev/S0,A}});
+  const best={};ev.forEach(p=>{if(!best[p.out]||p.sev<best[p.out].sev-1e-12)best[p.out]=p});
+  const front=Object.values(best).sort((a,b)=>a.out-b.out);
+  const maxRed=Math.max(...ev.map(p=>p.red));
+  // codo: punto de la frontera más lejos de la recta entre extremos
+  const e0=front[0],e1=front[front.length-1];let elbow=null,dm=-1;front.forEach(p=>{const d=Math.abs((e1.out-e0.out)*(e0.red-p.red)-(e1.red-e0.red)*(e0.out-p.out));if(p!==e0&&p!==e1&&d>dm){dm=d;elbow=p}});
+  const gapRule=front.filter(p=>p.A<=A0+1e-9).reduce((a,b)=>b.out>a.out?b:a,front[0]);
+  const inp=document.getElementById("rho");inp.max=(Math.floor(maxRed*200)/200).toFixed(3);
+  const s=document.getElementById("rhoChart"),h=document.getElementById("rhoHh"),st=document.getElementById("rhoStats"),msg=document.getElementById("rhoMsg");
+  function draw(){const rho=+inp.value;document.getElementById("rhoV").textContent=(rho*100).toFixed(1)+"%";
+    const feas=front.filter(p=>p.red>=rho-1e-9);const pick=feas.reduce((a,b)=>b.out>a.out||(b.out===a.out&&b.sev<a.sev)?b:a);
+    clear(s);const L=40,R=370,T=18,B=210,lo=0.10,hi=0.32,X=x=>L+(x-lo)/(hi-lo)*(R-L),Y=y=>B-y/4.4*(B-T);
+    [0,1,2,3,4].forEach(t=>{el("line",{x1:L,x2:R,y1:Y(t),y2:Y(t),stroke:v("grid")},s);txt(s,L-8,Y(t)+4,t,{"text-anchor":"end",class:"m"})});
+    [0.10,0.15,0.20,0.25,0.30].forEach(t=>txt(s,X(t),B+16,(t*100)+"%",{"text-anchor":"middle",class:"m"}));
+    txt(s,R,B+34,"reducción de severidad",{"text-anchor":"end",class:"m","font-size":11});txt(s,L,T-6,"hogares que salen",{class:"m","font-size":11});
+    el("rect",{x:L,y:T,width:Math.max(0,X(rho)-L),height:B-T,fill:v("poor-soft"),opacity:0.55},s);
+    ev.forEach(p=>{if(p.red>=lo)el("circle",{cx:X(p.red),cy:Y(p.out)+((p.pl[0]*7+p.pl[3]*3)%9-4),r:1.6,fill:v("gray"),opacity:0.6},s)});
+    el("polyline",{points:front.map(p=>`${X(p.red)},${Y(p.out)}`).join(" "),fill:"none",stroke:v("accent"),"stroke-width":2},s);
+    front.forEach(p=>el("circle",{cx:X(p.red),cy:Y(p.out),r:4.5,fill:v("accent")},s));
+    el("circle",{cx:X(gapRule.red),cy:Y(gapRule.out),r:9,fill:"none",stroke:v("amber"),"stroke-width":2},s);txt(s,X(gapRule.red)-12,Y(gapRule.out)+20,"regla de la brecha",{fill:v("amber"),"font-size":11,"text-anchor":"end"});
+    if(elbow){el("rect",{x:X(elbow.red)-7,y:Y(elbow.out)-7,width:14,height:14,fill:"none",stroke:v("muted")},s);txt(s,X(elbow.red)+10,Y(elbow.out)-10,"codo",{class:"m","font-size":11})}
+    el("circle",{cx:X(pick.red),cy:Y(pick.out),r:6,fill:v("ink")},s);
+    clear(h);const L2=34,B2=210,T2=18,Y2=y=>B2-y/0.85*(B2-T2),bw=34;
+    [0,0.2,0.4,0.6,0.8].forEach(t=>{el("line",{x1:L2,x2:372,y1:Y2(t),y2:Y2(t),stroke:v("grid")},h);txt(h,L2-6,Y2(t)+4,t.toFixed(1),{"text-anchor":"end",class:"m"})});
+    S.forEach((x0,i)=>{const x=L2+8+i*42,c=pick.c[i];el("rect",{x,y:Y2(x0),width:bw,height:B2-Y2(x0),fill:"none",stroke:v("gray"),"stroke-dasharray":"3 2"},h);el("rect",{x,y:Y2(c),width:bw,height:B2-Y2(c),fill:c<K?v("accent"):v("poor"),rx:2},h);txt(h,x+bw/2,Y2(Math.max(c,x0))-6,c.toFixed(2),{"text-anchor":"middle","font-size":10,"font-family":"IBM Plex Mono, monospace"});if(pick.pl[i])txt(h,x+bw/2,B2+16,"×"+pick.pl[i],{"text-anchor":"middle",class:"m","font-size":11})});
+    el("line",{x1:L2,x2:372,y1:Y2(K),y2:Y2(K),stroke:v("amber"),"stroke-width":1.5},h);txt(h,L2+2,Y2(K)-4,"umbral",{"text-anchor":"start",fill:v("amber"),"font-size":11});
+    txt(h,L2,T2-6,"puntaje antes (punteado) y después; ×k = intervenciones",{class:"m","font-size":11});
+    const H=(n-pick.out)/N,M0=pick.c.filter(x=>x>=K).reduce((a,b)=>a+b,0)/N;
+    st.innerHTML=`<div class="stat"><b>${pct(H)}</b><span>H (antes ${pct(n/N)})</span></div><div class="stat"><b>${f2(pick.A)}</b><span>A de los que siguen pobres (antes ${f2(A0)})</span></div><div class="stat"><b>${M0.toFixed(3)}</b><span>M0 = H × A (antes ${(S.reduce((a,b)=>a+b,0)/N).toFixed(3)})</span></div><div class="stat"><b>−${pct(pick.red)}</b><span>severidad</span></div>`;
+    msg.textContent=pick===gapRule?`Este es el punto que escoge la regla "la brecha no crece": el plan que saca más hogares sin que A de los que quedan suba por encima de ${f2(A0)}.`:(pick.A>A0+1e-9?`Aquí A sube de ${f2(A0)} a ${f2(pick.A)}: salen los menos pobres y la brecha de los que quedan crece. Es el efecto que criticas del objetivo H.`:`Aquí A baja a ${f2(pick.A)}, pero el techo ya sacrifica más salidas de las necesarias para que la brecha no crezca.`);
+  }
+  inp.oninput=draw;draw();
+})();
+</script>
+
+</body></html>

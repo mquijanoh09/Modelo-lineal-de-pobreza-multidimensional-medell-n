@@ -1,0 +1,308 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Simulador de severidad educativa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de lectura con dos laboratorios (el juguete y Antioquia), cada uno con controles arriba y gráficas abajo */
+:root{
+  --bg:#f5f7f6; --surface:#ffffff; --ink:#15302c; --muted:#5a6f6b; --line:#d5dfdc;
+  --teal:#1f6f66; --teal-soft:#d6ebe7; --gold:#d9921a; --gold-soft:#f8e6c4; --rose:#b2453a;
+  --f-display:"Young Serif", Georgia, serif; --f-body:"IBM Plex Sans", system-ui, sans-serif; --f-mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --surface:#16211f; --ink:#e3eeeb; --muted:#93a8a3; --line:#2a3a37;
+  --teal:#5cc2b4; --teal-soft:#1d3b37; --gold:#f0b04a; --gold-soft:#3d3018; --rose:#ec7d70; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --surface:#16211f; --ink:#e3eeeb; --muted:#93a8a3; --line:#2a3a37;
+  --teal:#5cc2b4; --teal-soft:#1d3b37; --gold:#f0b04a; --gold-soft:#3d3018; --rose:#ec7d70; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:920px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:2.1rem} h2{font-size:1.5rem} h3{font-size:1.1rem}
+p{margin:0;max-width:68ch}
+.eyebrow{font:500 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+section{display:flex;flex-direction:column;gap:16px}
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.formula{font-family:var(--f-mono);font-size:.95rem;background:var(--teal-soft);color:var(--ink);padding:10px 14px;border-radius:6px;overflow-x:auto;white-space:nowrap}
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.kid{border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.kid:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.kid[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.kid .nm{font-weight:600;font-size:.9rem}
+.kid .meta{font:.78rem var(--f-mono);color:var(--muted)}
+.kid svg{width:100%;height:auto;max-width:110px}
+.row{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .v{font:500 1.35rem var(--f-mono);font-variant-numeric:tabular-nums}
+.stat .l{font-size:.78rem;color:var(--muted)}
+.ctrl{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 220px}
+.ctrl label{font-size:.82rem;color:var(--muted)}
+.ctrl output{font:500 1rem var(--f-mono);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:.85rem;background:var(--surface);color:var(--ink);border:0;padding:6px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--teal);color:var(--surface)}
+.btn{font:inherit;font-size:.85rem;background:transparent;color:var(--teal);border:1px solid var(--teal);border-radius:6px;padding:5px 12px;cursor:pointer}
+.chart{overflow-x:auto} .chart svg{display:block;width:100%;height:auto;min-width:520px}
+.chart text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chart .lbl{fill:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:12px;height:3px;margin-right:6px;vertical-align:middle;background:var(--c)}
+.note{font-size:.85rem;color:var(--muted)}
+.callout{border-left:3px solid var(--gold);padding:4px 0 4px 14px;max-width:68ch}
+ol.steps{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:12px;max-width:70ch}
+table{border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums;width:100%}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted)}
+.tbl{overflow-x:auto}
+code{font-family:var(--f-mono);font-size:.9em}
+@media (prefers-reduced-motion:no-preference){.kid{transition:border-color .15s}}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:12px">
+  <div class="eyebrow">Modelo 1 · rezago escolar · techo (9)</div>
+  <h1>Simulador de severidad educativa</h1>
+  <p>El IPM dice si un niño está rezagado o no. La severidad educativa mira <em>cuántos años</em> va atrasado y castiga el atraso al cuadrado, para que el modelo no abandone a los niños que van más lejos. Aquí puedes ver, primero con seis niños y después con los 215 niños de Antioquia, cómo funciona el techo y qué cuesta cada valor de ρ<sub>e</sub>.</p>
+</header>
+
+<section>
+  <div class="eyebrow">Parte 1</div>
+  <h2>Por qué el atraso va al cuadrado</h2>
+  <p>Cada niño es un cuadrado de a × a casillas: su aporte a la severidad es a². Nivelarlo un año le quita la franja exterior, que tiene <strong>2a − 1</strong> casillas. Por eso nivelar al niño con 8 años de atraso baja 15, y nivelar al de 1 año baja solo 1. Toca a los niños para nivelarlos.</p>
+  <div class="formula">(a − z)² = a² − (2a − 1)·z   con z ∈ {0, 1}   ⇒   lineal y exacta</div>
+  <div class="lab">
+    <div class="row">
+      <div class="seg" role="group" aria-label="Exponente de la toy">
+        <button id="ta1" aria-pressed="false">α = 1 (contar años)</button><button id="ta2" aria-pressed="true">α = 2 (cuadrado)</button>
+      </div>
+      <button class="btn" id="treset">Reiniciar</button>
+    </div>
+    <div class="kids" id="kids"></div>
+    <div class="tally">
+      <div class="stat"><span class="v" id="tsev">–</span><span class="l">Severidad de los seis</span></div>
+      <div class="stat"><span class="v" id="tred">–</span><span class="l">Reducción lograda (ρ<sub>e</sub>)</span></div>
+      <div class="stat"><span class="v" id="tn">–</span><span class="l">Nivelaciones usadas (cada una cuesta lo mismo)</span></div>
+      <div class="stat"><span class="v" id="tipm">–</span><span class="l">Niños que salen del rezago del IPM</span></div>
+    </div>
+    <p class="callout" id="tmsg"></p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Parte 2</div>
+  <h2>Los 215 niños rezagados de Antioquia</h2>
+  <p>Mueve ρ<sub>e</sub>, la fracción de la severidad inicial que el techo obliga a eliminar. El simulador busca la forma más barata de cumplirlo y la compara con la asignación por sorteo de los Modelos 3 y 4. Cada niño de la muestra representa <code>FEX_C</code> niños. Pagarle el año a cada niño representado cuesta la asignación por alumno 2025 del SGP para Antioquia según su zona y el nivel que cursaría: entre $2.71 M (primaria urbana) y $4.18 M (media rural).</p>
+  <div class="lab">
+    <div class="row">
+      <div class="ctrl" style="flex:2 1 300px">
+        <label for="rho">Techo ρ<sub>e</sub>: eliminar esta fracción de SevEdu₀</label>
+        <input type="range" id="rho" min="0" max="0.374" step="0.002" value="0.29">
+        <output id="rhoOut">29 %</output>
+      </div>
+      <div class="ctrl">
+        <label>Exponente α</label>
+        <div class="seg" role="group" aria-label="Exponente">
+          <button data-a="1" aria-pressed="false">1</button><button data-a="2" aria-pressed="true">2</button><button data-a="3" aria-pressed="false">3</button>
+        </div>
+      </div>
+      <div class="ctrl">
+        <label>Quién escoge a los niños</label>
+        <div class="seg" role="group" aria-label="Modo">
+          <button data-m="solver" aria-pressed="true">Solver (M1–M2)</button><button data-m="sorteo" aria-pressed="false">Sorteo (M3–M4)</button>
+        </div>
+      </div>
+    </div>
+    <div class="tally">
+      <div class="stat"><span class="v" id="kCost">–</span><span class="l">Costo de cumplir el techo</span></div>
+      <div class="stat"><span class="v" id="kKids">–</span><span class="l">Niños nivelados (representados)</span></div>
+      <div class="stat"><span class="v" id="kSev">–</span><span class="l">SevEdu después / SevEdu₀</span></div>
+      <div class="stat"><span class="v" id="kMarg">–</span><span class="l">Costo del último punto de severidad</span></div>
+    </div>
+    <div>
+      <h3>Frontera: cuánto cuesta cada ρ<sub>e</sub></h3>
+      <div class="legend"><span style="--c:var(--teal)">Solver (más barato posible)</span><span style="--c:var(--rose)">Sorteo (esperado)</span><span style="--c:var(--gold)">Solo el objetivo H, sin techo</span></div>
+    </div>
+    <div class="chart" id="front"></div>
+    <div>
+      <h3>¿A quién se nivela?</h3>
+      <div class="legend"><span style="--c:var(--line)">Niños rezagados representados</span><span style="--c:var(--teal)">Nivelados un año</span></div>
+    </div>
+    <div class="chart" id="bars"></div>
+    <p class="callout" id="msg"></p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Parte 3</div>
+  <h2>Cómo se escoge ρ<sub>e</sub></h2>
+  <p>ρ<sub>e</sub> no sale de una fórmula: es una decisión de política que se toma mirando la frontera. Se hace en cuatro pasos, y los tres primeros se pueden leer en este simulador.</p>
+  <ol class="steps">
+    <li><strong>Acotar el rango.</strong> En un año cada niño solo puede bajar un año de atraso, así que aunque se nivele a los 215 la severidad baja como máximo <span id="pMax">37.4 %</span>. Cualquier ρ<sub>e</sub> por encima hace infactible el modelo.</li>
+    <li><strong>Ver qué hace el modelo sin techo.</strong> El objetivo H solo nivela a los niños de hogares donde quitar el rezago los saca de la pobreza: <span id="pBase">29 niños de 25 hogares</span>. Eso baja la severidad apenas <span id="pBaseR">1.3 %</span>. Ese es el abandono que el techo corrige.</li>
+    <li><strong>Buscar los codos.</strong> Con α = 2 la frontera del solver es convexa y cambia de pendiente cada vez que se acaba un grupo de atraso. Los codos grandes están donde se acaban los niños con 3 o más años (≈ 29 %) y con 2 o más (≈ 33.6 %). Después de ahí cada punto de severidad cuesta cerca de 2 y luego 5 veces más.</li>
+    <li><strong>Correr el MILP completo.</strong> Con el presupuesto B fijo, se resuelve el Modelo 1 para ρ<sub>e</sub> = 0, 5 %, 10 %, … hasta el máximo, y se grafica H contra ρ<sub>e</sub>. Cada peso del techo se le quita a las salidas de pobreza. Se escoge el punto antes de que H empiece a caer rápido, igual que con ρ en el §3.4. Ese paso no lo puede hacer este simulador, porque necesita los costos de todos los hogares.</li>
+  </ol>
+  <p class="callout"><strong>Propuesta para defender:</strong> usar ρ<sub>e</sub> ≈ 29 % como valor central, que equivale a decir "todo niño pobre con 3 o más años de atraso recibe un año de nivelación", y mostrar la sensibilidad en 20 % y 33.6 %. Si el MILP completo muestra que a 29 % se pierden demasiadas salidas, se baja al codo anterior.</p>
+  <div class="tbl"><table id="tcodos"><thead><tr><th>Nivelar a todos con atraso ≥</th><th>Niños (muestra)</th><th>ρ<sub>e</sub> alcanzado</th><th>Costo acumulado</th><th>Costo de 1 punto de severidad</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section>
+  <div class="eyebrow">Supuestos</div>
+  <p class="note">Datos: GEIH/DANE, niños de 7 a 17 años en hogares pobres de Antioquia con atraso ≥ 1 (215 en la muestra, ≈ 113,215 representados). Costo: asignación por alumno (tipología) vigencia 2025 del SGP para la ETC Antioquia, por zona (cabecera = urbana; centro poblado y rural disperso = rural) y nivel del grado siguiente al último aprobado: urbana primaria $2,709,038, secundaria $3,047,670, media $3,216,987; rural primaria $3,521,752, secundaria $3,961,971, media $4,182,081 (DNP, <a href="https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Distribuciones%20SGP/Anexos%201%20al%204%20DD%20SGP-96-2025.xlsx">Anexo 1, DD SGP-96-2025</a>). Medellín es una ETC aparte con valores ~2 % menores; la GEIH no identifica el municipio, así que se usan los de Antioquia. El "solver" aquí es una regla voraz que ordena por reducción por peso, (2a − 1)/costo; como el costo y la reducción escalan igual con <code>FEX_C</code>, esa regla es casi óptima para el techo solo. El MILP real además decide las demás privaciones y comparte el presupuesto, así que sus costos pueden diferir. El sorteo usa la cobertura esperada; un sorteo concreto varía alrededor de esa recta y además llega a niños de hogares no pobres, lo que lo encarece más.</p>
+</section>
+</div>
+
+<script>
+const RAW=[["8369647",2,3,245.8,17,0.45,3961971],["8369647",2,1,245.8,12,0.45,3961971],["8370162",3,1,87.5,15,0.39,3961971],["8370279",3,4,368.0,15,0.61,3961971],["8370279",3,1,368.0,13,0.61,3961971],["8370279",3,2,368.0,10,0.61,3521752],["8370282",3,2,172.8,10,0.47,3521752],["8370284",3,2,392.0,10,0.55,3521752],["8371743",1,4,2394.5,17,0.4,3047670],["8372047",2,1,306.4,14,0.43,3961971],["8372047",2,1,306.4,13,0.43,3961971],["8372047",2,3,306.4,13,0.43,3521752],["8375882",2,1,206.8,9,0.35,3521752],["8376038",3,2,326.8,13,0.42,3961971],["8377529",3,2,112.8,15,0.35,3961971],["8377565",3,6,373.0,17,0.48,3961971],["8377565",3,4,373.0,15,0.48,3961971],["8377565",3,3,373.0,11,0.48,3521752],["8377702",3,5,352.0,17,0.47,3961971],["8377706",3,6,389.4,17,0.37,3961971],["8380252",3,2,212.5,16,0.35,3961971],["8383121",3,1,296.0,11,0.43,3521752],["8383122",3,1,264.2,13,0.43,3961971],["8383122",3,2,264.2,11,0.43,3521752],["8383185",1,4,558.2,15,0.4,3047670],["8383241",3,1,453.7,15,0.35,3961971],["8383241",3,1,453.7,12,0.35,3961971],["8383360",3,6,400.7,17,0.65,3961971],["8383360",3,5,400.7,16,0.65,3961971],["8383360",3,4,400.7,16,0.65,3961971],["8383363",3,9,356.3,15,0.48,3521752],["8389221",3,1,372.6,16,0.39,4182081],["8389221",3,2,372.6,13,0.39,3961971],["8389225",3,5,428.1,14,0.35,3521752],["8389225",3,4,428.1,12,0.35,3521752],["8389228",3,2,454.2,12,0.35,3521752],["8389356",1,1,361.5,12,0.45,3047670],["8389356",1,1,361.5,9,0.45,2709038],["8389375",3,3,436.7,17,0.35,3961971],["8389375",3,1,436.7,10,0.35,3521752],["8389381",3,4,539.4,16,0.34,3961971],["8392518",3,4,73.6,12,0.45,3521752],["8392520",3,2,112.3,13,0.35,3961971],["8392649",2,6,225.9,17,0.34,3961971],["8392654",2,1,334.3,16,0.35,4182081],["8392654",2,2,334.3,14,0.35,3961971],["8397797",3,4,464.1,16,0.35,3961971],["8397797",3,1,464.1,14,0.35,3961971],["8397987",2,2,523.5,8,0.44,3521752],["8397993",2,1,221.4,13,0.39,3961971],["8401106",1,1,1563.0,14,0.35,3047670],["8401382",1,1,378.4,15,0.39,3047670],["8404595",1,1,444.2,15,0.35,3047670],["8406723",3,1,240.2,15,0.35,3961971],["8409863",1,1,1357.1,15,0.35,3047670],["8409984",1,1,2071.1,16,0.34,3216987],["8409984",1,1,2071.1,9,0.34,2709038],["8409993",1,11,863.1,17,0.39,2709038],["8409993",1,1,863.1,8,0.39,2709038],["8413294",2,1,256.7,12,0.34,3961971],["8413306",2,3,321.7,11,0.39,3521752],["8413306",2,2,321.7,10,0.39,3521752],["8413306",2,2,321.7,8,0.39,3521752],["8413316",3,1,568.9,15,0.43,3961971],["8413333",2,3,147.7,11,0.35,3521752],["8413376",1,1,988.8,8,0.35,2709038],["8413524",3,1,213.2,17,0.34,4182081],["8413525",3,2,148.6,15,0.44,3961971],["8413528",3,3,220.1,17,0.39,3961971],["8413529",3,5,319.2,16,0.58,3961971],["8413529",3,1,319.2,15,0.58,3961971],["8413669",2,1,66.9,13,0.43,3961971],["8413669",2,1,66.9,8,0.43,3521752],["8416183",3,2,103.7,17,0.39,4182081],["8419284",1,9,2898.0,16,0.61,2709038],["8419308",2,2,227.1,15,0.34,3961971],["8419358",1,1,711.4,14,0.35,3047670],["8422860",2,3,564.9,15,0.44,3961971],["8422875",3,5,260.7,16,0.49,3961971],["8422878",3,2,541.8,13,0.49,3961971],["8422878",3,1,541.8,13,0.49,3961971],["8422898",3,1,668.9,14,0.62,3961971],["8422898",3,2,668.9,14,0.62,3961971],["8422898",3,2,668.9,11,0.62,3521752],["8422899",3,2,477.5,8,0.53,3521752],["8422901",3,4,209.0,15,0.35,3961971],["8422902",3,1,255.2,13,0.39,3961971],["8422953",3,1,552.1,10,0.35,3521752],["8422955",3,1,678.5,11,0.39,3521752],["8423035",1,1,849.1,8,0.39,2709038],["8426373",1,1,2940.1,16,0.51,3216987],["8426373",1,1,2940.1,7,0.51,2709038],["8426379",1,1,1894.2,15,0.39,3047670],["8426474",3,3,635.6,12,0.39,3521752],["8426474",3,1,635.6,8,0.39,3521752],["8426534",3,1,87.2,12,0.35,3961971],["8426541",3,3,199.5,14,0.43,3961971],["8426541",3,1,199.5,9,0.43,3521752],["8426562",3,1,163.5,12,0.34,3961971],["8426567",3,2,88.3,15,0.39,3961971],["8426587",1,2,1460.5,14,0.35,3047670],["8426959",2,4,579.2,16,0.53,3961971],["8426959",2,1,579.2,9,0.53,3521752],["8426968",2,5,299.2,14,0.43,3521752],["8427013",3,7,507.5,17,0.47,3521752],["8427013",3,5,507.5,14,0.47,3521752],["8427013",3,4,507.5,12,0.47,3521752],["8427013",3,3,507.5,9,0.47,3521752],["8427013",3,1,507.5,7,0.47,3521752],["8427014",3,4,258.7,13,0.43,3521752],["8427015",3,2,311.9,17,0.47,4182081],["8427015",3,1,311.9,11,0.47,3521752],["8427016",3,2,507.5,14,0.52,3961971],["8427016",3,5,507.5,11,0.52,3521752],["8427016",3,3,507.5,9,0.52,3521752],["8427018",3,8,480.8,14,0.57,3521752],["8427018",3,2,480.8,12,0.57,3521752],["8427018",3,1,480.8,8,0.57,3521752],["8427020",3,4,507.5,15,0.52,3961971],["8427020",3,5,507.5,13,0.52,3521752],["8427020",3,3,507.5,11,0.52,3521752],["8427020",3,2,507.5,9,0.52,3521752],["8427022",3,6,507.5,12,0.47,3521752],["8427022",3,3,507.5,9,0.47,3521752],["8427023",3,1,507.5,7,0.37,3521752],["8430387",1,2,870.6,16,0.35,3047670],["8430405",1,4,447.5,17,0.35,3047670],["8432780",3,4,174.9,14,0.34,3521752],["8432780",3,4,174.9,16,0.34,3961971],["8444188",1,3,2340.3,16,0.4,3047670],["8444188",1,3,2340.3,16,0.4,3047670],["8444193",1,1,930.4,15,0.45,3047670],["8444217",1,1,1356.3,11,0.35,2709038],["8444231",1,1,3462.1,7,0.39,2709038],["8444400",1,2,694.9,16,0.53,3047670],["8444408",1,3,516.1,15,0.56,3047670],["8444414",1,6,725.5,17,0.38,3047670],["8447215",1,9,717.5,17,0.37,2709038],["8447217",1,6,930.3,15,0.34,2709038],["8447217",1,5,930.3,13,0.34,2709038],["8447217",1,3,930.3,9,0.34,2709038],["8449765",2,2,245.9,12,0.35,3521752],["8449789",2,1,169.3,7,0.35,3521752],["8449794",2,1,274.2,13,0.45,3961971],["8452782",1,4,448.7,14,0.35,2709038],["8452836",2,1,429.2,9,0.39,3521752],["8452853",1,2,676.2,17,0.35,3216987],["8452859",3,2,749.8,11,0.41,3521752],["8452949",3,2,349.0,11,0.58,3521752],["8452951",3,4,327.0,15,0.47,3961971],["8452951",3,2,327.0,11,0.47,3521752],["8454915",1,1,591.6,15,0.39,3047670],["8454915",1,2,591.6,13,0.39,3047670],["8454930",3,2,149.1,17,0.39,4182081],["8454936",2,1,174.5,15,0.35,3961971],["8458145",1,1,289.3,10,0.35,2709038],["8458165",3,3,409.9,17,0.39,3961971],["8458165",3,5,409.9,16,0.39,3961971],["8458185",3,1,428.8,12,0.57,3961971],["8458190",3,3,619.4,12,0.37,3521752],["8458190",3,1,619.4,8,0.37,3521752],["8458196",3,1,339.5,16,0.43,4182081],["8458198",3,3,718.1,12,0.47,3521752],["8458198",3,1,718.1,8,0.47,3521752],["8458230",3,3,155.0,15,0.49,3961971],["8458234",3,1,175.3,14,0.39,3961971],["8458249",3,6,164.6,15,0.49,3521752],["8458249",3,4,164.6,13,0.49,3521752],["8458257",3,5,81.8,15,0.37,3521752],["8458322",1,2,526.3,13,0.45,3047670],["8458322",1,2,526.3,16,0.45,3047670],["8458323",1,1,778.1,8,0.35,2709038],["8458394",3,2,182.4,12,0.49,3521752],["8458430",2,1,185.7,9,0.35,3521752],["8461425",3,4,670.2,15,0.57,3961971],["8461427",3,4,470.4,16,0.41,3961971],["8461429",3,1,295.3,14,0.37,3961971],["8461432",3,1,635.1,9,0.46,3521752],["8461434",3,2,167.6,17,0.43,4182081],["8461442",3,1,670.2,9,0.47,3521752],["8461444",3,3,670.2,15,0.43,3961971],["8461444",3,4,670.2,17,0.43,3961971],["8461444",3,2,670.2,15,0.43,3961971],["8461444",3,2,670.2,16,0.43,3961971],["8461451",3,1,427.2,7,0.47,3521752],["8461471",3,1,549.0,16,0.51,4182081],["8461471",3,2,549.0,12,0.51,3521752],["8461476",3,1,524.7,16,0.37,4182081],["8461476",3,1,524.7,7,0.37,3521752],["8461497",2,6,237.9,17,0.4,3961971],["8463619",3,1,57.9,11,0.39,3521752],["8463621",2,1,212.5,13,0.37,3961971],["8463621",2,1,212.5,9,0.37,3521752],["8464864",3,1,89.1,14,0.45,3961971],["8466962",3,1,142.2,7,0.37,3521752],["8469441",1,1,330.5,10,0.47,2709038],["8469446",1,3,576.4,17,0.37,3047670],["8469454",1,4,221.2,16,0.53,3047670],["8469471",1,3,228.9,15,0.41,3047670],["8469476",1,2,450.2,11,0.47,2709038],["8469478",1,4,255.3,17,0.47,3047670],["8469478",1,2,255.3,13,0.47,3047670],["8471160",2,1,253.3,12,0.35,3961971],["8471160",2,4,253.3,11,0.35,3521752],["8471160",2,1,253.3,10,0.35,3521752],["8471174",3,2,93.6,12,0.35,3521752],["8477075",1,7,703.8,17,0.34,2709038],["8483455",3,7,366.3,17,0.39,3521752],["8483455",3,5,366.3,14,0.39,3521752],["8483460",3,5,389.8,16,0.41,3961971],["8483460",3,3,389.8,12,0.41,3521752],["8483465",3,1,242.8,14,0.41,3961971],["8483486",3,5,400.4,13,0.53,3521752],["8483486",3,3,400.4,11,0.53,3521752],["8483487",3,2,406.9,9,0.37,3521752]];
+const kids=RAW.map(r=>({h:r[0],z:r[1],a:r[2],w:r[3],edad:r[4],ipm:r[5],v:r[6]}));
+const fmtMM=v=>"$"+(v/1e9).toLocaleString("es-CO",{maximumFractionDigits:v<1e10?1:0})+" mm";
+const pct=v=>(100*v).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
+const num=v=>Math.round(v).toLocaleString("es-CO");
+const d=(a,al)=>Math.pow(a,al)-Math.pow(a-1,al);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------- Parte 1: toy ---------- */
+const TOY=[{n:"Ana",a:1},{n:"Beto",a:1},{n:"Carla",a:2},{n:"Dani",a:3},{n:"Eli",a:5},{n:"Fer",a:8}];
+let tA=2; const tz=TOY.map(()=>0);
+function kidSVG(a,z){
+  const s=10,g=1,N=8,size=N*s+2; let out=`<svg viewBox="0 0 ${size} ${size}" aria-hidden="true">`;
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+    let f="none",st=css("--line");
+    if(i<a&&j<a){ const strip=z&&(i===a-1||j===a-1); f=strip?css("--gold"):css("--teal"); st="none";
+    }
+    if(tA===1){ f="none";st=css("--line"); if(i===0&&j<a){f=(z&&j===a-1)?css("--gold"):css("--teal");st="none";} }
+    out+=`<rect x="${1+j*s}" y="${1+(N-1-i)*s}" width="${s-g}" height="${s-g}" rx="1.5" fill="${f}" stroke="${st}" stroke-width="0.6"/>`;
+  }
+  return out+"</svg>";
+}
+function renderToy(){
+  const el=document.getElementById("kids"); el.innerHTML="";
+  TOY.forEach((k,i)=>{
+    const b=document.createElement("button"); b.className="kid"; b.id="kid"+i; b.setAttribute("aria-pressed",tz[i]?"true":"false");
+    const val=Math.pow(k.a,tA), red=d(k.a,tA);
+    b.innerHTML=kidSVG(k.a,tz[i])+`<span class="nm">${k.n}</span><span class="meta">atraso ${k.a} → ${k.a-tz[i]}</span><span class="meta">aporta ${Math.pow(k.a-tz[i],tA)} · nivelar baja ${red}</span>`;
+    b.onclick=()=>{tz[i]=1-tz[i];renderToy();}; el.appendChild(b);
+  });
+  const S0=TOY.reduce((s,k)=>s+Math.pow(k.a,tA),0), S=TOY.reduce((s,k,i)=>s+Math.pow(k.a-tz[i],tA),0);
+  const n=tz.reduce((s,x)=>s+x,0);
+  const out=TOY.filter((k,i)=>tz[i]&&k.a===1).length;
+  document.getElementById("tsev").textContent=`${S} de ${S0}`;
+  document.getElementById("tred").textContent=pct((S0-S)/S0);
+  document.getElementById("tn").textContent=n;
+  document.getElementById("tipm").textContent=out;
+  let m;
+  if(n===0) m=tA===2?"Prueba con dos nivelaciones. Si nivelas a Ana y Beto, que es lo que haría un modelo que solo mira H, la severidad baja 2 de 104. Si nivelas a Fer y Eli baja 24.":"Con α = 1 cada nivelación baja exactamente 1, sin importar a quién. El modelo queda indiferente entre Ana y Fer, y el desempate lo hace H, que prefiere a Ana.";
+  else if(tA===1) m=`Con α = 1 todas las nivelaciones valen lo mismo (bajaste ${S0-S}). Esta medida no distingue a quien va 8 años atrás de quien va 1. Por eso se usa α = 2.`;
+  else { const top=[...TOY.map(k=>d(k.a,2))].sort((x,y)=>y-x).slice(0,n).reduce((s,x)=>s+x,0);
+    m=`Con ${n} nivelaci${n===1?"ón":"ones"} bajaste ${S0-S}. Lo máximo posible con ${n} es ${top}, nivelando a los más atrasados. `+(out?`Nivelar a Ana o Beto sí quita la privación del IPM (su atraso llega a 0), pero baja poco la severidad: ese es el choque entre H y equidad que resuelve el techo.`:`Ninguno de estos niños sale del rezago del IPM este año, porque su atraso no llega a 0. Es inversión en equidad que el techo exige.`); }
+  document.getElementById("tmsg").textContent=m;
+  document.getElementById("ta1").setAttribute("aria-pressed",tA===1);
+  document.getElementById("ta2").setAttribute("aria-pressed",tA===2);
+}
+document.getElementById("ta1").onclick=()=>{tA=1;renderToy();};
+document.getElementById("ta2").onclick=()=>{tA=2;renderToy();};
+document.getElementById("treset").onclick=()=>{tz.fill(0);renderToy();};
+
+/* ---------- Parte 2: Antioquia ---------- */
+let A=2, mode="solver";
+const hh={}; kids.forEach(k=>(hh[k.h]=hh[k.h]||[]).push(k));
+const baseSet=new Set(); Object.values(hh).forEach(v=>{ if(Math.max(...v.map(k=>k.a))===1 && v[0].ipm-0.05<0.335) v.forEach(k=>baseSet.add(k)); });
+const W=kids.reduce((s,k)=>s+k.w,0), CT=kids.reduce((s,k)=>s+k.w*k.v,0);
+function model(al){
+  const S0=kids.reduce((s,k)=>s+k.w*Math.pow(k.a,al),0);
+  const D=kids.reduce((s,k)=>s+k.w*d(k.a,al),0);
+  const order=[...kids].sort((x,y)=>(d(y.a,al)/y.v-d(x.a,al)/x.v)||(y.w-x.w));
+  const pts=[[0,0]]; let r=0,c=0;
+  order.forEach(k=>{r+=k.w*d(k.a,al)/S0;c+=k.w*k.v;pts.push([r,c]);});
+  const baseR=[...baseSet].reduce((s,k)=>s+k.w*d(k.a,al),0)/S0, baseC=[...baseSet].reduce((s,k)=>s+k.w*k.v,0);
+  return {S0,D,order,pts,rmax:D/S0,baseR,baseC,randSlope:CT/(D/S0)};
+}
+let M=model(2);
+function solve(rho){
+  const need=rho*M.S0; let got=0,c=0; const lev=new Set(); let last=null;
+  if(mode==="solver"){ for(const k of M.order){ if(got>=need-1e-9)break; got+=k.w*d(k.a,A); c+=k.w*k.v; lev.add(k); last=k; }
+    return {cost:c,got,lev,frac:null,marg:last?last.v/d(last.a,A):0}; }
+  const f=Math.min(1,need/M.D); return {cost:f*CT,got:f*M.D,lev:null,frac:f,marg:M.randSlope/M.S0};
+}
+function frontSVG(rho,res){
+  const w=760,h=300,pl=64,pr=16,pt=14,pb=40, X=v=>pl+v/0.40*(w-pl-pr), Y=v=>h-pb-(v/4e11)*(h-pt-pb);
+  let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Costo contra rho_e">`;
+  for(let v=0;v<=4e11;v+=1e11){s+=`<line x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${css("--line")}" stroke-width="1"/><text x="${pl-8}" y="${Y(v)+4}" text-anchor="end">${v/1e9}</text>`;}
+  for(let v=0;v<=0.4001;v+=0.05){s+=`<text x="${X(v)}" y="${h-pb+18}" text-anchor="middle">${Math.round(v*100)}%</text>`;}
+  s+=`<text x="${pl}" y="${h-4}" class="lbl">ρₑ →</text><text x="12" y="${pt+4}" class="lbl" transform="rotate(-90 12 ${pt+4})" text-anchor="end">mil millones $</text>`;
+  s+=`<rect x="${X(M.rmax)}" y="${pt}" width="${X(0.40)-X(M.rmax)}" height="${h-pt-pb}" fill="${css("--line")}" opacity=".45"/><text x="${(X(M.rmax)+X(0.4))/2}" y="${pt+14}" text-anchor="middle">infactible</text>`;
+  const ry=M.randSlope*M.rmax; s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(M.rmax)}" y2="${Y(ry)}" stroke="${css("--rose")}" stroke-width="2" stroke-dasharray="6 4"/>`;
+  s+=`<polyline fill="none" stroke="${css("--teal")}" stroke-width="2.5" points="${M.pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ")}"/>`;
+  s+=`<circle cx="${X(M.baseR)}" cy="${Y(M.baseC)}" r="6" fill="${css("--gold")}" stroke="${css("--surface")}" stroke-width="2"/><text x="${X(M.baseR)+10}" y="${Y(M.baseC)-8}" class="lbl">solo H: ${pct(M.baseR)} por ${fmtMM(M.baseC)}</text>`;
+  const cx=X(rho), cy=Y(res.cost);
+  s+=`<line x1="${cx}" x2="${cx}" y1="${pt}" y2="${h-pb}" stroke="${css("--ink")}" stroke-width="1" stroke-dasharray="2 3"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="6" fill="${mode==="solver"?css("--teal"):css("--rose")}" stroke="${css("--surface")}" stroke-width="2"/>`;
+  const tx=cx>w*0.6?cx-10:cx+10, an=cx>w*0.6?"end":"start";
+  s+=`<text x="${tx}" y="${cy-12}" text-anchor="${an}" class="lbl">${fmtMM(res.cost)}</text>`;
+  return s+"</svg>";
+}
+function barsSVG(res){
+  const groups=[]; for(let a=1;a<=11;a++){const g=kids.filter(k=>k.a===a); if(g.length)groups.push({a,g});}
+  const w=760,h=240,pl=64,pr=16,pt=14,pb=40, bw=(w-pl-pr)/groups.length;
+  const maxW=Math.max(...groups.map(g=>g.g.reduce((s,k)=>s+k.w,0)));
+  const top=Math.ceil(maxW/10000)*10000, Y=v=>h-pb-v/top*(h-pt-pb);
+  let s=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Niños nivelados por años de atraso">`;
+  for(let v=0;v<=top;v+=10000){s+=`<line x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="${css("--line")}"/><text x="${pl-8}" y="${Y(v)+4}" text-anchor="end">${num(v)}</text>`;}
+  groups.forEach((G,i)=>{
+    const tot=G.g.reduce((s,k)=>s+k.w,0);
+    const lev=res.lev?G.g.filter(k=>res.lev.has(k)).reduce((s,k)=>s+k.w,0):tot*res.frac;
+    const x=pl+i*bw+bw*0.18, bwi=bw*0.64;
+    s+=`<rect x="${x}" y="${Y(tot)}" width="${bwi}" height="${Y(0)-Y(tot)}" fill="${css("--line")}" rx="2"/>`;
+    if(lev>0) s+=`<rect x="${x}" y="${Y(lev)}" width="${bwi}" height="${Y(0)-Y(lev)}" fill="${css("--teal")}" rx="2"/>`;
+    s+=`<text x="${x+bwi/2}" y="${h-pb+16}" text-anchor="middle" class="lbl">${G.a}</text><text x="${x+bwi/2}" y="${Y(tot)-5}" text-anchor="middle">${G.g.length}</text>`;
+  });
+  s+=`<text x="${pl}" y="${h-4}" class="lbl">años de atraso (número sobre la barra = niños en la muestra)</text>`;
+  return s+"</svg>";
+}
+function render(){
+  const rhoEl=document.getElementById("rho"); rhoEl.max=(Math.floor(M.rmax*1000)/1000).toString();
+  let rho=Math.min(+rhoEl.value,M.rmax);
+  document.getElementById("rhoOut").textContent=pct(rho)+`  (máximo posible en un año: ${pct(M.rmax)})`;
+  const res=solve(rho);
+  document.getElementById("kCost").textContent=fmtMM(res.cost);
+  document.getElementById("kKids").textContent=num(res.lev?[...res.lev].reduce((s,k)=>s+k.w,0):res.frac*W)+(res.lev?` (${res.lev.size} en muestra)`:"");
+  document.getElementById("kSev").textContent=pct(1-res.got/M.S0);
+  document.getElementById("kMarg").textContent=rho>0?"$"+(res.marg/1e6).toLocaleString("es-CO",{maximumFractionDigits:2})+" M":"–";
+  document.getElementById("front").innerHTML=frontSVG(rho,res);
+  document.getElementById("bars").innerHTML=barsSVG(res);
+  const sol=(()=>{const m0=mode;mode="solver";const r=solve(rho);mode="sorteo";const q=solve(rho);mode=m0;return [r.cost,q.cost];})();
+  let m="";
+  if(A===1) m="Con α = 1 todas las nivelaciones bajan la severidad lo mismo, así que el solver y el sorteo cuestan igual: la medida no sabe quién va más atrasado. Es la razón para usar α ≥ 2.";
+  else if(rho===0) m="Sin techo, el modelo solo nivela a los niños que hacen salir a su hogar del IPM (el punto dorado). Sube ρₑ para ver a quién obliga a atender el techo.";
+  else m=`Para eliminar ${pct(rho)} de la severidad, el solver gasta ${fmtMM(sol[0])} y el sorteo ${fmtMM(sol[1])}: focalizar ahorra ${fmtMM(sol[1]-sol[0])} (${pct(1-sol[0]/sol[1])}). `+(mode==="solver"?"El solver empieza por los niños más atrasados porque cada uno baja 2a − 1 y el precio por niño varía poco (de $2.7 M a $4.2 M).":"El sorteo reparte la misma cobertura en todos los grupos, así que gasta en niños de 1 año que bajan poco la severidad.");
+  document.getElementById("msg").textContent=m;
+  document.querySelectorAll("[data-a]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.a===A));
+  document.querySelectorAll("[data-m]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===mode));
+}
+document.getElementById("rho").addEventListener("input",render);
+document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{A=+b.dataset.a;M=model(A);render();});
+document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mode=b.dataset.m;render();});
+
+/* tabla de codos (α = 2) */
+(function(){
+  const M2=model(2), tb=document.querySelector("#tcodos tbody"); let rows="";
+  for(const t of [9,7,6,5,4,3,2,1]){ const g=kids.filter(k=>k.a>=t);
+    const r=g.reduce((s,k)=>s+k.w*d(k.a,2),0)/M2.S0, c=g.reduce((s,k)=>s+k.w*k.v,0); const gt=kids.filter(k=>k.a===t), vm=gt.reduce((s,k)=>s+k.w*k.v,0)/gt.reduce((s,k)=>s+k.w,0);
+    rows+=`<tr><td>${t} años</td><td>${g.length}</td><td>${pct(r)}</td><td>${fmtMM(c)}</td><td>$${(vm/(2*t-1)/1e6).toLocaleString("es-CO",{maximumFractionDigits:2})} M</td></tr>`; }
+  tb.innerHTML=rows;
+  document.getElementById("pMax").textContent=pct(M2.rmax);
+  const bh=new Set([...baseSet].map(k=>k.h)).size;
+  document.getElementById("pBase").textContent=`${baseSet.size} niños de ${bh} hogares`;
+  document.getElementById("pBaseR").textContent=pct(M2.baseR);
+})();
+renderToy(); render();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{renderToy();render();});
+new MutationObserver(()=>{renderToy();render();}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+</script>
+
+</body></html>

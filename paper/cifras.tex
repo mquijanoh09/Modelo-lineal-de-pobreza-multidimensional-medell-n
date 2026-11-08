@@ -1,0 +1,27 @@
+% Responsable: cada quien sus cifras (bloques separados para no chocar).
+% REGLA: toda cifra del texto sale de aquí y cada macro dice de qué CSV viene.
+% Si se repite una corrida, se cambia SOLO aquí y el paper queda coherente.
+% Formato: coma decimal, punto de miles (como en las diapositivas).
+
+% ===== Línea base (Martín) =============================================
+% Fuente: Modelos/04_linea_base.py
+\newcommand{\cMcero}{0,0387}          % M0 inicial (exacto: 0,038684)
+\newcommand{\cHogares}{3.732}         % hogares de Antioquia en la muestra
+\newcommand{\cIndicadores}{15}
+\newcommand{\cHcero}{\pendiente{H inicial}}
+\newcommand{\cAcero}{\pendiente{A inicial}}
+
+% ===== Modelos 1 y 2 (Martín) ==========================================
+% Fuente: \pendiente{CSV de resultados M1/M2 en el escenario común}
+
+% ===== Modelos 3 y 4 (Jerónimo) ========================================
+% Equidad, 100 réplicas para B <= 10. Fuente: resultados/m34/ic_bootstrap_equidad.csv
+% (personas que salen de la pobreza; IP = información perfecta, techo del M1)
+\newcommand{\cIPdiez}{161.254}
+\newcommand{\cMtresdiez}{95.779}
+\newcommand{\cMcuatrodiez}{103.756}
+\newcommand{\cMtresdiezPctIP}{59\,\%}
+\newcommand{\cMcuatrodiezPctIP}{64\,\%}
+% Costos: cociente M4/M3 con meta del 30 %. Fuente: resultados/m34/ic_bootstrap_costos.csv
+\newcommand{\cCocienteTreinta}{0,73}
+\newcommand{\cCocienteTreintaIC}{0,72--0,75}

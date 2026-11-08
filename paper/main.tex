@@ -1,0 +1,92 @@
+% =====================================================================
+%  Paper final — Optimización 1 (EAFIT), 2026-2
+%  Focalización del gasto para reducir el IPM en Antioquia:
+%  información perfecta, geográfica y mixta (Modelos 1-4)
+%
+%  Compilar:  latexmk -pdf main.tex      (o subir la carpeta a Overleaf)
+%  Regla de oro: cada quien edita SOLO sus archivos de secciones/
+%  (el responsable está en la primera línea de cada archivo).
+%  Las cifras van en cifras.tex, nunca escritas a mano en el texto.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+% Español si está instalado (Overleaf y TeX Live completo lo tienen);
+% si no, compila igual con nombres en español puestos a mano.
+\IfFileExists{spanish.ldf}{%
+  \usepackage[spanish,es-noshorthands,es-tabla]{babel}%
+}{%
+  \usepackage[english]{babel}%
+  \addto\captionsenglish{%
+    \renewcommand{\abstractname}{Resumen}%
+    \renewcommand{\refname}{Referencias}%
+    \renewcommand{\tablename}{Tabla}%
+    \renewcommand{\figurename}{Figura}%
+    \renewcommand{\appendixname}{Apéndice}%
+    \renewcommand{\contentsname}{Contenido}}%
+}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{icomma}            % coma decimal en modo matemático: $0,0387$
+\usepackage{booktabs,tabularx,multirow}
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{caption,subcaption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+% --- Marcas de trabajo pendiente (se ven en rojo en el PDF) -----------
+% Para la versión de entrega: cambiar \borradortrue por \borradorfalse.
+\newif\ifborrador \borradortrue
+\ifborrador
+  \newcommand{\pendiente}[1]{{\color{BrickRed}\textbf{[PENDIENTE:} #1\textbf{]}}}
+  \newcommand{\nota}[2]{{\color{NavyBlue}\textbf{[#1:} #2\textbf{]}}}
+\else
+  \newcommand{\pendiente}[1]{}
+  \newcommand{\nota}[2]{}
+\fi
+
+\input{notacion}   % macros de notación común a los 4 modelos
+\input{cifras}     % TODAS las cifras del paper, con su CSV de origen
+
+\title{Focalización del gasto público para reducir la pobreza multidimensional
+en Antioquia: el costo de no saber quién es pobre%
+\thanks{Proyecto final de Optimización 1, Universidad EAFIT.
+Adaptación de los Modelos 1--4 de \citet{hamie2024}.}}
+\author{Martín Quijano \and Jerónimo Vélez\\[2pt]
+\small Ingeniería de Sistemas, Universidad EAFIT}
+\date{Noviembre de 2026}
+
+\begin{document}
+\maketitle
+
+\input{secciones/00_resumen}
+
+\input{secciones/01_introduccion}
+\input{secciones/02_literatura}
+\section{Método}\label{sec:metodo}
+\input{secciones/03_datos}
+\input{secciones/04_notacion_comun}
+\input{secciones/05_modelos_1_2}
+\input{secciones/06_modelo_3}
+\input{secciones/07_modelo_4}
+\input{secciones/08_diseno_experimental}
+\section{Resultados}\label{sec:resultados}
+\input{secciones/09_resultados_1_2}
+\input{secciones/10_resultados_3_4}
+\input{secciones/11_comparacion}
+\input{secciones/12_discusion}
+\input{secciones/13_conclusiones}
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\appendix
+\input{apendices/A_linealizacion}
+\input{apendices/B_desviaciones}
+\input{apendices/C_costos}
+
+\end{document}

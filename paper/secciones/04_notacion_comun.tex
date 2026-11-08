@@ -1,0 +1,37 @@
+% Responsable: Jerónimo (relación entre los 4 modelos)
+% Tesis: los 4 modelos son el MISMO problema con distinta información sobre
+% quién es pobre. Esta tabla es el contrato: nadie usa otra notación.
+\subsection{Notación común y jerarquía de información}\label{sec:notacion}
+
+\begin{table}[ht]
+\centering\small
+\caption{Notación común a los cuatro modelos.}\label{tab:notacion}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+Símbolo & Tipo & Significado \\
+\midrule
+$i\in\Hog$, $j\in\Ind$ & conjuntos & hogares e indicadores \\
+$d\in\Zon$, $t\in\Tip$ & conjuntos & zonas geográficas; tipos de hogar (clústeres) \\
+$\Ind=\Upriv\cup\Vpub$ & partición & bienes privados y públicos (Modelo 4) \\
+$w_j$, $k$ & parámetros & peso del indicador; umbral de pobreza ($1/3$) \\
+$M_{ij}$ & parámetro binario & privación inicial \\
+$\HS_i$, $\HW_i$ & parámetros & tamaño del hogar; factor de expansión \\
+$\EpF_j$ & parámetro & costo de quitar una privación del indicador $j$ \\
+$R_{ij}\sim U[0,1]$ & parámetro aleatorio & sorteo fijo de cada par (Modelos 3--4) \\
+$\Ndec_{ij}$ & variable binaria & privación después de intervenir \\
+$\Esf_j$, $\Esf_{jd}$, $\Esf_{jt}$ & variables & gasto por indicador / celda / tipo \\
+$\Cont_i$ & variable continua & contribución del hogar al $\Mcero$ final \\
+$\cob_{jd}$ & variable continua & cobertura del par $(j,d)$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\pendiente{Párrafo: qué sabe el planificador en cada modelo.
+M1/M2: sabe quién es privado en cada indicador (información perfecta).
+M3: solo sabe cuántos privados hay por zona; los atendidos se sortean.
+M4: igual que M3, pero los bienes privados se asignan por tipo de hogar.}
+
+\pendiente{Figura conceptual: escalera de información M1 $\to$ M2 $\to$ M3 $\to$ M4.}
+
+\nota{Jerónimo}{Revisar con Martín la convención de $b1_i$: en el paper
+$b1_i=1$ significa que el hogar \emph{sale} de la pobreza.}

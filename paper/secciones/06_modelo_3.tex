@@ -1,19 +1,208 @@
 % Responsable: Jerónimo
-% Fuentes: docs_proyecto/revision-formulacion-modelo3.md, CLAUDE.md de Modelo3,
-% Seleccion_Variables_Restricciones_Modelo3.pdf, desviaciones-paper-m34-6nov.md
+% Fuentes: docs_proyecto/revision-formulacion-modelo3.md, CLAUDE.md de Modelo3 (§5, §6),
+% m34_mecanismo.py, desviaciones-paper-m34-6nov.md
 % Tesis: el Estado sabe CUÁNTOS privados hay por zona, no QUIÉNES; paga por
 % cobertura y el azar decide a quién llega (inclusión/exclusión).
 \subsection{Modelo 3: focalización geográfica estocástica}\label{sec:m3}
 
-\subsubsection{Idea}
-\pendiente{Gasto por par (indicador, zona) $\to$ cobertura $\cob_{jd}$ $\to$
-sorteo $R_{ij}$ $\to$ el hogar sale de la privación si $R_{ij}\le\cob_{jd}$.}
+\subsubsection{Supuesto de información}
+
+En el Modelo 3 el planificador conoce, para cada zona $d$ y cada indicador $j$,
+cuántas personas están privadas y cuánto cuesta atenderlas, pero no sabe
+\emph{quiénes} son. Es la situación de un programa que se asigna con estadísticas
+territoriales: el Estado decide cuánto invertir en, por ejemplo, aseguramiento en
+salud en el área rural dispersa, y la ejecución llega a una parte de los hogares
+privados de esa zona sin poder elegirlos uno a uno. Siguiendo a
+\citet{hamie2024}, esa imprecisión se representa con un sorteo: cada par
+$(i,j)$ recibe un número $R_{ij}\sim U[0,1]$, fijado antes de optimizar, y el
+hogar sale de la privación si su número queda por debajo de la cobertura que el
+Estado compró en su zona.
+
+\subsubsection{Mecanismo de cobertura}
+
+Sea $\mathrm{Den}_{jd}=\sum_{i\in\Hog[d]} V_{ij}M_{ij}$ la población privada en
+el indicador $j$ dentro de la zona $d$. El gasto y la cobertura del par $(j,d)$
+son
+\begin{align}
+\Esf_{jd} &= \sum_{i\in\Hog[d]} K_{ij}\,(M_{ij}-\Ndec_{ij}),
+  \label{eq:m3-gasto}\\
+\cob_{jd} &= \frac{1}{\mathrm{Den}_{jd}}\sum_{i\in\Hog[d]} V_{ij}\,(M_{ij}-\Ndec_{ij})
+  \;\in[0,1], \label{eq:m3-cobertura}
+\end{align}
+y el mecanismo estocástico (Con~8 y Con~9 del paper) es
+\begin{equation}\label{eq:m3-sorteo}
+R_{ij}\le \cob_{jd_i} \;\Rightarrow\; \Ndec_{ij}=0,
+\qquad
+R_{ij}> \cob_{jd_i} \;\Rightarrow\; \Ndec_{ij}=M_{ij}.
+\end{equation}
+
+La ecuación~\eqref{eq:m3-gasto} generaliza la Con~4* del paper, que usa un costo
+único $\EpF_j$ por indicador: aquí el costo depende del hogar, porque quitar una
+privación de aseguramiento en un hogar de cinco personas cuesta cinco veces lo que
+en uno de una. En~\eqref{eq:m3-cobertura} numerador y denominador se miden en la
+misma unidad (personas de la población). En la versión del paper el numerador
+está ponderado por $\HW_i$ y el denominador cuenta hogares de la muestra, de
+modo que la cobertura llega a valer $4{,}81$ en nuestros datos. Con una
+cobertura mayor que 1 todo hogar privado se cura, el sorteo deja de actuar y el
+Modelo 3 se reduce al Modelo 1 sin que el solver lo advierta
+(Apéndice~\ref{app:desv}).
 
 \subsubsection{Formulación}
-\pendiente{Objetivo, Con 4*, Con 5*--6*, Con 8--9 y meta de $\Mcero$.}
 
-\subsubsection{Linealización}
-\pendiente{Resumen aquí; desarrollo completo en el Apéndice~\ref{app:lin}.}
+Sea $s_i=\sum_j w_j\Ndec_{ij}$ el puntaje final. El Modelo 3 minimiza el gasto
+total sujeto a la meta de reducción de $\Mcero$:
+\begin{align}
+\min\quad & \sum_{j\in\Ind}\sum_{d\in\Zon}\Esf_{jd} \label{eq:m3-obj}\\
+\text{s.a.}\quad
+& \eqref{eq:m3-gasto},\ \eqref{eq:m3-cobertura},\ \eqref{eq:m3-sorteo}, \notag\\
+& \Cont_i + \HS_i\HW_i\, b1_i \;\ge\; s_i\,\HS_i\HW_i
+  && \forall i\in\Hog^0, \label{eq:m3-r4}\\
+& \Cont_i - \HS_i\HW_i\, b1_i \;\le\; s_i\,\HS_i\HW_i
+  && \forall i\in\Hog^0, \label{eq:m3-r5}\\
+& s_i - (1-b1_i) \;\le\; 0{,}33
+  && \forall i\in\Hog^0, \label{eq:m3-r6}\\
+& \sum_{i\in\Hog^0}\Cont_i \;\le\; \MPIs(1-\MPIr)\sum_{i\in\Hog}\HS_i\HW_i,
+  \label{eq:m3-meta}\\
+& \Ndec_{ij}\le M_{ij},\quad \Ndec_{ij},\,b1_i\in\{0,1\},\quad \Cont_i\ge 0. \notag
+\end{align}
+
+Las restricciones \eqref{eq:m3-r4}--\eqref{eq:m3-r6} son la linealización de
+la censura de Alkire--Foster \citep[Lin~1--5]{hamie2024}. Si $b1_i=0$, las dos
+primeras fijan $\Cont_i=s_i\HS_i\HW_i$ (el hogar sigue pobre y aporta su puntaje).
+Si $b1_i=1$, \eqref{eq:m3-r6} exige $s_i\le 0{,}33$ y las dos primeras quedan
+holgadas, porque $s_i\le 1$; como \eqref{eq:m3-meta} es una cota superior, al
+modelo le conviene llevar $\Cont_i$ a su cota $0$. Por eso la cota
+$\Cont_i\ge 0$ no es opcional: sin ella la meta se cumple con contribuciones
+negativas. Tres detalles hacen el modelo resoluble y exacto:
+\begin{enumerate}
+\item La desigualdad estricta $s_i<1/3$ se escribe $s_i\le 0{,}33$ sin pérdida,
+  porque todos los pesos son múltiplos de $0{,}01$ y por tanto también los
+  puntajes.
+\item El Big-M de \eqref{eq:m3-r4}--\eqref{eq:m3-r5} es $\HS_i\HW_i$, el de cada
+  hogar, y no una constante global. Es la cota más ajustada posible, porque
+  $s_i\le 1$. Con un M global la relajación lineal se afloja para todos los
+  hogares por culpa del más grande y el \emph{branch and bound} no cierra el gap.
+\item Solo los hogares de $\Hog^0$ llevan $b1_i$ y $\Cont_i$: como las
+  intervenciones solo quitan privaciones ($\Ndec_{ij}\le M_{ij}$), un hogar no
+  pobre no puede volverse pobre.
+\end{enumerate}
+La implicación~\eqref{eq:m3-sorteo} se linealiza con dos binarias por par
+\citep[Lin~6--10]{hamie2024}. Verificamos esa lógica rama por rama
+(Apéndice~\ref{app:lin}), y en ella la desigualdad estricta $\cob<R$ se escribe
+$\cob\le R-\varepsilon$ con $\varepsilon=10^{-6}$.
+
+\subsubsection{Reformulación por cortes}
+
+Incluso después de las simplificaciones del Apéndice~\ref{app:lin} (una binaria
+por par activo y $b1_i$ solo para los hogares pobres), el modelo tiene
+\cBinDirecta{} variables binarias y \cRestrDirecta{} restricciones, y HiGHS no
+cierra el gap en más de 200 segundos; escrito literalmente como en el paper
+tendría \cBinPaper{} binarias.
+La razón es estructural, y su consecuencia también es la idea central del modelo.
+
+Fijemos un par $(j,d)$ y ordenemos sus $n_{jd}$ hogares privados por $R_{ij}$
+creciente, $R_{(1)}<\dots<R_{(n_{jd})}$ (los empates tienen probabilidad cero).
+Como la cobertura $\cob_{jd}$ es un único número para toda la zona,
+\eqref{eq:m3-sorteo} cura exactamente a los hogares con $R_{ij}\le\cob_{jd}$, y
+ese conjunto es siempre un \emph{prefijo} del orden: si se cura el hogar en la
+posición $c$, también se curan todos los anteriores. \textbf{El Estado elige
+cuántos hogares atiende, no cuáles.} La solución de cada par queda descrita por
+un corte $c\in\{0,\dots,n_{jd}\}$. Sean
+\[
+\mathrm{cumV}_{jd}(c)=\sum_{l\le c}V_{(l)j},\qquad
+\mathrm{cumK}_{jd}(c)=\sum_{l\le c}K_{(l)j},\qquad
+\cob_{jd}(c)=\frac{\mathrm{cumV}_{jd}(c)}{\mathrm{Den}_{jd}}.
+\]
+No todo corte es admisible. La cobertura que resulta de curar los $c$ primeros
+tiene que curar a esos $c$ y a ninguno más:
+\begin{equation}\label{eq:m3-autoconsistente}
+F_{jd}=\bigl\{\,c :\ R_{(c)}\le \cob_{jd}(c)\le R_{(c+1)}-\varepsilon\,\bigr\},
+\end{equation}
+con las convenciones $R_{(0)}=0$ y $R_{(n_{jd}+1)}=+\infty$. El conjunto
+$F_{jd}$ depende solo de los datos y del sorteo, así que se enumera antes de
+optimizar. Con una binaria $z_{jdc}$ por corte admisible, el Modelo 3 queda
+\begin{align}
+\min\quad & \sum_{(j,d)}\sum_{c\in F_{jd}} \mathrm{cumK}_{jd}(c)\, z_{jdc} \label{eq:m3c-obj}\\
+\text{s.a.}\quad
+& \sum_{c\in F_{jd}} z_{jdc}=1 && \forall (j,d), \label{eq:m3c-uno}\\
+& \Ndec_{ij}=1-\sum_{c\in F_{jd_i},\ c\ge \mathrm{rank}_{ij}} z_{jd_ic}
+  && \forall (i,j): M_{ij}=1, \label{eq:m3c-N}\\
+& \eqref{eq:m3-r4}\text{--}\eqref{eq:m3-meta}, \notag
+\end{align}
+donde $\mathrm{rank}_{ij}$ es la posición del hogar $i$ en el orden de su par.
+
+\begin{proposition}\label{prop:cortes}
+Las formulaciones \eqref{eq:m3-obj} y \eqref{eq:m3c-obj} tienen el mismo
+conjunto de matrices $\Ndec$ factibles y, para cada una, el mismo gasto. Por lo
+tanto tienen el mismo óptimo.
+\end{proposition}
+\begin{proof}
+Tomemos una solución factible de \eqref{eq:m3-obj} y un par $(j,d)$. Por
+\eqref{eq:m3-sorteo}, los hogares curados son $S=\{i:R_{ij}\le\cob_{jd}\}$, que
+es un prefijo de tamaño $c=|S|$. Por \eqref{eq:m3-cobertura},
+$\cob_{jd}=\cob_{jd}(c)$. El último curado cumple $R_{(c)}\le\cob_{jd}(c)$ y el
+primero no curado cumple $\cob_{jd}(c)\le R_{(c+1)}-\varepsilon$, así que
+$c\in F_{jd}$. Con $z_{jdc}=1$, \eqref{eq:m3c-N} reproduce la misma $\Ndec$ y el
+gasto~\eqref{eq:m3-gasto} es $\mathrm{cumK}_{jd}(c)$. Recíprocamente, si
+$c\in F_{jd}$, curar los $c$ primeros y fijar $\cob_{jd}=\cob_{jd}(c)$ satisface
+\eqref{eq:m3-cobertura} y \eqref{eq:m3-sorteo} por la definición de $F_{jd}$.
+Las restricciones \eqref{eq:m3-r4}--\eqref{eq:m3-meta} dependen solo de $\Ndec$,
+así que se cumplen en las dos formulaciones a la vez.
+\end{proof}
+
+La reformulación pasa de \cBinDirecta{} binarias a \cBinCortes{}
+(\cCortesMtres{} cortes en \cParesMtres{} pares más una $b1_i$ por hogar pobre) y
+de \cRestrDirecta{} restricciones a \cRestrCortes{}. Se resuelve en
+\cTiempoCortes{}. En una submuestra de 600 hogares, donde la formulación directa
+sí se resuelve, las dos dan el mismo óptimo, el mismo $\Mcero$ final y las mismas
+celdas elegidas. Además, en 40 de 40 instancias pequeñas el modelo por cortes
+coincidió con la enumeración exhaustiva.
+
+\subsubsection{Privaciones que no se pueden quitar en un año}
+
+Algunas privaciones no se pueden eliminar dentro del horizonte del modelo. El
+rezago escolar no desaparece en un año con ninguna de las estrategias
+disponibles, y lo mismo pasa con \cLogroFijos{} pares de logro educativo cuyo
+déficit excede un ciclo de educación para adultos. Esos pares no llevan
+variable y su privación entra como constante en el puntaje:
+\[
+s_i=\sum_{j} w_jM_{ij}-\sum_{j\ \text{intervenible}} w_j\,(M_{ij}-\Ndec_{ij}).
+\]
+Escribir $s_i$ solo con los pares que tienen variable sería un error silencioso:
+equivaldría a curar gratis lo que no se puede curar. En el Modelo 4 ese error
+permitía cumplir metas del 5 al 10\,\% con gasto cero.
 
 \subsubsection{Errores de inclusión y exclusión}
-\pendiente{Cómo se miden en el modelo y por qué son la ``capacidad real del Estado''.}
+
+Como el sorteo no distingue entre hogares pobres y no pobres privados, parte del
+gasto llega a hogares que no eran pobres. Medimos dos errores a partir de los
+cortes elegidos:
+\begin{align}
+\text{inclusión} &= \frac{\sum_{i\notin\Hog^0}\sum_j K_{ij}(M_{ij}-\Ndec_{ij})}
+                         {\sum_{i}\sum_j K_{ij}(M_{ij}-\Ndec_{ij})},
+\label{eq:inclusion}\\[2pt]
+\text{exclusión} &= \frac{\sum_{i\in\Hog^0}\HS_i\HW_i\,
+      \mathbf{1}\bigl[\Ndec_{ij}=M_{ij}\ \forall j\bigr]}
+      {\sum_{i\in\Hog^0}\HS_i\HW_i}. \label{eq:exclusion}
+\end{align}
+La inclusión es la fracción del gasto que se va a hogares no pobres. La
+exclusión es la fracción de las personas pobres que no reciben ninguna
+intervención. En el Modelo 3 estos errores no son un defecto de la
+implementación: son la medida de la capacidad limitada del Estado para
+focalizar.
+
+El objetivo~\eqref{eq:m3c-obj} puede tener óptimos alternos con el mismo gasto
+y errores de inclusión distintos. Para que el error reportado no dependa del
+solver, resolvemos una segunda etapa lexicográfica: entre las soluciones con
+gasto a lo sumo $\Esf^*(1+10^{-6})$, minimizamos el gasto en hogares no pobres.
+
+\subsubsection{Objetivo de equidad}
+
+Para comparar con el Modelo 1, que maximiza las personas que salen de la pobreza
+con un presupuesto $B$, el mismo mecanismo admite ese objetivo. Basta cambiar
+\eqref{eq:m3c-obj} por $\max\sum_{i\in\Hog^0}\HS_i\HW_i\,b1_i$ y la meta
+\eqref{eq:m3-meta} por $\sum\mathrm{cumK}\,z\le B$, junto con las restricciones
+de equidad por zona del Modelo 1 (Sección~\ref{sec:m12}). Así cada modelo se
+evalúa con los dos criterios: el del paper, que es el costo de cumplir una meta,
+y el del Modelo 1, que es cuántas personas salen de la pobreza con un
+presupuesto dado.

@@ -1,6 +1,40 @@
 % Responsable: Martín (Lin 1-5, M1/M2) y Jerónimo (Lin 6-10, M3/M4)
 \section{Linealización con Big-M}\label{app:lin}
+
 \subsection{Condiciones de pobreza (Modelos 1--4)}
-\pendiente{Lin 1--5, Big-M por hogar $\HS_i\HW_i$, desigualdad estricta como $\le 0{,}33$.}
-\subsection{Sorteo de cobertura (Modelos 3--4)}
-\pendiente{Lin 6--10, $p\le R-\varepsilon$.}
+\pendiente{Martín: Lin 1--5 en la versión del M1/M2. En M3/M4 son
+\eqref{eq:m3-r4}--\eqref{eq:m3-r6}.}
+
+\subsection{Mecanismo de cobertura (Modelos 3--4)}
+
+Para cada par activo $(i,j)$, con $M_{ij}=1$, \citet[Apéndice~1]{hamie2024}
+introducen las binarias $b2_{ij}$ y $b3_{ij}=1-b2_{ij}$ y escriben la
+implicación~\eqref{eq:m3-sorteo} como
+\begin{align}
+\Ndec_{ij} &\le \mathrm{M}\, b2_{ij}, \tag{Lin 6}\\
+\cob_{jd_i} - R_{ij} &\le -\varepsilon + \mathrm{M}\,(1-b2_{ij}), \tag{Lin 7}\\
+\Ndec_{ij} + \mathrm{M}\, b3_{ij} &\ge M_{ij}, \tag{Lin 8}\\
+\Ndec_{ij} - \mathrm{M}\, b3_{ij} &\le M_{ij}, \tag{Lin 9}\\
+R_{ij} - \cob_{jd_i} &\le \mathrm{M}\, b2_{ij}. \tag{Lin 10}
+\end{align}
+En el paper, Lin~7 es estricta ($\cob<R$). La escribimos con
+$\varepsilon=10^{-6}$, el mismo valor que en~\eqref{eq:m3-autoconsistente}: si
+cambia uno, tiene que cambiar el otro.
+
+\paragraph{Verificación rama por rama.}
+\begin{itemize}
+\item $b2_{ij}=0$ ($b3_{ij}=1$): Lin~6 da $\Ndec_{ij}=0$ y Lin~10 da
+  $R_{ij}\le\cob_{jd_i}$. Lin~7, 8 y 9 quedan holgadas. Es la rama ``el hogar
+  sale de la privación''.
+\item $b2_{ij}=1$ ($b3_{ij}=0$): Lin~8 y Lin~9 dan $\Ndec_{ij}=M_{ij}=1$ y Lin~7
+  da $\cob_{jd_i}\le R_{ij}-\varepsilon$. Lin~6 y 10 quedan holgadas. Es la rama
+  ``sigue privado''.
+\end{itemize}
+Las dos ramas cubren todos los casos y no se solapan, así que la linealización
+es correcta. Como $\Ndec$, $M$, $\cob$ y $R$ están todos en $[0,1]$, basta
+$\mathrm{M}=1$ en las cinco restricciones. Con ese valor, en los pares activos
+$\Ndec_{ij}=b2_{ij}$ idénticamente, de modo que $b2$ y $b3$ se pueden eliminar.
+En los pares con $M_{ij}=0$ no hace falta variable, porque $\Ndec_{ij}=0$. Así
+la formulación directa queda con una binaria por par activo
+(\cParesActivos{}). La reformulación por cortes
+(Proposición~\ref{prop:cortes}) reemplaza también esas binarias.

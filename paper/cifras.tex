@@ -8,13 +8,29 @@
 \newcommand{\cMcero}{0,0387}          % M0 inicial (exacto: 0,038684)
 \newcommand{\cHogares}{3.732}         % hogares de Antioquia en la muestra
 \newcommand{\cIndicadores}{15}
-\newcommand{\cHcero}{\pendiente{H inicial}}
-\newcommand{\cAcero}{\pendiente{A inicial}}
+\newcommand{\cMceroExacto}{0,038684}
+\newcommand{\cPobresHog}{523}           % hogares pobres en la línea base
+\newcommand{\cHcero}{9,45\,\%}         % verificado en CLAUDE.md de Modelo3 §3
+\newcommand{\cAcero}{40,94\,\%}
 
 % ===== Modelos 1 y 2 (Martín) ==========================================
 % Fuente: \pendiente{CSV de resultados M1/M2 en el escenario común}
 
 % ===== Modelos 3 y 4 (Jerónimo) ========================================
+% Tamaño del modelo y reformulación por cortes. Fuente: docs_proyecto/revision-formulacion-modelo3.md
+% y CLAUDE.md de Modelo3 §3 y §5 (meta 10 %, réplica 0)
+\newcommand{\cParesActivos}{8.602}     % pares (i,j) con M_ij = 1
+\newcommand{\cParesMtres}{45}          % pares (indicador, zona)
+\newcommand{\cParesMcuatro}{57}        % pares (indicador, celda) en M4
+\newcommand{\cCortesMtres}{630}
+\newcommand{\cCortesMcuatro}{713}
+\newcommand{\cBinPaper}{171.672}      % Lin 6-10 literal, b1 para todos los hogares
+\newcommand{\cBinDirecta}{9.125}       % N = b2 y b1 solo para pobres: 8.602 + 523
+\newcommand{\cRestrDirecta}{27.376}
+\newcommand{\cBinCortes}{1.153}
+\newcommand{\cRestrCortes}{1.615}
+\newcommand{\cTiempoCortes}{2,1~s}
+\newcommand{\cLogroFijos}{1.647}       % pares de logro que el M1 no puede quitar en un año
 % Equidad, 100 réplicas para B <= 10. Fuente: resultados/m34/ic_bootstrap_equidad.csv
 % (personas que salen de la pobreza; IP = información perfecta, techo del M1)
 \newcommand{\cIPdiez}{161.254}

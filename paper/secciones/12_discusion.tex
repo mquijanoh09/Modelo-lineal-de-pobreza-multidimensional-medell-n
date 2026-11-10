@@ -3,10 +3,46 @@
 % parte, pero con presupuesto bajo esa ganancia es de la partición, no de la demografía.
 \section{Discusión}\label{sec:discusion}
 
-\pendiente{Interpretación del precio de la información para la política pública.}
+\pendiente{Interpretación del precio de la información para la política pública
+(se escribe con las cifras del 10-nov de la Sección~\ref{sec:comparacion}).}
 
-\pendiente{Cuándo suma la demografía (B $\ge$ 50 mm) y cuándo es solo la partición
-(B $\le$ 25 mm, M4 $\approx$ placebo).}
+\pendiente{Cuándo suma la demografía y cuándo es solo la partición (placebo).}
 
-\pendiente{Limitaciones: supuestos del paper (independencia de indicadores, costo
-marginal constante), costos provisionales, horizonte de un año.}
+\subsection{Limitaciones}
+
+Los resultados deben leerse con las siguientes limitaciones, la mayoría heredadas
+de los datos o de los supuestos del paper original.
+
+\paragraph{Celdas geográficas gruesas.} La base del IPM no identifica municipios,
+así que la focalización geográfica solo puede distinguir tres zonas. Un Estado
+real focaliza con más detalle (municipios, veredas, barrios), y por la propiedad
+de granularidad un M3 con celdas más finas se acercaría a la información perfecta.
+Nuestro precio de la información es, por eso, una cota superior del que pagaría un
+programa con focalización municipal.
+
+\paragraph{Supuestos del modelo de Hamie et al.} Mantenemos sus supuestos de
+indicadores independientes (quitar una privación no afecta a otra), costo marginal
+constante y horizonte de un año. El último pesa en educación: el rezago escolar y
+buena parte del logro educativo no se pueden quitar en un año, de modo que ningún
+modelo actúa sobre ellos aunque sean privaciones frecuentes.
+
+\paragraph{Costos por par.} En M3 y M4 cada privación se costea por separado,
+mientras que el Modelo 1 puede usar un mismo ciclo de educación para adultos para
+quitar dos privaciones de una persona. La validación acota el efecto: ninguno con
+metas de hasta el 10\,\% y a lo sumo \cVcincoVeinte{} con metas mayores.
+
+\paragraph{Celdas con pocos hogares.} Algunas celdas (indicador, zona o tipo)
+tienen menos de 10 hogares privados en la muestra. En ellas la cobertura avanza a
+saltos y el sorteo representa mal a la población. La regla de elección de $k$
+limita cuántas hay, pero no las elimina.
+
+\paragraph{Severidad sin censurar.} La severidad que reportamos suma el cuadrado
+del puntaje de todos los pobres iniciales, incluidos los que salen de la pobreza.
+Es la misma convención del Modelo 1, que la declara; no es la medida
+Alkire--Foster censurada.
+
+\paragraph{El sorteo como modelo de la ejecución.} El mecanismo $R\le p$ supone
+que, dentro de una celda, cualquier hogar privado tiene la misma probabilidad de
+ser atendido. Un programa real puede ser mejor (si usa información local) o peor
+(si llega primero a los hogares más accesibles, que suelen ser los menos pobres).
+El modelo no distingue entre esos casos.

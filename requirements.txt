@@ -1,0 +1,8 @@
+# Entorno para correr los Modelos 1 y 2 (y los m34_* de Jerónimo). Python 3.10+.
+# PuLP 4.x rompe LpVariable(cat=...) (trampa 16 de Jerónimo): se fija < 4.
+pandas>=2.3.3
+numpy>=2.2.6
+pulp>=2.9,<4
+highspy>=1.7
+pyarrow>=25.0.1
+scikit-learn>=1.7.2

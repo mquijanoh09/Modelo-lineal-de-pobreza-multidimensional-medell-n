@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 import parametros as P
-from modelo2 import construir_nucleo, resolver
+from nucleo_pruebas import construir_nucleo, resolver
 from utils_dane import OUT
 
 N_HOGARES = 50

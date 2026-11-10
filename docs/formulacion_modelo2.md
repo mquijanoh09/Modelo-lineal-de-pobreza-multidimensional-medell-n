@@ -1,6 +1,6 @@
 # Modelo 2: formulación para programar
 
-*Versión del 5 de noviembre de 2026. Basada en:*
+*Versión del 5 de noviembre de 2026, actualizada el 9-nov (meta por zona como caso base, prueba cruzada hecha, regla de desempleo). Basada en:*
 - *el Modelo 2 del paper (Hamie, Hlasny y Jouni, 2024, p. 14; resumen en `docs/paper_modelos.md` §4);*
 - *las mismas reglas de intervención y costos del Modelo 1 (`modelo1/formulacion_modelo1.md`).*
 
@@ -15,6 +15,9 @@ Es el "first best": el Estado sabe exactamente quién es pobre y en qué está p
 > **Decisiones de Martín (5-nov-2026):**
 > - **D-M2-1:** la meta es sobre **M0**. Es lo que usa el paper, lo que propone Jerónimo y lo que hace comparables los Modelos 2, 3 y 4.
 > - **D-M2-2:** se mantiene la cobertura del art. 67 (E-7); el techo de SevEdu va solo como sensibilidad; no hay techo de severidad.
+> - **D-M2-3 (5-nov):** la meta se exige en cada zona P3 (caso base); solo global es sensibilidad.
+> - **D-M2-4 (5-nov):** el CLEI cuenta como asistencia: $x_{i,inas} \le \sum_s z_{ks}$.
+> - **Regla de desempleo (7-nov, común con el Modelo 1):** el desempleo de larga duración sin persona identificada no es quitable. Efecto: la meta de 100 % cuesta $740.37 mil millones (con la regla anterior, $660.64); las metas de 5, 10 y 20 % no cambian.
 
 ---
 
@@ -70,7 +73,7 @@ Es exactamente el lado izquierdo de la restricción de presupuesto (1) del Model
 | **(2) Salida de la pobreza** | $s_i \le 0.33 + M_i (1 - y_i) \quad \forall i$ | Igual que en el Modelo 1. Si $y_i = 1$, el hogar queda debajo del umbral. Es la Lin 3 del paper, con $\le 0.33$ en vez de $< k$, porque los puntajes son múltiplos de 0.01 y los solvers no aceptan $<$ |
 | **(3) Contribución censurada** | $C_i \ge p_i\, s_i - U_i\, y_i \quad \forall i$ | Si el hogar sigue pobre ($y_i = 0$), obliga a $C_i \ge p_i s_i$: su privación cuenta en M0. Si sale ($y_i = 1$), el lado derecho es ≤ 0 y $C_i$ puede ser 0. Reemplaza las Lin 1, 2, 4 y 5 del paper con **una** sola desigualdad, porque al minimizar el costo y exigir un M0 bajo, el solver nunca tiene interés en inflar $C_i$ |
 | **(M) Meta de M0** (decidido) | $\sum_i C_i \le (1 - m)\, M0^0 \cdot \text{Pob}$ | La meta política (Con 6 del paper): el M0 final, que es $\sum C_i / \text{Pob}$, debe bajar al menos un $m$ %. Ojo: el denominador es **toda** la población, no solo los pobres |
-| **(M-d) Meta por zona** (opcional) | $\sum_{i \in d} C_i \le (1 - m_d)\, M0_d^0 \cdot \text{Pob}_d \quad \forall d$ | La versión de equidad territorial ("metas por zona" del plan original): obliga a cumplir la meta también en la zona rural dispersa, donde todo es más caro. Es el análogo de la restricción (4) del Modelo 1 |
+| **(M-d) Meta por zona** (caso base, D-M2-3; solo global es sensibilidad) | $\sum_{i \in d} C_i \le (1 - m_d)\, M0_d^0 \cdot \text{Pob}_d \quad \forall d$ | La versión de equidad territorial ("metas por zona" del plan original): obliga a cumplir la meta también en la zona rural dispersa, donde todo es más caro. Es el análogo de la restricción (4) del Modelo 1 |
 
 **Si la meta fuera sobre H** (alternativa de D-M2-1): se quita $C_i$ y la (3), y la meta queda como $\sum_i p_i\, y_i \ge m_H \cdot \sum_i p_i$. El modelo se vuelve más simple, pero premia sacar a los que están cerca del umbral, que es justo lo que criticamos del objetivo H en el Modelo 1. Con M0, bajar privaciones a un hogar que sigue pobre **también** ayuda a la meta. Por eso M0 encaja mejor con el enfoque de equidad.
 
@@ -104,7 +107,7 @@ No son decisiones de diseño: definen qué se puede hacer legalmente en un año 
 
 Reportar, total y por zona: **costo mínimo**, H, A, M0, severidad y SevEdu. Usar la misma tabla común de los 4 modelos (punto 10 de la agenda de Jerónimo). Reportar también el gap de HiGHS de cada corrida.
 
-**Conexión con el Modelo 1 (útil para la sustentación):** si el Modelo 2 dice que la meta $m$ cuesta $B^*$, el Modelo 1 con $B = B^*$ debería sacar **al menos** tantas personas como saca el plan del Modelo 2. La razón es que el Modelo 1 maximiza justamente eso. Es una validación cruzada sencilla entre los dos códigos.
+**Conexión con el Modelo 1 (útil para la sustentación; prueba HECHA en la auditoría del 7-nov, 6 de 6 casos):** si el Modelo 2 dice que la meta $m$ cuesta $B^*$, el Modelo 1 con $B = B^*$ debería sacar **al menos** tantas personas como saca el plan del Modelo 2. La razón es que el Modelo 1 maximiza justamente eso. Es una validación cruzada sencilla entre los dos códigos.
 
 ## 7. Por qué es un MILP pequeño
 
@@ -112,5 +115,5 @@ Comparado con el Modelo 1, se agregan 523 variables continuas $C_i$ y 523 restri
 
 ## 8. Pendientes antes de programar
 
-- **Metas $m$** a correr (5 / 10 / 20 % como Jerónimo) y si se usa (M-d).
+- **Metas $m$** a correr (5 / 10 / 20 % como Jerónimo): decidido; (M-d) se usa en el caso base (D-M2-3).
 - **Lo mismo que el Modelo 1:** el conteo `05_conteo_personas.py` y las decisiones D1 a D5 que aplican aquí (D2: si E2 quita la inasistencia; D3: E1 para no asistentes sin rezago).

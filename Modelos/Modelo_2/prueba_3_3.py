@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # ...\Modelos
 
 import parametros as P
-from modelo2 import construir_nucleo, meta_maxima, resolver
+from nucleo_pruebas import construir_nucleo, meta_maxima, resolver
 from prueba_3_2 import cargar_pobres, costos_sinteticos, minimo_exacto, recalcular
 
 N_HOGARES = 60

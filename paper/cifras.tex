@@ -42,13 +42,15 @@
 \newcommand{\cParesPobres}{2.592}
 \newcommand{\cVcincoVeinte}{5,9\,\%}
 \newcommand{\cVcincoTreinta}{1,8\,\%}
-% Corridas del 10-nov (escenario común contra el M1/M2 de main). Fuente: out10/ de la rama claude/compat-10nov
-\newcommand{\cReplicas}{30}
-\newcommand{\cCorridasCosto}{1.350}
-\newcommand{\cMtresIPmin}{7}
-\newcommand{\cMtresIPmax}{15}
-\newcommand{\cMtresIPalta}{3,5}
-\newcommand{\cMcuatroPlacMin}{19\,\%}
+% Corridas del 10-nov (escenario común contra el M1/M2 de main), CONGELADAS. Fuente: resultados/m34/*_10nov.csv
+% en la rama Modelo3, etiqueta datos-finales-10nov. Costos: 100 réplicas; equidad: 100 (B <= 10) y 30 (B >= 25).
+\newcommand{\cReplicas}{30}               % equidad con B >= 25
+\newcommand{\cReplicasCosto}{100}
+\newcommand{\cCorridasCosto}{4.500}
+\newcommand{\cMtresIPmin}{6}
+\newcommand{\cMtresIPmax}{17}
+\newcommand{\cMtresIPalta}{3,5 a 3,9}
+\newcommand{\cMcuatroPlacMin}{14\,\%}
 \newcommand{\cMcuatroPlacMax}{31\,\%}
 \newcommand{\cReplicasBajo}{100}
 \newcommand{\cMtresPctMin}{13\,\%}

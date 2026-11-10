@@ -4,8 +4,8 @@
 \subsection{Información imperfecta (Modelos 3 y 4)}\label{sec:res34}
 
 Todas las cifras de esta sección son del escenario común
-(Sección~\ref{sec:diseno}), con \cReplicas{} réplicas del sorteo por
-configuración y las mismas réplicas para M3, M4 y el placebo. De las
+(Sección~\ref{sec:diseno}). El criterio de costo usa \cReplicasCosto{} réplicas
+del sorteo por meta, y las mismas réplicas para M3, M4 y el placebo. De las
 \cCorridasCosto{} corridas del criterio de costo, todas terminaron con
 optimalidad demostrada y brecha menor que $10^{-6}$.
 
@@ -24,7 +24,7 @@ La Tabla~\ref{tab:costos} resume el costo de reducir $\Mcero$ en metas del 2 al
 \begin{table}[ht]
 \centering\footnotesize
 \caption{Costo de cumplir la meta de reducción de $\Mcero$ (miles de millones de
-\$ de 2025; mediana de \cReplicas{} réplicas). M4/placebo es la mediana del
+\$ de 2025; mediana de \cReplicasCosto{} réplicas). M4/placebo es la mediana del
 cociente pareado réplica a réplica, con su IC del 95\,\% por \emph{bootstrap}.
 Inclusión: fracción del gasto que llega a hogares no pobres (M3 / M4).}
 \label{tab:costos}
@@ -53,8 +53,9 @@ pierde valor cuando hay que atender a casi todos.
 partición.} El M4 es más barato que el M3 en todas las metas salvo la del 16\,\%, y el
 intervalo del cociente pareado M4/M3 queda por debajo de 1 en 13 de las 15 metas. Sin embargo,
 hasta la meta del 18\,\% su costo es estadísticamente igual al del placebo: el
-cociente pareado M4/placebo ronda 1 y su intervalo contiene el 1 en casi todas
-esas metas. En ese rango la ventaja se debe a repartir los indicadores
+cociente pareado M4/placebo ronda 1 y su intervalo contiene el 1 en 6 de las 9
+metas; en las otras tres la diferencia es pequeña y va en ambos sentidos (0,90
+con la meta del 6\,\% y 1,04 con las del 16 y 18\,\%). En ese rango la ventaja se debe a repartir los indicadores
 privados en más celdas, no a la información demográfica: hasta la meta del
 18\,\% los tres modelos gastan el 100\,\% del presupuesto en salud
 (aseguramiento y barreras de acceso), privaciones que no se concentran en un
@@ -64,7 +65,7 @@ porque las privaciones educativas dependen de la composición del hogar. Desde
 metas del 22\,\% el M4 cuesta entre un \cMcuatroPlacMin{} y un
 \cMcuatroPlacMax{} menos que el placebo.
 
-\paragraph{Los errores de focalización son grandes.} Entre el 25 y el 70\,\% del
+\paragraph{Los errores de focalización son grandes.} Entre el 25 y el 69\,\% del
 gasto llega a hogares que no eran pobres. La inclusión es máxima con metas
 intermedias, cuando el modelo compra cobertura en zonas donde la mayoría de los
 privados no es pobre. Al mismo tiempo, con metas del 2\,\% el 97\,\% de las

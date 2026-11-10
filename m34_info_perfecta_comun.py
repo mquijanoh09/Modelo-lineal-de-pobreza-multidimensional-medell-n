@@ -23,19 +23,15 @@ METAS = [round(0.02 * k, 2) for k in range(1, 16)]          # 2 %..30 %, como m3
 
 
 def equidad(dm, salida, Bs):
-    sys.path[:0] = [str(dm), str(dm / "Modelo_1")]
+    """M1 de Martín (main, 10-nov) vía m34_compat_martin: sin E-7, r = 0, sin techo de severidad ni SevEdu."""
     import pandas as pd
-    import parametros as P
-    from datos_modelo import cargar_datos
-    from modelo1 import Modelo1
-    D1 = cargar_datos(dict(P.escenario(), cobertura_art67=False, rho_e=0.0))
+    import m34_compat_martin as CM
+    d = CM.datos_comun(dm)
     filas = []
     for B in Bs:
         t0 = time.time()
-        m = Modelo1(D1, B=B * 1e9, rho_e=0.0).construir()
-        e = m.resolver()
-        r = m.recalcular()["total"]
-        filas.append(dict(modelo="M1_info_perfecta", escenario="comun", B=B, estado=e["estado"], gap=e["gap"],
+        r = CM.m1_personas(dm, d, B * 1e9)
+        filas.append(dict(modelo="M1_info_perfecta", escenario="comun_10nov", B=B, estado=r["estado"], gap=r["gap"],
                           personas_salen=r["personas_salen"], costo_mm=r["costo"] / 1e9,
                           segundos=round(time.time() - t0, 1)))
         print(filas[-1], flush=True)
@@ -48,22 +44,15 @@ def main():
     if len(sys.argv) > 2 and sys.argv[2] == "--equidad":
         return equidad(dm, sys.argv[3], [float(x) for x in sys.argv[4:]])
     salida = Path(sys.argv[2] if len(sys.argv) > 2 else "resultados/m34/info_perfecta_comun.csv")
-    sys.path[:0] = [str(dm), str(dm / "Modelo_2")]
     import pandas as pd
-    import parametros as P
-    from datos_modelo import cargar_datos
-    from modelo2 import Modelo2
-    esc = P.escenario_m2("base", "meta_global")
-    esc.update({"cobertura_art67": False, "rho_e": 0.0, "usar_sevedu": False})
-    assert esc["meta_por_zona"] is False
-    D = cargar_datos(esc)
+    import m34_compat_martin as CM
+    d = CM.datos_comun(dm)
     filas = []
     for m in METAS:
         t0 = time.time()
-        e = Modelo2(D, meta_m=m).construir().resolver()
-        filas.append(dict(modelo="M2_info_perfecta", escenario="comun", meta=m, estado=e["estado"],
-                          gap=e["gap"], costo_mm=e.get("costo", float("nan")) / 1e9,
-                          segundos=round(time.time() - t0, 1)))
+        e = CM.m2_costo(dm, d, m)
+        filas.append(dict(modelo="M2_info_perfecta", escenario="comun_10nov", meta=m, estado=e["estado"],
+                          gap=e["gap"], costo_mm=e["costo"] / 1e9, segundos=round(time.time() - t0, 1)))
         print(filas[-1], flush=True)
         salida.parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(filas).to_csv(salida, index=False)

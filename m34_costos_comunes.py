@@ -56,12 +56,21 @@ def construir(dir_modelos):
 
     filas = []
     simples = pares[pares.pago == "x"]
+    # Regla de Martin (7-nov, datos_modelo.py): desempleo sin desocupado identificado (u imputado) NO es
+    # quitable en el caso base. Se replica aqui para que M3/M4 no curen lo que M1/M2 no pueden (10-nov).
+    imputar = P.escenario().get("desempleo_imputado", True)
     for r in simples.itertuples(index=False):
-        filas.append((r.ID_HOGAR, r.indicador, r.u_ij, r.costo_hogar, True, "conteo_pares"))
+        if r.indicador == "desempleo_larga_duracion" and bool(r.u_imputado) and not imputar:
+            filas.append((r.ID_HOGAR, r.indicador, r.u_ij, np.nan, False, "desempleo sin desocupado identificado (7-nov)"))
+        else:
+            filas.append((r.ID_HOGAR, r.indicador, r.u_ij, r.costo_hogar, True, "conteo_pares"))
 
     D = logro.set_index("ID_HOGAR").D_i
     el = adultos[adultos.elegible_clei].groupby("ID_HOGAR").g_a.apply(lambda s: np.sort(s.to_numpy())[::-1])
-    an = adultos[adultos.analfabeta].groupby("ID_HOGAR").elegible_clei.agg(["size", "all"])
+    # Regla del M1 (datos_modelo.py, 10-nov): el analfabeta tiene que ser elegible a CLEI Y ganar años con el
+    # ciclo (g_a > 0). Antes solo se pedía elegible: 10 pares pobres quedaban quitables aquí y no en el M1.
+    an = (adultos[adultos.analfabeta].assign(ok=lambda a: a.elegible_clei & (a.g_a > 0))
+          .groupby("ID_HOGAR").ok.agg(["size", "all"]))
     noas = ninos[ninos.no_asiste_6_16].groupby("ID_HOGAR")
     for r in pares[pares.pago != "x"].itertuples(index=False):
         i, j = r.ID_HOGAR, r.indicador

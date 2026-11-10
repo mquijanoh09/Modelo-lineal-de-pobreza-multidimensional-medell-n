@@ -86,15 +86,18 @@ def empleo_por_hogar(per):
     p = per.assign(
         ocup_sin_pension=per.ocupado & (per.P6920 == 2),
         sin_cobertura=(per.P6040 >= 15) & ~per.P6920.isin([1, 3]),
+        sin_cob_no_desoc=(per.P6040 >= 15) & ~per.P6920.isin([1, 3]) & ~per.desocupado,
         costo_desoc=costo_persona_desocupada(per),
     )
     h = p.groupby("ID_HOGAR").agg(
         n_ocupados=("ocupado", "sum"), n_ocup_sin_pension=("ocup_sin_pension", "sum"),
         n_desocupados=("desocupado", "sum"), n_adultos_sin_cobertura=("sin_cobertura", "sum"),
+        n_sin_cob_no_desoc=("sin_cob_no_desoc", "sum"),
         costo_desocupados=("costo_desoc", "sum"))
     sin_ocup = h.n_ocupados == 0
-    # Caso 3: hogar sin ocupados -> aporte a pensión a cada adulto sin cobertura
-    h["n_caso3"] = np.where(sin_ocup, h.n_adultos_sin_cobertura, 0)
+    # Caso 3: hogar sin ocupados -> aporte a pensión a cada adulto sin cobertura,
+    # SIN contar a los desocupados: ellos ya pagan su EpV (decisión D7 de Martín, 6-nov)
+    h["n_caso3"] = np.where(sin_ocup, h.n_sin_cob_no_desoc, 0)
     h["privado_pred"] = (h.n_ocup_sin_pension > 0) | (h.n_desocupados > 0) | (sin_ocup & (h.n_adultos_sin_cobertura > 0))
     h["u_empleo_formal"] = h.n_ocup_sin_pension + h.n_desocupados + h.n_caso3
     h["costo_empleo_formal"] = (P.COSTO_APORTE_PENSION * (h.n_ocup_sin_pension + h.n_caso3)

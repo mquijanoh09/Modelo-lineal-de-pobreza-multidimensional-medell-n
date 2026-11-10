@@ -9,6 +9,7 @@
   - Objetivo: max Σ p_i y_i − λ Σ p_i q_i, con p_i = HW_i·HS_i, λ < min p_i / Sev₀ ≈ 3×10⁻⁴ (desempate por severidad).
   - (1) presupuesto Σ c_ij x_ij ≤ B · (2) salida s_i ≤ 0.33 + M_i(1 − y_i), M_i = c_i⁰ − 0.33 · (4) equidad por zona Σ_{i∈d} p_i y_i ≥ r·Pobres_d⁰ · (5) rezago no intervenible · (7) q_i ≥ 2a·s_i − a² ∀a ∈ A_i · (8) Σ p_i q_i ≤ (1 − ρ)·Sev₀.
   - s_i = Σ_j w_j M_ij (1 − x_ij) es el puntaje **sin censurar** después de intervenir; la severidad se mide sobre los 523 hogares pobres iniciales. Sev₀ ≈ 117,908. Se quitaron C_i y la restricción (3): M0 se recalcula después.
+- **ACTUALIZACIÓN 9-nov (decisiones de Martín, comunidad 17):** en el caso base ρ = el menor ρ con A ≤ A₀ (regla de la brecha, P21) y r = el codo de la curva H contra r de cada corrida (P24); el codo de ρ y 'sin_penalizaciones' (ρ=0, r=0, sin techo de SevEdu) son sensibilidades. Programación del Modelo 1 completa (3.1–3.7), auditoría fases A, B y D aplicadas y verificada en el PC de Martín (10-nov); solo falta el commit.
 - **ρ y r no se fijan a ojo:** se calculan extremos, se barre y se escoge con el codo o con la regla "la brecha no crece" (A de los que siguen pobres ≤ A₀). Reportar siempre H, A, M0 y severidad.
 - **Identificación de pobres sin cambios:** pesos oficiales y k = 1/3. La entropía de Shannon (idea del paper LEPI) se probó y se descartó para identificar: con indicadores binarios premia la rareza (correlación −0.94 con la prevalencia) y bajaría H de 9.5 % a 2.2 %.
 - **Costos actualizados (27-oct):** desocupados por perfil según Decreto 533/2024 (30 % 18–28 años, 20 % mujeres 29–56, 15 % hombres 29–61); mujeres ≥ 57 y hombres ≥ 62 → aporte a pensión. La unidad hogar/persona de toda la tabla se verificó con fuentes oficiales.
@@ -27,6 +28,7 @@
 - **REZAGO, INASISTENCIA Y SevEdu — SÍNTESIS VIGENTE (2-nov):** /mnt/project-files/rezago/rezago_inasistencia_sevedu_documento.md (fuente de verdad; reemplaza lo de ρ_e ≈ 29 %). Con reglas oficiales ningún niño sale del rezago binario en un año → SevEdu^N_1 = Σ HW_k((b_k − Σ_s d_ks z_ks)/(e_k+1))², lineal exacta. Estrategias: E0 (asiste, sin pago doble del SGP), E1 regreso $3.0 M/p + cupo SGP, E2 CLEI primaria, E3 CLEI secundaria. **Caso base sin E3** (la ECV no trae años por fuera; decisión de Martín 2-nov), elegibilidad z_ks ≤ e_ks. ρ_e: máx 16.9 % sin E3 (21.2 % con E3); codo 11.5 %; DECIDIDO 2-nov: cobertura obligatoria 6–15 (art. 67) + ρ_e 14 % ($105.8 mm); sensibilidad con E3 cobertura + 20 % ($77.9 mm). Simulador v2: https://claude.ai/artifact/DSSzRA8KbvVstWfiwRJkZp
 
 - **ESTADO DEL PROYECTO (4-nov):** Jerónimo ya subió M3, M4 y su Monte Carlo (branch Modelo3; M4 más barato que M3) y pide esta semana los Modelos 1 y 2 (aunque sea con u = 1), `parametros.py` y `conteo_pares.csv`, más la decisión de la meta del M2 (M0 o H) y el gap del solver. Conflicto abierto: él propone el objetivo del paper como base de M3/M4. El repo de Martín solo tiene los scripts 02–04: faltan 05_conteo_personas, parametros.py, 07 y 08_modelo1. Git: sin atribución de Claude y nunca push sin autorización. Por revisar: costo de trabajo infantil (Renta Ciudadana sin condición verificada), supuesto de logro educativo, fila de rezago del resumen y rango de B. El municipio sí viene en la ECV 2025 pública (P1_MUNICIPIO), lo que permite distinguir Medellín.
+- **DATOS COMPARTIDOS Y M3/M4 (5-nov):** el 05 solo cuenta (conteo_pares, empleo_componentes, ninos_rezago) y `parametros.py` pone los precios con `tabla_costos(escenario)`; u_ij condicionado a M_ij = 1 con bandera `u_imputado`; Martín programa el conteo de los no pobres. Resultados de Jerónimo: M4 más barato que M3 (53/43/14 %), precio de la información 25→58 %, k = 4 defendido (k = 8 es artefacto), `info_perfecta.csv` para validar el M1; trampas T14–T16 (constante en s_i, presolve, pulp<4).
 - **OBJECIONES DEL HILO 'Debatir' (2-nov; 1, 2, 4 y 5 CERRADAS el 4-nov; sigue abierta la 3):** (1) p = 0.37 infla el máximo de E1 (z debería ser 'ofrecer el pago': beneficio p·coef, costo 3.0 M + p·cupo); (2) posible doble conteo de Renta Ciudadana; (3) el codo debe tomarse sobre H vs SevEdu, no sobre costo; (4) cobertura del art. 67 incompleta; (5) cohorte fija vs reproducir al DANE.
 
 - **MODELO 2 (5-nov): AVANCE** subfases 3.1, 3.2 y 3.3 hechas y probadas (parámetros, censura + meta global, meta por zona + meta_maxima); fase 2 aprobada (herencia con ModeloIPMBase, carpetas Modelos\Modelo_2); POR HACER: 3.4 reglas completas (depende del hilo del M1), 3.5 resolver/recalcular, 3.6–3.7 scripts y barridos. Detalle en la comunidad 14.
@@ -39,7 +41,7 @@
 - **DECISIONES 4–5 NOV (hilo 'Continuar asesoría', comunidad 16):** costos por indicador CERRADOS con fuente oficial: trabajo infantil $5.32 M por niño (externado ICBF 6 meses, ficha I-12-122); logro educativo máx. 1 ciclo CLEI por adulto/año con (11) Σ g_a v_a ≥ D_i x_logro y (12) x_analf ≤ v_a (solo 33 de 503 hogares pueden salir); barreras de salud 1 consulta $52,100 (código 39141, Circular 25/2024) + prima rural = $203,894. Objeciones 1, 2, 4 y 5 cerradas como limitaciones o mejoras (mejoras 3, 4, 9); cohorte fija solo en SevEdu; D4: H = foto inicial. Modelo 2 = min costo s.a. meta M0 (E-7 sí, SevEdu sensibilidad). Formulaciones: modelo1/formulacion_modelo1.md y modelo2/formulacion_modelo2.md. Falta: rango de B (requiere 05) y objeción 3.
 
 ## Summary
-- 212 nodes · 343 edges · 17 communities · 17 hyperedges
+- 245 nodes · 406 edges · 18 communities · 19 hyperedges
 - Extraction: 95% EXTRACTED · 5% INFERRED · construido manualmente (sin costo de tokens)
 
 ## Community Hubs (Navigation)
@@ -80,8 +82,9 @@
 - **Supuestos y limitaciones a defender** — sup_pension_buscar, sup_efectividad, af_binario, empleo_hipotetico, severidad_agregada [EXTRACTED 1.00]
 - **Conclusiones de rezago, inasistencia y SevEdu (1–2 nov)** — doc_sintesis_edu, binario_no_mueve, fgt_alpha2, no_pagar_dos_veces, estrategias_e0_e3, costo_e1, clei_requisitos, caso_base_sin_e3, elegibilidad_param, rango_factible_edu, codo_kneedle_edu, cobertura_art67, propuesta_rho_e_final, eps_restriccion, mejoras_doc, sim_sevedu_v2, sevedu_n_contrafactual, brecha_normalizada, cohorte_fija [EXTRACTED 1.00]
 - **Verificación oficial de unidades de costo** — v_fonvivienda, v_renta, v_upc, v_cdi, v_alfab, empleos_vida [EXTRACTED 1.00]
+- **Datos compartidos y resultados de M3/M4 (29-oct a 4-nov)** — datos_diseno_05_06, u_condicionado, conteo_no_pobres, nombre_parametros, m4_vs_m3_resultados, precio_informacion, k_sensibilidad, ref_info_perfecta, trampas_m34, tangentes_523, rezago_m34, inasistencia_m34, jer_m3_m4, art_datos [EXTRACTED 1.00]
 
-## Communities (17 total)
+## Communities (18 total)
 
 ### Community 0 - "Paper LEPI: método y crítica"
 Nodes (9):
@@ -298,6 +301,15 @@ _Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov
 - `m2_pend367` --implements--> `m2_cruce_m1`
 - `m2_pend_gap` --requires--> `jer_pide`
 - `m2_pend_gap` --affects--> `m2_pend367`
+- `m2_resultados` --produced_by--> `m2_pend367`
+- `m2_resultados` --confirms--> `m2_piso_e7`
+- `m2_resultados` --measures--> `m2_meta_zona`
+- `m2_pend_final` --follows--> `m2_pend367`
+- `m2_pend_final` --requires--> `m2_cruce_m1`
+- `m2_auditoria` --audits--> `m2_resultados`
+- `m2_auditoria` --audits--> `m2_pend367`
+- `m2_auditoria` --confirms--> `m2_cruce_m1`
+- `m2_auditoria` --tracks--> `m2_pend_final`
 - `m2_formulacion` --adapts--> `referencias_paper_pobreza_multidimensional_opti1_model_2`
 - `m2_formulacion` --dual_of--> `docs_informe_modelo1_modelo1_presupuesto_fijo`
 - `m2_meta_m0` --resolves--> `meta_m2`
@@ -484,7 +496,28 @@ _Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov
 - `costo_e1` --prices--> `cobertura_art67`
 - `doc_sintesis_edu` --concludes--> `propuesta_rho_e_final`
 - `doc_sintesis_edu` --references--> `mejoras_doc`
-
+- `datos_diseno_05_06` --specified_in--> `art_datos`
+- `datos_diseno_05_06` --produces--> `ninos_rezago_csv`
+- `datos_diseno_05_06` --pending_in--> `codigo_pendiente`
+- `u_condicionado` --part_of--> `datos_diseno_05_06`
+- `conteo_no_pobres` --part_of--> `datos_diseno_05_06`
+- `conteo_no_pobres` --needed_by--> `jer_m3_m4`
+- `nombre_parametros` --part_of--> `datos_diseno_05_06`
+- `nombre_parametros` --refines--> `numeracion_scripts`
+- `m4_vs_m3_resultados` --reported_in--> `jer_m3_m4`
+- `m4_vs_m3_resultados` --quantifies--> `precio_focalizar`
+- `precio_informacion` --reported_in--> `jer_m3_m4`
+- `precio_informacion` --quantifies--> `precio_focalizar`
+- `k_sensibilidad` --refines--> `m4_vs_m3_resultados`
+- `ref_info_perfecta` --checks--> `objetivo_c`
+- `ref_info_perfecta` --requested_in--> `jer_pide`
+- `trampas_m34` --applies_to--> `objetivo_c`
+- `trampas_m34` --reported_in--> `jer_m3_m4`
+- `tangentes_523` --compares--> `q_tangentes`
+- `rezago_m34` --adapts--> `sev_edu_4modelos`
+- `rezago_m34` --uses--> `rest_10_rezago`
+- `inasistencia_m34` --adapts--> `docs_resumen_proyecto_ipm_decision_inasistencia_condicionada`
+- `inasistencia_m34` --reported_in--> `jer_m3_m4`
 
 ### Community 11 - "Estado del proyecto y coordinación con Jerónimo (4-nov)"
 
@@ -499,6 +532,18 @@ _Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov
 - `revisar_tabla_costos` — Por revisar en la tabla de costos: trabajo infantil usa Renta Ciudadana ($3.0 M) sin verificar que tenga condición sobre trabajo infantil; logro educativo supone 3 ciclos CLEI para todo adulto con < 9 años (supuesto); la fila de rezago del resumen aún dice 'Opción C'
 - `municipio_ecv` — DANE (respuesta 30-oct, radicado 202620022798): el municipio SÍ viene en la ECV 2025 pública de ANDA (tabla 'Datos de la vivienda', P1_DEPARTAMENTO y P1_MUNICIPIO, rellenar con ceros), cruzable por DIRECTORIO; no hace falta la sala SPEE. Permite distinguir Medellín (ETC 05001) del resto de Antioquia
 - `reglas_trabajo` — Reglas de Martín: mencionar su nombre en cada respuesta; todo costo con fuente oficial y real; solo información 100 % segura (lo de memoria se marca como no verificado y no entra al modelo); hacer de abogado del diablo SOLO en el hilo 'Debatir mis decisiones'
+- `datos_diseno_05_06` — Diseño de datos compartidos (29-oct): el 05 solo CUENTA (conteo_pares.csv, empleo_componentes.csv, ninos_rezago.csv) y parametros.py PONE PRECIOS con tabla_costos(escenario) → costo_ij = EpF_zona · u_ij · HW_i; así una sensibilidad (p, rezago, u = 1) no obliga a rehacer el 05 y los dos usan el mismo escenario
+- `u_condicionado` — u_ij solo existe donde M_ij = 1 del DANE; si la regla da 0 personas pero el DANE marca la privación → u_ij = 1 y bandera u_imputado (logro 39 hogares, inasistencia 27, empleo formal 0,33 %). Atención integral (96,5 %) y desempleo (86,5 %) son aproximaciones y pesan más en los no pobres
+- `conteo_no_pobres` — Conteo de los no pobres (3.732 hogares): lo programa Martín en el mismo 05 (es el mismo código sin filtrar por 'pobre'); Jerónimo revisa y valida. En M3/M4 el sorteo cae también en no pobres y ese gasto ES el error de inclusión
+- `nombre_parametros` — El archivo se llama parametros.py, no 06_parametros.py: Python no importa módulos cuyo nombre empieza por un número; el CLAUDE.md decía 05_parametros.py y hay que corregirlo. Ahí viven pesos, k, EpF, escenarios, malla de B, r, ρ, ρ_e y la semilla
+- `m4_vs_m3_resultados` — Resultados de Jerónimo (3-nov, u = 1): M4 más barato que M3 en 97–99 % de las réplicas (ahorro mediano 53/43/14 % para metas 5/10/20 %); con meta 5 % M4 no reduce la inclusión (48→54 %); el costo pasa de ~1,8 a ~5 mil millones por punto de M0; la ventaja de M4 no es monótona (máxima con metas 4–10 %)
+- `precio_informacion` — Precio de la información (equidad, B = 10→200 mil millones): M3 logra 25→58 % de lo que lograría la información perfecta y M4 44→60 %; M4 es además más predecible (B = 25: M3 de 47 mil a 113 mil personas, M4 de 103 mil a 116 mil)
+- `k_sensibilidad` — Sensibilidad a k en M4: k = 2 (separa por tamaño del hogar, η² ≈ 0) es peor que M3; desde k = 4 la ganancia se aplana; k = 8 deja 26 pares con n < 10 y simula información individual → no presentarlo como mejor. Regla: < 15 % de pares con n < 10; k = 4 se defiende, k = 5 alternativa
+- `ref_info_perfecta` — Referencia info_perfecta.csv de Jerónimo (mismo objetivo de equidad con información perfecta; techo propio, NO es el M1): al subir el M1 compararlo con mismo B, u = 1 y rezago no intervenible; si difiere más de ~1 % hay un supuesto distinto que encontrar
+- `trampas_m34` — Trampas de Jerónimo que afectan al M1/M2: (T14) un indicador excluido debe quedar como CONSTANTE en el puntaje, s_i = w·M_i − Σ w_j cur_ij, o se 'cura' gratis su peso; (T15) el presolve de HiGHS declara a veces infactible la etapa 2 → reintentar con presolve='off'; (T16) PuLP 4.x rompe LpVariable(cat=...) → pulp<4
+- `tangentes_523` — Tangentes de severidad: Jerónimo 6.048 vs Martín 6.571; la diferencia (523 = hogares pobres) sería por omitir a = 0 (tangente q ≥ 0, ya implícita en la variable); falta que Jerónimo lo confirme para que Sev₀ y el techo sean comparables
+- `rezago_m34` — Rezago en M3/M4 (acuerdo 3-nov): caso base no intervenible (se paga, no cura) y SevEdu solo como métrica ex post en el Monte Carlo, porque el sorteo por niño rompe el prefijo por hogar de los cortes; sorteo por niño queda como trabajo futuro
+- `inasistencia_m34` — Inasistencia en M3/M4 (propuesta, decide Jerónimo): en la optimización el sorteo queda fijo y el costo es 3,0/p; el cumplimiento p entra solo en el Monte Carlo de evaluación, para no contar dos veces el azar; p = 0,369 como caso base
 
 ### Community 12 - "Objeciones abiertas del hilo 'Debatir mis decisiones' (2-nov)"
 
@@ -543,10 +588,13 @@ _Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov
 - `m2_sub32` — Subfase 3.2 HECHA: núcleo con C_i ≥ p_i s_i − U_i y_i y meta global Σ C_i ≤ (1−m) Σ p_i c0_i (la población Pob se cancela); probado con 50 hogares contra un algoritmo exacto por frontera (costo, contribución): coincide con m = 10/30/50 % y la prueba falla si se rompe la censura
 - `m2_sub33` — Subfase 3.3 HECHA: meta por zona (Meta_<d>) probada contra la suma de exactos por zona, y meta_maxima() (un problema sin meta que minimiza Σ C_i; el barrido de m llega a la zona que menos baja); coincide con la enumeración exacta; infactible justo encima del tope
 - `m2_bug_binary` — Lección: en PuLP una variable cat=Binary ignora upBound y vuelve a 0..1; lo no removible se declara entero 0..0 con crear_x(); la prueba contra el método exacto lo detectó (100 % vs 65 %). Usar crear_x en las reglas de la 3.4. PuLP 4.x ya no acepta cat=: mantener PuLP 3.3.2
-- `m2_pend34` — POR HACER 3.4: conectar las reglas de intervención (educación z/t, E-1..E-3, E-7, 10a/10b, Inas con Σ_s z_ks, logro (11), analfabetismo (12)) heredando de ModeloIPMBase; medir el piso de costo con m = 0 (E-7). Depende de 05_conteo_personas.py, datos_modelo.py y modelo_base.py del hilo del M1 (aún no existen)
-- `m2_pend35` — POR HACER 3.5: resolver() con estado y gap de HiGHS, solucion() y recalcular() y tabla común (H, A, M0, severidad, SevEdu, costo por zona y total, gasto por indicador E_j)
-- `m2_pend367` — POR HACER 3.6 y 3.7: 09_modelo2.py (caso base m = 5/10/20 %) y 09_modelo2_barridos.py (curva costo vs. meta hasta meta_maxima, meta global vs. por zona, sensibilidades p = 0.50/0.75, u = 1, E3 y SevEdu, prueba cruzada con el M1); resultados en Modelos\Modelo_2\resultados\
+- `m2_pend34` — Subfase 3.4 HECHA (6-nov): Modelo2 hereda de ModeloIPMBase y trae solo C_i, Meta_<d>/Meta y objetivo; reglas de intervención (E-7, Inas con Σ_s z_ks, logro, analfabetismo) vienen de la clase madre; piso E-7 con m = 0 = $104.41 mil millones, verificado contra cuenta independiente por hogar
+- `m2_pend35` — Subfase 3.5 HECHA (6-nov): resolver() con estado y gap de HiGHS, tabla_comun() (H, A, M0, severidad, SevEdu, costo por zona y total), gasto_por_indicador() y guardar() de 5 CSV; recalcular() independiente coincide con el MILP
+- `m2_pend367` — Subfases 3.6 y 3.7 HECHAS (6-7 nov): 09_modelo2.py (4 validaciones + caso base 5/10/20 %: costo 105.58 / 108.66 / 118.86 mil millones, salen 19/29/65 hogares) y 09_modelo2_barridos.py (curva 0-100 % por zona vs global, sensibilidades p, SevEdu, E3). Resultados en Modelos\Modelo_2\resultados\. Pendiente: u = 1 y prueba cruzada con M1
 - `m2_pend_gap` — Pendiente con Jerónimo: unificar o reportar el gap del solver de cada corrida (él usa 1e-6 en la etapa 1 y 1e-4 en la etapa 2 del M3/M4); el M2 usa 1e-6 en su única etapa
+- `m2_resultados` — Resultados M2 (actualizado 9-nov): caso base 5/10/20 % = 105.58 / 108.66 / 118.86 mil millones; piso de E-7 = 104.41; costo de la meta sobre el piso = 1.17 / 4.25 / 14.45; versión comparable con M3/M4 (sin E-7, meta global) = 0.35 / 1.32 / 6.47. Con la regla vigente (desempleo imputado no quitable, 7-nov) la meta de 100 % cuesta 740.37 (antes 660.64), 95 % = 574.30, 90 % = 481.43; las metas bajas no cambian. Costo de la equidad territorial: máx. 9.86 en m = 25 %. A de los que siguen pobres: 0.4101 / 0.4125 / 0.4186 vs 0.4094
+- `m2_pend_final` — Pendiente M2 (7-nov): escenario u = 1 (datos_modelo lanza NotImplementedError) y prueba cruzada M1↔M2 hasta que el hilo del M1 entregue su clase; malla_m2 de parametros.py sigue con m_max como argumento (el máximo real es 100 %)
+- `m2_auditoria` — Auditoría M2 (7 y 8-nov, hilo auditor) + fases aplicadas (9-nov): cumple su función, 0 violaciones en 10 corridas, prueba cruzada M1↔M2 6/6. Corregido: H1 copia completa al PC, H2 estado 'Cortado' (clase madre), H3 piso/incremental/versión comparable sin_E7, H4 brecha A, N1 incremental contra el piso del mismo escenario, N3 unidades, desempleo imputado en barridos, docs. Pendiente de Martín: commit en PyCharm, acuerdo escrito con Jerónimo (first best = sin E-7 + meta global); u = 1 depende de datos_modelo. Informes: auditoria/auditoria_modelo2.md y reauditoria_modelo2.md
 
 
 ### Community 15 - "Programación del Modelo 1 (4–5 nov)"
@@ -595,3 +643,30 @@ _Comunidad 8 (simuladores) suma:_ `sim_sevedu_v2` — SIMULADOR SevEdu v2 (1-nov
 - `f3_5_modelos` — POR HACER 3.5: modelo_base.py (ModeloIPMBase, template method; Modelo2 hereda) y Modelo_1/modelo1.py por capas: H puro vs enumeración en 50 hogares → equidad → q/tangentes/techo → bloque educativo → logro v_a → dos etapas. Instalar pulp + highspy donde se corra
 - `f3_6_7_scripts` — POR HACER 3.6–3.7: 08_modelo1.py (corrida base) y 08_modelo1_barridos.py (barridos B, ρ, ρ_e); reportes por zona y sensibilidades (E3, ρ_e 20 %)
 - `f3_estructura_carpetas` — ESTRUCTURA (5-nov): código en Optimizacion_1_S4/Modelos (común), Modelos/Modelo_1 y Modelos/Modelo_2; data/ docs/ graphify-out/ en la raíz; Martín hace los commits en PyCharm; commit de respaldo 51082ad en main sin push
+
+### Actualización 9-nov (hilo Programar el Modelo 1): auditoría y calibración — comunidad 17
+
+- `m1_prog_completa` — Programación del Modelo 1 COMPLETA (pasos 3.1–3.7, 7-nov): modelo_base.py (clase madre), Modelo_1/modelo1.py por capas, 08_modelo1.py y 08_modelo1_barridos.py; cada capa verificada contra enumeración exacta; corrida base en ~13 s. Código en Optimizacion_1_S4/Modelos y copia en /mnt/project-files/modelo1/codigo/.
+- `d6_logro32` — D6 (Martín, 6-nov): logro educativo con regla estricta: 32 hogares pueden salir por logro; el 33 queda como cota no reproducida.
+- `d7_caso3_desocupados` — D7 (Martín, 6-nov): en el caso 3 (hogar sin ocupados) NO se cuenta a los desocupados como adultos sin cobertura de empleo formal (doble cobro con EpV).
+- `d8_desempleo_imputado` — D8 (Martín, 7-nov, sigue al auditor en H5): el desempleo de larga duración sin desocupado identificado NO se paga en el caso base (218 de 226 eran imputados; quedan 8 quitables); la imputación solo es sensibilidad 'desempleo_imputado'. B_max pasa de 662.5 a 742.1 mil millones.
+- `audit_m1` — Auditoría del Modelo 1 (7-nov, hilo auditor): cumple su función, 0 violaciones del verificador independiente en B = 150/266/384/504. Hallazgos H1–H9: estado 'Optimal' al cortar por tiempo, gap 1e-4 con ruido, r sin morder, ρ fuera del caso base, desempleo imputado, documentación. Informe: auditoria/auditoria_modelo1.md.
+- `faseA_estado_gap` — Fase A de la auditoría (7-nov, P19): resolver() reporta 'Cortado' si HiGHS se corta por tiempo sin probar optimalidad; las dos etapas no pasan un H* sin demostrar; gap por defecto 1e-4 → 1e-6 (ruido de ~56 personas). Prueba: Modelo_1/prueba_faseA.py.
+- `faseB_a_a0_barridos` — Fase B de la auditoría (7–9 nov, P20): recalcular() devuelve A0; los barridos guardan A, A0 y 'brecha_no_crece'; el barrido de r se repite con tres B bajos ($127.1, $130 y $187 mil millones) donde r sí actúa. Con B de referencia $424 mil millones r no cambia nada.
+- `rho_brecha_base` — ρ del caso base = regla de la brecha (Martín, 9-nov, P21): el MENOR ρ con A ≤ A0 (nadie que siga pobre queda, en promedio, más pobre que hoy), por bisección; B=$424 mil millones → 47.4 %. El codo (48.2 %) pasa a sensibilidad 'rho_codo'. A B=$127.1 la regla no es alcanzable.
+- `sin_penalizaciones` — Sensibilidad 'sin_penalizaciones' (Martín, 9-nov): ρ=0, r=0 y sin techo de SevEdu (queda E-7) = H puro. B=$424 mil millones: 592,196 personas, A=0.4399 > A0 (la brecha crece). Aplicar lo propuesto cuesta 10,744 personas (1.8 %).
+- `r_codo_base` — r del caso base = codo de la curva H contra r de cada corrida (Martín, 9-nov, P24): rango desde el piso libre (menor % por zona con r=0) hasta el mayor r factible. Resultados: B=127.1 → 0.234; B=187 → 0.438; B=424 → 0.833. Orden: r, luego ρ (brecha), luego dos etapas. Implementación r_codo() en modelo1.py.
+- `r_020_descartado` — r = 0.20 fijo evaluado y descartado (P23, 9-nov): casi gratis hasta 0.20 con B bajos (578 personas con $127.1; 58 con $130) pero INFACTIBLE con B < ≈$119.2 mil millones y sin respaldo calculado; Martín prefirió r = codo de cada corrida.
+- `mejora_11_codo_debil` — Mejora 11 (mejoras_modelo.md, 9-nov): el codo de r es débil con presupuestos altos (curva casi lineal; con $424 mil millones r=0.833 es casi lo que ya sale solo). Opciones: otro criterio de codo para curvas lineales, reportar piso logrado por zona, piso por política.
+- `regla_m2_preguntar` — Regla de Martín (9-nov): el hilo del Modelo 2 debe preguntarle y justificar ANTES de modificar cualquier archivo que use el Modelo 1 (parametros.py, modelo_base.py, datos_modelo.py, etc.). No aplica al hilo del Modelo 1.
+- `faseD_pendiente` — PENDIENTE (fase D, luz verde de Martín): actualizar formulacion_modelo1.md (p=0.369, sin λ, dos etapas, ρ por regla de la brecha, r por codo), CLAUDE.md (08_modelo1.py está en Modelos/, no en Modelo_1/), re-correr sensibilidades con r y ρ propios (~50 min) y los barridos de B.
+
+_Nodos de la comunidad 15 (f3_*, regla_brecha, codo, barrido_r) con prefijo [ACTUALIZADO/APLICADO 9-nov]. graph.html no se regeneró._
+
+### Actualización 10-nov (hilo Programar el Modelo 1): cierre — comunidad 17
+
+- `sens_r_codo_rho_brecha` — Sensibilidades con r (codo) y ρ (regla de la brecha) propios, B=$424 mil millones (10-nov, P24): base 581,452; p=0.50 → 591,545; p=0.75 → 599,928; con E3 → 602,112; sin E-7 → 587,683; desempleo imputado → 585,762; TI psicosocial → 585,073; acueducto BID → 582,078; sin penalizaciones → 592,196 (A=0.440, la brecha crece). Las 8 sensibilidades de datos cumplen A ≤ A0 (ρ 47.2–49.5 %, r 0.83–0.87).
+- `rho_codo_no_cumple` — Hallazgo (10-nov): con el r del caso base (0.833) el codo de ρ cae en 46.9 %, POR DEBAJO del umbral de la regla (47.4 %), y no cumple A ≤ A0 (0.413 > 0.409); con r=0 el codo daba 48.2 % y sí cumplía. Refuerza usar la regla de la brecha como criterio principal de ρ y el codo solo como contraste.
+- `m1_verificado_pc` — Verificación en el PC de Martín (10-nov): 08_modelo1.py --B 424 en PyCharm con su .venv da r=0.83324 (idéntico), ρ=47.412 %, 581,456 personas (nube 581,452; diferencia de 4 personas por redondeo del solver), 7 chequeos OK, gap < 1e-6, ~16 s por etapa. 08_modelo1.py vive en Modelos/, no en Modelo_1/.
+- `m1_commit_pendiente` — PENDIENTE (10-nov): commit local de Martín de los archivos del Modelo 1 y comunes (parametros.py, modelo_base.py, datos_modelo.py, 05_conteo_personas.py, 08_modelo1*.py, Modelo_1/, docs/justificacion_decisiones.md, docs/formulacion_modelo1.md, CLAUDE.md, graphify-out/perspectiva_equidad/); sin atribución de Claude y sin push; hogares_antioquia.csv no se sube (microdato). Lo hace el hilo de datos compartidos.
+- `faseD_pendiente` — ahora HECHO (ver su etiqueta)

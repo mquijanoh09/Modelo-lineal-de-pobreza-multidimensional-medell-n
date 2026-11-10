@@ -216,8 +216,14 @@ CASO_BASE = {
     "p": P_CUMPLIMIENTO,          # cumplimiento de Renta Ciudadana
     "usar_E3": False,             # CLEI de secundaria fuera (no hay años por fuera en la ECV)
     "u_igual_1": False,           # True = una intervención por hogar (versión del paper)
+    "rho": "brecha",              # techo de severidad: el menor rho con A <= A0 (Martin, 9-nov); numero = fijo; None = sin techo
+    "r": "codo",                  # equidad por zona: codo de la curva H contra r de cada corrida (Martin, 9-nov; justificacion P24)
     "rho_e": 0.14,                # techo de SevEdu (decidido 2-nov) + cobertura art. 67 (E-7)
     "cobertura_art67": True,
+    # Desempleo de larga duración: 218 de 226 hogares pobres privados no tienen ningún desocupado
+    # identificable en el 05. Caso base (Martín, 7-nov, consejo del auditor): si no se sabe a quién
+    # pagar, la privación NO se quita (igual que inasistencia). True = se imputa una persona.
+    "desempleo_imputado": False,
     "ap": 1.0,                    # probabilidad de aprobar si asiste (pendiente MEN)
     "costo_trabajo_infantil": COSTO_TRABAJO_INFANTIL,
     "acueducto_rural": _ACUEDUCTO_RURAL,
@@ -228,10 +234,21 @@ SENSIBILIDADES = {
     "p_075": {"p": 0.75},
     "con_E3": {"usar_E3": True, "rho_e": 0.20},          # supuesto: atraso >= 2 => 2 años por fuera
     "u_1": {"u_igual_1": True},
+    # Versión comparable con M3/M4 de Jerónimo (auditoría M2-H3): sin cobertura obligatoria del art. 67.
+    "sin_E7": {"cobertura_art67": False},
+    "desempleo_imputado": {"desempleo_imputado": True},   # imputa 1 persona al 30 % de EpV en los 218 hogares
     "ti_psicosocial": {"costo_trabajo_infantil": COSTO_TRABAJO_INFANTIL_SENS_BAJA},
     # Acueducto rural bajo: aljibe propio con bomba manual, piloto BID Guachené 2015
     # (x1.65 a 2025; fuente técnica no gubernamental), informe §6.4.
     "acueducto_bid": {"acueducto_rural": 9_700_000},
+}
+
+
+# Sensibilidades de POLITICA (no cambian los datos, solo rho / r / rho_e). 'codo' = codo Kneedle de la curva H vs severidad.
+POLITICAS = {
+    "rho_codo": {"rho": "codo"},
+    # H puro (Martin, 9-nov): sin techo de severidad, sin equidad y sin techo de SevEdu (queda solo la cobertura E-7)
+    "sin_penalizaciones": {"rho": None, "r": 0.0, "rho_e": None},
 }
 
 
@@ -255,7 +272,7 @@ def tabla_epf(esc):
 # mínimo de sacar a los 523 hogares (validación 2 de la sección 5 del plan).
 MALLA_R = [0.0, 0.05, 0.10, 0.15, 0.20]
 MALLA_RHO_E = [0.0, 0.05, 0.10, 0.118, 0.14]     # 0.20 solo con E3
-MALLA_B = None                                   # pendiente: depende del rango de B
+MALLA_B = None                                   # se calcula en 08_modelo1_barridos.py con rango_B(): 8 puntos entre B_min*1.02 y B_max
 
 
 # ==================================================================

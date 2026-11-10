@@ -29,15 +29,18 @@ Modelos/                       lo común a los Modelos 1 y 2
   02_validar_ipm.py            valida pesos w_j, umbral k, FEX_C (base completa DANE, lento)
   03_preparar_antioquia.py     pruebas A/B de P3 → genera data/processed/hogares_antioquia.csv
   04_linea_base.py             H0, A0, M0, contribuciones, distancia al umbral, por zona
-  05_conteo_personas.py        (por hacer) u_ij, tablas de niños y adultos
-  datos_modelo.py              (por hacer) datos del MILP: A_i, M_i, Sev0, SevEdu
-  modelo_base.py               (por hacer) clase ModeloIPMBase (reglas comunes M1/M2)
-  Modelo_1/                    modelo1.py (clase Modelo1), 08_modelo1.py, 08_modelo1_barridos.py
+  05_conteo_personas.py        u_ij, tablas de niños y adultos (conteo por hogar, niño y adulto)
+  datos_modelo.py              datos del MILP: A_i, M_i, Sev0, SevEdu, reglas de qué privación se puede quitar
+  modelo_base.py               clase ModeloIPMBase (reglas comunes M1/M2; estado «Cortado»; gap 1e-6)
+  08_modelo1.py                corrida base del Modelo 1 (r = codo, ρ = regla de la brecha), en Modelos/, no en Modelo_1/
+  08_modelo1_barridos.py       barridos de B, ρ, r, ρ_e y sensibilidades del Modelo 1
+  08_modelo1_barrido_r_fino.py barrido fino de r (de 0.15 a 0.30 de a 0.01) para ver el codo
+  Modelo_1/                    modelo1.py (clase Modelo1, r_codo, rho_regla_brecha) y las pruebas prueba_*.py
   Modelo_2/                    modelo2.py (clase Modelo2), 09_modelo2.py, 09_modelo2_barridos.py
 ```
 `Modelo_1/` y `Modelo_2/` no llevan espacio (cambio de Martín, 5-nov), así que sus módulos se importan como paquete
 desde `Modelos/` (`from Modelo_1.modelo1 import Modelo1`). Los scripts numerados de esas carpetas igual empiezan con
-`sys.path.insert(0, str(Path(__file__).resolve().parents[1]))`, para poder correrlos directamente (`python Modelos/Modelo_1/08_modelo1.py`).
+`sys.path.insert(0, str(Path(__file__).resolve().parents[1]))`, para poder correrlos directamente (`python Modelos/08_modelo1.py`).
 Las rutas a `data/` salen de `utils_dane` (desde `__file__`), así que los scripts corren desde cualquier carpeta.
 
 ## Datos
@@ -55,7 +58,7 @@ Las rutas a `data/` salen de `utils_dane` (desde `__file__`), así que los scrip
 - Reporta **siempre** los resultados por zona (P3) además del total.
 
 ## Decisiones abiertas (no las tomes tú: pregúntale a Martín)
-1. Desempate del Modelo 1: con $\lambda$ en una corrida o en **dos etapas** (max H; luego min $\sum p_iq_i$ con $\sum p_iy_i \ge H^*$). Recomendado: dos etapas.
+1. ~~Desempate del Modelo 1~~ **Decidido (D1):** dos etapas (max H; luego min $\sum p_iq_i$ con $\sum p_iy_i \ge H^*$). En el Modelo 1, $\rho$ se calcula por la regla de la brecha y $r$ por el codo de $H$ contra $r$ en cada corrida (Martín, 9-nov).
 2. Acuerdo con Jerónimo sobre $u_{ij}$, $HW_i$, tabla de costos compartida y convención $y_i = 1$ ⇔ el hogar **sale** de la pobreza.
 
 Ya decidido (21-oct-2026): todos los costos $EpF_j$ urbanos y rurales, unidades $u_{ij}$ por persona afectada,

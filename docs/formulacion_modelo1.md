@@ -1,6 +1,6 @@
 # Modelo 1: formulación para programar
 
-*Versión del 4 de noviembre de 2026. Junta en un solo lugar:*
+*Versión del 4 de noviembre de 2026, actualizada el 9 de noviembre (ver «Cambios del 9-nov» al final de esta sección). Junta en un solo lugar:*
 - *el informe (`docs/informe_modelo1.md` §4);*
 - *la síntesis de rezago, inasistencia y SevEdu (`rezago/rezago_inasistencia_sevedu_documento.md` §5);*
 - *las decisiones de costos del 4 de noviembre: trabajo infantil, logro educativo con un ciclo por año y barreras de salud.*
@@ -52,18 +52,17 @@
 | Barreras de salud | $52,100 urbano / $203,894 rural por persona | 1 consulta, código 39141 (Circular 25/2024) + prima de dispersión (Res. 2717/2024) |
 | $c^{C}_d$ | Un ciclo CLEI: $958,431 urbano / $1,286,194 rural | Asignación CLEI SGP 2025 Antioquia |
 | $c_{ks}$ | Costo de la estrategia $s$ para el niño $k$, ya multiplicado por $HW_k$: cupo SGP del nivel (E1) o un ciclo CLEI (E2) | SGP 2025 (Anexo 1 DD SGP-96-2025) |
-| $C^{RC}_i = HW_i \cdot 3.0\text{ M} / p$ | Renta Ciudadana del hogar, pagada una vez | Prosperidad Social; $p = 0.37$ (0.50 y 0.75 en sensibilidad) |
-| $B$ | Presupuesto del año | Escenario. Rango por recalcular con la tabla nueva |
+| $C^{RC}_i = HW_i \cdot 3.0\text{ M} / p$ | Renta Ciudadana del hogar, pagada una vez | Prosperidad Social; $p = 0.369$ (0.50 y 0.75 en sensibilidad) |
+| $B$ | Presupuesto del año | Escenario. Rango útil con la tabla vigente y la regla de D8: de $105.9 a $742.1 mil millones |
 
 ### 2.3 Severidad y equidad
 
 | Símbolo | Significado | Valor |
 |---|---|---|
 | $\text{Sev}_0 = \sum_{i} p_i (c_i^0)^2$ | Severidad inicial (FGT α = 2 sobre el puntaje, sin censurar) | ≈ 117,908 |
-| $\rho$ | Reducción mínima de severidad exigida | Se barre entre sus extremos |
-| $r$ | Fracción mínima de pobres que debe salir en cada zona | Se barre |
+| $\rho$ | Reducción mínima de severidad exigida | **Se calcula en cada corrida:** el menor $\rho$ con $A \le A_0$ (regla de la brecha, §7). Con $B$ = $424 mil millones: 47.4 % |
+| $r$ | Fracción mínima de pobres que debe salir en cada zona | **Se calcula en cada corrida:** el codo de la curva $H$ contra $r$ (§7). Con $B$ = $424 mil millones: 0.833 |
 | $M_i = c_i^0 - 0.33$ | big-M de la restricción de salida, ajustada por hogar | Derivado |
-| $\lambda$ | Peso del desempate por severidad | $< \min_i p_i / \text{Sev}_0 \approx 3 \times 10^{-4}$ |
 
 ### 2.4 Educación (SevEdu, logro)
 
@@ -99,11 +98,15 @@ Expresión auxiliar (no es variable): puntaje después de intervenir, $s_i = \su
 
 ## 4. Función objetivo
 
-$$\max \; \sum_{i \in I} p_i\, y_i \;-\; \lambda \sum_{i \in I} p_i\, q_i$$
+Se resuelve en **dos etapas** (decisión D1 de Martín, 4-nov), sin $\lambda$:
 
-- **Primer término:** personas que salen de la pobreza, es decir, el numerador de H. Es el objetivo principal.
-- **Segundo término:** desempate. Entre dos planes que sacan a las mismas personas, prefiere el que deja menos severidad. Como $\lambda$ es tan pequeño, nunca sacrifica una persona por bajar severidad.
-- **D1 (Martín, 4-nov): se hace en dos etapas** en vez de con $\lambda$. Primero se maximiza H y se obtiene $H^*$; después se minimiza $\sum_i p_i q_i$ con $\sum_i p_i y_i \ge H^*$. La tolerancia de HiGHS (gap 1e-4, unas 68 personas) puede "comerse" un $\lambda$ tan pequeño. Justificación: `modelo1/justificacion_decisiones.md`.
+1. **Etapa 1:** $\max \sum_{i \in I} p_i\, y_i$ sujeto a las restricciones de la sección 5. Da $H^*$ (personas que salen).
+2. **Etapa 2:** $\min \sum_{i \in I} p_i\, q_i$ sujeto a las mismas restricciones y a $\sum_i p_i y_i \ge H^* (1 - 10^{-6})$.
+
+- **Etapa 1:** el objetivo principal es el numerador de H.
+- **Etapa 2:** desempate. Entre planes que sacan a las mismas personas, escoge el que deja menos severidad. Nunca sacrifica una persona por bajar severidad.
+- **Por qué dos etapas y no un $\lambda$ pequeño:** la tolerancia del solver podía "comerse" un $\lambda$ tan chico. Con el gap por defecto de 1e-6 (auditoría H2, 7-nov) el ruido es menor que una persona. Justificación: `modelo1/justificacion_decisiones.md` (D1, P19).
+- **Estado del solver:** si HiGHS se corta por tiempo sin probar optimalidad, el estado es «Cortado» (no «Optimal») y la etapa 2 no arranca (auditoría H1).
 
 ---
 
@@ -140,17 +143,18 @@ Reportar siempre, total y por zona: **H, A, M0, severidad, SevEdu y costo**. Se 
 
 ## 7. Cómo se escogen $\rho$, $r$ y $\rho_e$
 
-No se fijan a ojo:
-1. Se calculan los extremos ($\rho = 0$ es H puro; el máximo factible con $B$).
-2. Se barre entre esos extremos.
-3. Se escoge con el codo de la frontera H vs. severidad, o con la regla "la brecha de los que siguen pobres no crece".
+Ningún valor se fija a ojo (decisiones de Martín, 9-nov; P21 y P24):
 
-$\rho_e$ ya está decidido: 14 %, con la cobertura E-7.
+- **$\rho$ (techo de severidad): regla de la brecha.** El caso base usa el **menor $\rho$** con el que $A \le A_0$: quienes siguen pobres no quedan, en promedio, más pobres que hoy. Se halla por bisección entre la reducción de severidad que se obtiene «gratis» al maximizar $H$ y el máximo posible. El **codo** de la frontera $H$ contra severidad queda como sensibilidad (`rho_codo`). Con $B$ = $424 mil millones: $\rho$ = 47.4 % (codo 48.2 %). Con presupuestos muy bajos (por ejemplo $127.1 mil millones) la regla puede no ser alcanzable; en ese caso se corre sin techo y se declara.
+- **$r$ (equidad por zona): codo de $H$ contra $r$.** En cada corrida se corre primero con $r = 0$ y se mide el piso libre (el menor porcentaje de pobres que sale en una zona). Se halla el mayor $r$ factible (bisección). Entre ambos extremos se evalúan 12 valores de $r$ (sin techo de severidad) y $r$ es el codo de $H$ contra $r$. Con $B$ = $127.1 / $187 / $424 mil millones: $r$ = 0.234 / 0.438 / 0.833. Limitación declarada: con presupuestos altos la curva es casi lineal y el codo está poco marcado (`mejoras/mejoras_modelo.md` §11).
+- **Orden en la corrida base:** primero $r$, luego $\rho$ (con ese $r$), luego las dos etapas.
+- **$\rho_e$** está decidido: 14 %, con la cobertura E-7.
+- **Sensibilidad «sin penalizaciones»:** $\rho = 0$, $r = 0$ y sin techo de SevEdu (queda solo la cobertura E-7): $H$ puro. Con $B$ = $424 mil millones salen 592,196 personas, frente a 581,452 en el caso base, y $A$ crece (0.4399 contra $A_0$ = 0.4094).
 
 ## 8. Supuestos y limitaciones que hay que declarar
 
 Ver el informe §7 (supuestos 1 a 8) y `mejoras/mejoras_modelo.md` (mejoras 1 a 9). Las que más pesan:
-- p = 0.37 se toma como cumplimiento y no como valor esperado (mejora 3);
+- p = 0.369 se toma como cumplimiento y no como valor esperado (mejora 3);
 - un ciclo CLEI por año (mejora 6);
 - los 6 meses del ICBF quitan el trabajo infantil;
 - los hogares que ya reciben Renta Ciudadana (mejora 9).
@@ -159,4 +163,16 @@ Ver el informe §7 (supuestos 1 a 8) y `mejoras/mejoras_modelo.md` (mejoras 1 a 
 
 - ~~D1 a D5~~ **Decididas (4–5 nov):** dos etapas; el CLEI (E2) sí quita la inasistencia; E1 para los no asistentes sin rezago (sin E-7); H sobre la foto inicial; el hilo de programación hace el 05 y `parametros.py`. Ver `modelo1/justificacion_decisiones.md`.
 - **El conteo `05_conteo_personas.py`:** $u_{ij}$, tabla de niños ($K$, $N$) y tabla de adultos ($\ell_a$, asiste, analfabeta, $g_a$).
-- **Recalcular el rango de $B$.**
+- ~~Recalcular el rango de $B$~~ **Hecho:** de $105.9 a $742.1 mil millones (con la regla D8 de desempleo).
+
+---
+
+## 10. Cambios del 9-nov (respecto a la versión del 4-nov)
+
+- **D6 (6-nov):** logro educativo con regla estricta, 32 hogares pueden salir por logro.
+- **D7 (6-nov):** en hogares sin ocupados (caso 3) no se cuenta a los desocupados como adultos sin cobertura de empleo formal (evita doble cobro con EpV).
+- **D8 (7-nov):** el desempleo de larga duración sin desocupado identificado no se paga en el caso base (8 hogares quitables en vez de 226); la imputación es la sensibilidad `desempleo_imputado`.
+- **Objetivo:** dos etapas, sin $\lambda$; gap 1e-6; estado «Cortado» (auditoría H1 y H2).
+- **$p$ = 0.369** (no 0.37).
+- **$\rho$ y $r$** se calculan en cada corrida (sección 7), no se barren a mano.
+- **Auditoría:** ver `auditoria/auditoria_modelo1.md` y la bitácora `modelo1/justificacion_decisiones.md` (P19 a P24).

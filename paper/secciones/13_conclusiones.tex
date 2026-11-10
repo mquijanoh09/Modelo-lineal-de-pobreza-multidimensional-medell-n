@@ -1,3 +1,44 @@
-% Responsable: AMBOS (lunes en la noche)
+% Responsable: AMBOS. Jerónimo redactó lo de M3/M4 y la comparación; Martín agrega lo de M1/M2.
 \section{Conclusiones}\label{sec:conclusiones}
-\pendiente{3--4 hallazgos, recomendación de política y trabajo futuro.}
+
+Adaptamos a Antioquia los cuatro modelos de \citet{hamie2024} con los microdatos
+del IPM 2025 del DANE. Los comparamos en un escenario común en el que lo único que
+cambia entre ellos es cuánto sabe el Estado sobre quién es pobre.
+
+\pendiente{Martín: 1--2 conclusiones del Modelo 1 y el Modelo 2 (caso base con
+E-7, techo de severidad y SevEdu).}
+
+\paragraph{La información vale mucho, sobre todo cuando el presupuesto es
+pequeño.} Un Estado que solo conoce las zonas paga entre \cMtresIPmin{} y
+\cMtresIPmax{} veces lo necesario para cumplir metas modestas, y con
+presupuestos pequeños saca de la pobreza a una fracción reducida de las personas
+que saldrían con información perfecta. Para la política pública, esto significa
+que mejorar los sistemas de focalización (registros administrativos, SISBÉN
+actualizado) puede rendir más que ampliar el presupuesto de los programas.
+
+\paragraph{No toda información demográfica sirve.} Focalizar por tipo de hogar
+ayuda, pero con metas modestas la mejora se debe a la partición más fina y no al
+contenido demográfico: un placebo con la misma partición logra lo mismo. La
+demografía aporta cuando las privaciones que se quieren atacar dependen de la
+composición del hogar, como las educativas. Una partición que no se relaciona con
+la privación (por ejemplo, $k=2$ por tamaño del hogar) puede ser peor que no
+tener ninguna.
+
+\paragraph{Los errores de focalización son el precio estructural.} Con
+información imperfecta, entre una cuarta parte y dos terceras partes del gasto
+llega a hogares no pobres, y los techos de severidad se vuelven infactibles con
+presupuestos bajos. Estos errores no son un defecto de los modelos: son la
+medida de la capacidad limitada del Estado para focalizar.
+
+\paragraph{Aporte metodológico.} Mostramos que el mecanismo estocástico del paper
+reduce el problema a elegir \emph{cuántos} hogares atender en cada celda, no
+\emph{cuáles}. Esta reformulación por cortes es exacta y vuelve resoluble en
+segundos un modelo que con la formulación directa no se resolvía.
+
+\paragraph{Trabajo futuro.} Tres extensiones quedan abiertas:
+\begin{itemize}
+\item usar celdas municipales, cruzando con la ECV para identificar municipios;
+\item incorporar en M3 y M4 la severidad educativa con un sorteo por niño;
+\item modelar mecanismos de ejecución distintos del sorteo uniforme, por ejemplo,
+  atender primero a los hogares más accesibles.
+\end{itemize}

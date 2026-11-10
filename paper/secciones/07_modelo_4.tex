@@ -1,18 +1,125 @@
 % Responsable: Jerónimo
-% Fuentes: Seleccion_Variables_Restricciones_Modelo4.pdf, resumen_k.csv, calidad_k.csv
-% Tesis: si el Estado conoce el TIPO de hogar (no el hogar), ¿cuánto mejora?
+% Fuentes: m34_clusters.py, CLAUDE.md de Modelo3 §8 y §7.4, m34_placebo.py,
+% Seleccion_Variables_Restricciones_Modelo4.pdf
+% Tesis: si el Estado conoce el TIPO de hogar (no el hogar), ¿cuánto mejora? Y, con el
+% placebo: ¿la mejora es por la información demográfica o solo por partir más fino?
 \subsection{Modelo 4: focalización mixta geográfica y demográfica}\label{sec:m4}
 
-\subsubsection{Bienes públicos y privados}
-\pendiente{Partición $\Ind=\Upriv\cup\Vpub$ y justificación indicador por indicador.}
+El Modelo 4 agrega al Modelo 3 una segunda fuente de información que el Estado sí
+tiene: las características demográficas de los hogares, del tipo que registra el
+SISBÉN (tamaño, edades, jefatura). Sigue sin saber quién está privado en qué, pero
+ahora puede dirigir algunos programas a \emph{tipos} de hogar y no solo a zonas.
+
+\subsubsection{Bienes públicos y bienes privados}
+
+Siguiendo a \citet{hamie2024}, los indicadores se dividen en dos grupos. Los de
+\emph{bien público}, $\Vpub$, se proveen con infraestructura que sirve a todos los
+hogares de un territorio y por eso solo pueden focalizarse geográficamente. Los de
+\emph{bien privado}, $\Upriv$, se entregan hogar por hogar y pueden dirigirse a un
+tipo de hogar. Tomamos
+\[
+\Vpub=\{\text{acueducto},\ \text{alcantarillado}\},\qquad
+\Upriv=\Ind\setminus\Vpub\ \ (\text{los otros 13 indicadores}).
+\]
+La partición se apoya en los datos, además de la intuición: la privación de
+acueducto es \cDiscAcuZona{} veces más frecuente en la zona más privada que en la
+menos privada, frente a \cDiscAcuClu{} veces entre tipos de hogar. En cambio, la
+privación de atención integral a la primera infancia solo existe en hogares con
+menores de cinco años, y la inasistencia escolar y el hacinamiento varían más
+entre tipos de hogar que entre zonas.
 
 \subsubsection{Tipos de hogar}
-\pendiente{Variables del \emph{clustering}, k-medoides, elección de $k$
-(calidad y sensibilidad).}
+
+Los tipos $\Tip$ se construyen con $k$-medias sobre ocho rasgos que el Estado
+observa sin necesidad de una encuesta de privaciones:
+\begin{itemize}
+\item número de personas;
+\item número de menores de 5 años, de personas entre 5 y 17 años y de mayores de 65;
+\item tasa de dependencia;
+\item edad, sexo y nivel educativo del jefe del hogar.
+\end{itemize}
+Los rasgos se estandarizan, cada hogar se pondera por su factor de expansión y la
+semilla queda fija para que el resultado sea reproducible.
+
+Hay dos decisiones deliberadas. Primero, \textbf{ninguna privación del IPM entra
+en el \emph{clustering}}: si los tipos se formaran con las privaciones, el
+planificador estaría usando justo la información que el modelo supone que no
+tiene, y el Modelo 4 dejaría de simular información imperfecta. Segundo, la base
+del IPM no trae ingreso ni gasto, así que el \emph{proxy} de ingreso que usa el
+paper no está disponible. Ambas diferencias con el paper están en el
+Apéndice~\ref{app:desv}.
+
+Con $k=4$ los tipos tienen una lectura clara (Tabla~\ref{tab:clusters}) y
+separan la pobreza sin haberla usado: la incidencia del tipo más pobre es
+\cSeparaPobreza{} veces la del menos pobre. Parte de esa separación es
+estructural, y lo decimos: la privación de atención integral solo puede ocurrir en
+hogares con niños pequeños.
+
+\begin{table}[ht]
+\centering\small
+\caption{Tipos de hogar del Modelo 4 ($k=4$).}\label{tab:clusters}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Tipo & Hogares en la muestra & Incidencia $H$ \\
+\midrule
+Adultos sin dependientes & 1.389 & 3,7\,\% \\
+Adultos mayores          & 1.038 & 11,8\,\% \\
+Con hijos escolares      &   849 & 9,1\,\% \\
+Primera infancia         &   456 & 16,1\,\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Elección de $k$.}
+El coeficiente de silueta casi no cambia entre $k=2$ y $k=8$ (de \cSiluetaMin{}
+a \cSiluetaMax{}), así que no sirve para elegir. Elegir $k$ es, en el fondo, una
+decisión sobre qué tan fino es el sistema de información del Estado, y un $k$
+muy grande termina simulando información individual: con $k=8$ hay celdas de
+menos de 10 hogares privados, donde el sorteo deja de representar una
+focalización por tipo. Adoptamos dos criterios:
+\begin{enumerate}
+\item que menos del 15\,\% de los pares (indicador, celda) tenga menos de 10
+  hogares privados en la muestra;
+\item que al pasar a $k+1$ la ganancia sea marginal.
+\end{enumerate}
+$k=4$ cumple los dos y $k=5$ queda como alternativa. El análisis también muestra
+que no cualquier partición demográfica sirve: con $k=2$ los tipos se separan por
+tamaño del hogar, que casi no se relaciona con la pobreza, y el Modelo 4 resulta
+\emph{peor} que el Modelo 3 (Sección~\ref{sec:res34}).
 
 \subsubsection{Formulación}
-\pendiente{Objetivo OBJ 4, Con 4**, Con 10--11.}
 
-\subsubsection{Placebo}
-\pendiente{Partición aleatoria con los mismos tamaños: separa el efecto de
-``partir más fino'' del efecto de la información demográfica.}
+El Modelo 4 es el Modelo 3 con otra regla para asignar cada par a su celda de
+focalización:
+\[
+g(i,j)=\begin{cases} d_i & j\in\Vpub,\\ t_i & j\in\Upriv,\end{cases}
+\]
+de modo que el gasto, la cobertura y el sorteo
+\eqref{eq:m3-gasto}--\eqref{eq:m3-sorteo} se definen por par $(j,g)$, y el
+objetivo es
+\begin{equation}\label{eq:m4-obj}
+\min\ \sum_{j\in\Upriv}\sum_{t\in\Tip}\Esf_{jt}+\sum_{j\in\Vpub}\sum_{d\in\Zon}\Esf_{jd},
+\end{equation}
+que corresponde a OBJ~4 de \citet{hamie2024}. Las restricciones de pobreza y la
+meta \eqref{eq:m3-r4}--\eqref{eq:m3-meta} no cambian, porque el puntaje $s_i$
+depende de todos los indicadores sin importar cómo se focalizó cada uno. La
+propiedad de prefijo de la Proposición~\ref{prop:cortes} solo usa que la
+cobertura es común dentro de una celda, así que vale igual dentro de un tipo de
+hogar, y la reformulación por cortes se aplica sin cambios. El Modelo 4 tiene
+\cParesMcuatro{} pares y \cCortesMcuatro{} cortes admisibles, y cada instancia se
+resuelve en segundos.
+
+\subsubsection{Placebo: ¿información demográfica o partición más fina?}
+
+El Modelo 4 difiere del Modelo 3 en dos cosas a la vez. Usa información
+demográfica, pero también reparte los 13 indicadores privados en 4 celdas en vez
+de 3, y una partición más fina focaliza mejor aunque no tenga ningún contenido. El
+caso límite lo muestra: con un hogar por celda, el Modelo 3 coincide con la
+información perfecta (Sección~\ref{sec:diseno}). Para separar los dos efectos
+construimos un \emph{placebo}: un Modelo 4 en el que las etiquetas de tipo se
+permutan al azar entre los hogares. Así se conservan exactamente el número y el
+tamaño de las celdas, pero desaparece cualquier relación entre el tipo y las
+privaciones. Cada réplica usa su propia permutación y el mismo sorteo $R$ que el
+Modelo 3 y el Modelo 4, de modo que la comparación es pareada. Si el Modelo 4
+no supera al placebo, su ventaja sobre el Modelo 3 se debe a la granularidad y no
+a la demografía.

@@ -1,11 +1,87 @@
 % Responsable: Jerónimo (es lo que hace comparables los 4 modelos)
-% Fuentes: validacion-escenario-comun-5nov.md, m34_bootstrap_ic.py, convergencia_n.csv
+% Fuentes: m34_compat_martin.py, m34_validar_10nov.py (18/18, 10-nov), m34_costos_comunes.py,
+% m34_bootstrap_ic.py, convergencia_n.csv
 \subsection{Diseño experimental y escenario común}\label{sec:diseno}
 
-\pendiente{Escenario común: mismos costos (parametros.py), meta global, sin SevEdu
-(y por qué). Validación 22/22.}
+\subsubsection{Qué se compara}
 
-\pendiente{Monte Carlo: réplicas de $R_{ij}$, número de réplicas por TLC,
-IC 95\,\% por \emph{bootstrap}.}
+Para que la diferencia entre modelos mida solo el efecto de la información, los
+cuatro se comparan en un \emph{escenario común} que fija todo lo demás:
+\begin{enumerate}
+\item \textbf{Mismos datos y misma línea base:} los \cHogares{} hogares de
+  Antioquia, los \cPobresHog{} pobres, $\Mcero=\cMceroExacto$.
+\item \textbf{Una sola tabla de costos.} Cada par $(i,j)$ tiene un costo y una
+  regla que dice si la privación se puede quitar en un año. Ambos salen de las
+  mismas funciones del Modelo 1, aplicadas también a los hogares no pobres
+  porque M3 y M4 gastan en ellos. Cuatro tipos de privación no se pueden quitar
+  en un año en ningún modelo: el rezago escolar, el logro educativo cuyo déficit
+  excede un ciclo de educación para adultos, el analfabetismo de un adulto que no
+  ganaría años con el ciclo y el desempleo sin un desocupado identificable.
+\item \textbf{Las mismas dos preguntas para todos.} Con el criterio del paper
+  (M2 frente a M3 y M4), ¿cuánto cuesta reducir $\Mcero$ en una meta $\MPIr$
+  fijada globalmente para el departamento? Con el criterio de equidad (M1 frente
+  a M3 y M4), ¿cuántas personas salen de la pobreza con un presupuesto $B$?
+\item \textbf{Sin las obligaciones propias del Modelo 1.} El caso base de los
+  Modelos 1 y 2 incluye la cobertura escolar obligatoria del artículo 67 de la
+  Constitución y un techo de severidad educativa, que M3 y M4 no pueden
+  representar porque exigen información niño por niño. En la comparación los
+  quitamos de los cuatro modelos. Usamos la versión que el Modelo 1 ya prevé como
+  ``comparable con M3/M4'': sin esas obligaciones, con equidad por zona $r=0$ y sin
+  techo de severidad. Los resultados con esas obligaciones se reportan aparte
+  (Sección~\ref{sec:res12}).
+\end{enumerate}
+Con esto, el \textbf{precio de la información} de un modelo $X\in\{\text{M3},\text{M4}\}$
+se define como el cociente entre su costo y el de la información perfecta para la
+misma meta, $\Esf_X(\MPIr)/\Esf_{\text{M2}}(\MPIr)$. Con el criterio de equidad,
+es la fracción del techo del Modelo 1 que logra, $H_X(B)/H_{\text{M1}}(B)$.
 
-\pendiente{Solver (HiGHS), gap y versiones.}
+\subsubsection{Validación de la comparación}
+
+Verificamos con pruebas independientes que el escenario común cumple lo que
+promete. Las pruebas se hicieron contra el código final de los Modelos 1 y 2, y
+pasaron las \cValidOK{}:
+\begin{itemize}
+\item \textbf{Línea base:} mismos hogares pobres, privaciones, $\Mcero$, severidad
+  inicial y población.
+\item \textbf{Pares privados de los hogares pobres (\cParesPobres{}):} coinciden
+  par por par la regla de si la privación se puede quitar y el costo de quitarla.
+\item \textbf{Granularidad máxima.} Si cada hogar es su propia celda, el Modelo 3
+  debe reproducir la información perfecta. Con metas del 2, 6 y 10\,\% su costo
+  coincide con el del Modelo 2 hasta el centavo, y con $B=\$2$~mm saca de la
+  pobreza exactamente a las mismas personas que el Modelo 1. Con metas del 20 y
+  30\,\% cuesta \cVcincoVeinte{} y \cVcincoTreinta{} más. La diferencia es la única
+  desviación declarada: el Modelo 1 puede usar un mismo ciclo de educación para
+  adultos para quitar a la vez el logro y el analfabetismo de una persona,
+  mientras que en M3 y M4 cada par se costea por separado.
+\end{itemize}
+La prueba de granularidad máxima es la más exigente, porque ejercita juntos los
+datos, los costos, el mecanismo de cortes y la censura. Como pasa, la distancia
+entre M3 o M4 y la información perfecta se debe, salvo esa desviación acotada, a
+la información y no a diferencias de implementación.
+
+\subsubsection{Monte Carlo}
+
+En M3 y M4 el resultado depende del sorteo $R$. Por eso cada configuración se
+resuelve en $n$ réplicas independientes y se reporta la mediana con un intervalo
+de confianza del 95\,\% obtenido por \emph{bootstrap} de las réplicas. El sorteo
+de cada par se genera con una semilla derivada del hogar y de la réplica, de modo
+que:
+\begin{itemize}
+\item M3, M4 y el placebo usan el mismo $R$ en la réplica $r$, y sus diferencias
+  son \emph{pareadas};
+\item cualquier corrida se puede reproducir de forma exacta. Lo comprobamos
+  repitiendo réplicas en dos computadores distintos.
+\end{itemize}
+El número de réplicas se justifica con la regla del teorema del límite central
+que proponen \citet[ec.~8]{hamie2024}, $n\ge (z\,\mathrm{CV}/e)^2$.
+\pendiente{Actualizar $n$ y los CV con las corridas del 10-nov.}
+
+\subsubsection{Solución}
+
+Todos los modelos se resuelven con HiGHS mediante PuLP, con brecha relativa de
+optimalidad de $10^{-6}$; la única excepción es la segunda etapa del objetivo de
+equidad en M3 y M4, que usa $10^{-4}$. Se reportan el estado y la brecha de cada
+corrida, y solo se cuentan las corridas con optimalidad demostrada. Los modelos
+con dos etapas (desempate lexicográfico y equidad) se resuelven en ese orden: la
+segunda etapa mantiene el óptimo de la primera con una tolerancia relativa no
+mayor que $10^{-6}$.

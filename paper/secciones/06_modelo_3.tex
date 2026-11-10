@@ -200,8 +200,12 @@ gasto a lo sumo $\Esf^*(1+10^{-6})$, minimizamos el gasto en hogares no pobres.
 
 Para comparar con el Modelo 1, que maximiza las personas que salen de la pobreza
 con un presupuesto $B$, el mismo mecanismo admite ese objetivo. Basta cambiar
-\eqref{eq:m3c-obj} por $\max\sum_{i\in\Hog^0}\HS_i\HW_i\,b1_i$ y la meta
-\eqref{eq:m3-meta} por $\sum\mathrm{cumK}\,z\le B$, junto con las restricciones
+el objetivo \eqref{eq:m3c-obj} y la meta \eqref{eq:m3-meta} por
+\[
+\max\ \sum_{i\in\Hog^0}\HS_i\HW_i\,b1_i
+\qquad\text{s.a.}\qquad
+\sum_{(j,d)}\sum_{c\in F_{jd}}\mathrm{cumK}_{jd}(c)\,z_{jdc}\le B,
+\] junto con las restricciones
 de equidad por zona del Modelo 1 (Sección~\ref{sec:m12}). Así cada modelo se
 evalúa con los dos criterios: el del paper, que es el costo de cumplir una meta,
 y el del Modelo 1, que es cuántas personas salen de la pobreza con un

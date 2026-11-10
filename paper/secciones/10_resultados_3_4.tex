@@ -1,11 +1,90 @@
 % Responsable: Jerónimo
-% Fuentes: resultados/m34/ (ic_bootstrap_*.csv, resumen_k.csv, placebo_comun.csv)
+% Fuentes: rama claude/compat-10nov, out10/ (corridas del 10-nov, escenario común, 30 réplicas).
+% Las tablas se generan desde los CSV (tablas/*.tex); no editar los números a mano.
 \subsection{Información imperfecta (Modelos 3 y 4)}\label{sec:res34}
 
-\pendiente{Costo frente a meta de reducción (M3, M4, placebo) con IC.}
+Todas las cifras de esta sección son del escenario común
+(Sección~\ref{sec:diseno}), con \cReplicas{} réplicas del sorteo por
+configuración y las mismas réplicas para M3, M4 y el placebo. De las
+\cCorridasCosto{} corridas del criterio de costo, todas terminaron con
+optimalidad demostrada y brecha menor que $10^{-6}$.
 
-\pendiente{Equidad: con $B=\$10$ mm, M3 saca de la pobreza a \cMtresdiez{}
-personas (\cMtresdiezPctIP{} del techo) y M4 a \cMcuatrodiez{}
-(\cMcuatrodiezPctIP{}).}
+\subsubsection{Costo de cumplir la meta}
 
-\pendiente{Sensibilidad a $k$ y errores de inclusión/exclusión.}
+La Tabla~\ref{tab:costos} resume el costo de reducir $\Mcero$ en metas del 2 al
+30\,\%. Se lee de izquierda a derecha como la escalera de información:
+\begin{itemize}
+\item el costo con información perfecta (Modelo 2);
+\item lo que cuesta la misma meta cuando el Estado solo conoce las zonas (M3) o
+  las zonas y el tipo de hogar (M4);
+\item el placebo, que tiene la misma partición que el M4 pero sin contenido
+  demográfico.
+\end{itemize}
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Costo de cumplir la meta de reducción de $\Mcero$ (miles de millones de
+\$ de 2025; mediana de \cReplicas{} réplicas). M4/placebo es la mediana del
+cociente pareado réplica a réplica, con su IC del 95\,\% por \emph{bootstrap}.
+Inclusión: fracción del gasto que llega a hogares no pobres (M3 / M4).}
+\label{tab:costos}
+\begin{tabular}{@{}rrrrrrrcc@{}}
+\toprule
+& \multicolumn{4}{c}{Costo} & \multicolumn{2}{c}{Veces la IP} & & \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+Meta & IP (M2) & M3 & M4 & Placebo & M3 & M4 & M4/placebo & Inclusión \\
+\midrule
+\input{tablas/costos}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Tres resultados se destacan.
+
+\paragraph{Focalizar sin información individual cuesta varias veces más.} Con
+metas modestas, del 2 al 10\,\%, el M3 cuesta entre \cMtresIPmin{} y
+\cMtresIPmax{} veces lo que costaría con información perfecta. Con metas del
+20 al 30\,\% la razón baja a unas \cMtresIPalta{} veces. La brecha se cierra con
+metas grandes porque para cumplirlas hay que llegar a casi todos los pobres
+de todas formas: la información sirve para elegir a quién atender primero, y
+pierde valor cuando hay que atender a casi todos.
+
+\paragraph{El M4 ahorra, pero hasta metas del 18\,\% el ahorro viene de la
+partición.} El M4 es más barato que el M3 en todas las metas salvo la del 16\,\%. Sin embargo,
+hasta la meta del 18\,\% su costo es estadísticamente igual al del placebo: el
+cociente pareado M4/placebo ronda 1 y su intervalo contiene el 1 en casi todas
+esas metas. En ese rango la ventaja se debe a repartir los indicadores
+privados en más celdas, no a la información demográfica: hasta la meta del
+18\,\% los tres modelos gastan el 100\,\% del presupuesto en salud
+(aseguramiento y barreras de acceso), privaciones que no se concentran en un
+tipo de hogar. La educación entra desde la meta del 20\,\% y con la del 30\,\%
+se lleva entre el 70 y el 82\,\% del gasto. Ahí la demografía sí focaliza,
+porque las privaciones educativas dependen de la composición del hogar. Desde
+metas del 22\,\% el M4 cuesta entre un \cMcuatroPlacMin{} y un
+\cMcuatroPlacMax{} menos que el placebo.
+
+\paragraph{Los errores de focalización son grandes.} Entre el 25 y el 70\,\% del
+gasto llega a hogares que no eran pobres. La inclusión es máxima con metas
+intermedias, cuando el modelo compra cobertura en zonas donde la mayoría de los
+privados no es pobre. Al mismo tiempo, con metas del 2\,\% el 97\,\% de las
+personas pobres no recibe ninguna intervención, y con metas del 30\,\%, el 58\,\%.
+
+\subsubsection{Personas que salen de la pobreza con un presupuesto dado}
+
+\pendiente{Tabla de equidad (corridas del 10-nov en curso): personas que salen
+con $B=2$--$100$ mm en M3, M4 y el placebo, como \% del techo del M1.}
+
+\subsubsection{Sensibilidad a $k$}
+
+La elección de $k$ se apoyó en un análisis con 50 réplicas pareadas para
+$k\in\{2,3,4,5,6,8\}$. Ese análisis se hizo con una versión simplificada de los
+costos (una intervención por hogar, $u_{ij}=1$), así que lo usamos solo por su
+forma, no por sus cifras. Muestra tres cosas. Primero, con $k=2$ el M4 saca de la
+pobreza \emph{menos} personas que el M3 (0,71 veces con $B=\$10$~mm): la
+partición separa los hogares por tamaño, que casi no se relaciona con la pobreza.
+Segundo, de $k=3$ a $k=4$ la ganancia es grande, y desde ahí se aplana (1,92 veces
+el M3 con $k=4$ y 1,93 con $k=5$). Tercero, con $k=8$ el M4 mejora otra vez, pero
+lo hace con 26 celdas de menos de 10 hogares privados: está simulando información
+individual más que focalización por tipo. La lección de política es que la
+información demográfica solo ayuda si está correlacionada con las privaciones
+que se quieren atacar.

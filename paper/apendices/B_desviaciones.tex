@@ -1,4 +1,53 @@
 % Responsable: Jerónimo (M3/M4); Martín agrega filas de M1/M2
-% Fuente: docs/desviaciones-paper-m34-6nov.md (18 filas)
+% Fuente: claude/desviaciones-paper-m34-6nov.md (Project), actualizada el 10-nov
 \section{Desviaciones respecto a Hamie, Hlasny y Jouni (2024)}\label{app:desv}
-\pendiente{Tabla: qué hace el paper, qué hacemos, por qué y efecto medido.}
+
+La Tabla~\ref{tab:desv} reúne lo que hacemos distinto del paper original en
+los Modelos 3 y 4. Para cada diferencia se indica qué hace el paper, qué
+hacemos nosotros y por qué.
+
+{\footnotesize
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}p{2.9cm}>{\raggedright\arraybackslash}p{3.6cm}X@{}}
+\caption{Desviaciones de los Modelos 3 y 4 respecto al paper.}\label{tab:desv}\\
+\toprule
+Tema & Paper & Este trabajo & Por qué y efecto \\
+\midrule
+\endfirsthead
+\toprule
+Tema & Paper & Este trabajo & Por qué y efecto \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Unidades de la cobertura & Numerador ponderado por $\HW_i$, denominador en hogares de la muestra
+  & Numerador y denominador en personas de la población ($V_{ij}=u_{ij}\HW_i$)
+  & Con unidades mezcladas la cobertura llegaba a 4,81: el sorteo quedaba inerte y M3 coincidía con M1. \\
+$\MPIs$ en la meta & Ambiguo (``MPI'') & $\Mcero$ & Con $H_0$ la meta queda holgada y el gasto óptimo es cero. \\
+Desigualdades estrictas & $s_i<k$; $\cob<R$ & $s_i\le 0{,}33$; $\cob\le R-\varepsilon$, $\varepsilon=10^{-6}$
+  & Un MILP no admite desigualdades estrictas. La primera conversión es exacta (pesos múltiplos de 0,01). \\
+Big-M & Constante genérica & $\HS_i\HW_i$ por hogar en la censura; 1 en el resto
+  & Con un M global el solver no cerraba el gap. La lógica de Lin~6--10 es correcta (Apéndice~\ref{app:lin}). \\
+Formulación & Directa, una variable por hogar e indicador & Por cortes enumerados (Proposición~\ref{prop:cortes})
+  & Mismo óptimo; pasa de no resolverse en 200~s a resolverse en 2~s. \\
+Cotas de esfuerzo (Con 5*--6*) & Cotas inferiores por indicador & No se usan
+  & Eran la principal fuente de infactibilidad (celdas con un solo hogar privado). \\
+Unidad geográfica & Regiones administrativas & Las 3 clases de zona del DANE
+  & La base no identifica municipios. Celdas más gruesas hacen al M3 más pesimista. \\
+\emph{Clustering} del M4 & Privaciones privadas y \emph{proxy} de ingreso, k-medoides & $k$-medias sobre 8 rasgos demográficos, sin privaciones
+  & Usar las privaciones sería información perfecta disfrazada; la base no trae ingreso. \\
+Elección de $k$ & No se discute & $k=4$: menos del 15\,\% de pares con $n<10$ y ganancia marginal decreciente
+  & La silueta no discrimina; un $k$ grande simula información individual. \\
+Rezago escolar & Intervenible & No intervenible, constante en el puntaje
+  & Con las reglas oficiales ningún niño sale del rezago en un año; igual en los 4 modelos. \\
+Desempleo y educación de adultos & Intervenibles & No intervenibles cuando no hay a quién pagar o el ciclo no alcanza
+  & Mismas reglas del Modelo 1 en los 4 modelos (validación V2). \\
+Costos & Costo unitario por indicador & Costo por hogar ($u_{ij}$ personas, tabla común con fuente oficial)
+  & Mismo escenario para los 4 modelos. Cada par se costea por separado (diferencia con el M1 acotada en la validación V5). \\
+Óptimos alternos & No se tratan & Desempate lexicográfico: mínimo gasto en no pobres entre los óptimos
+  & Sin él, el error de inclusión dependía del solver (de 42 a 62\,\% con el mismo costo). \\
+Objetivo & Mínimo esfuerzo sujeto a una meta & El del paper y, además, el de equidad del Modelo 1
+  & Permite comparar con M1 y M2 con sus propias métricas. \\
+Número de réplicas & Regla del TLC (ec.~8) & Regla del TLC e IC \emph{bootstrap} de la mediana y de los cocientes pareados
+  & Las diferencias M4 frente a M3 se reportan con su incertidumbre. \\
+\end{xltabular}
+}

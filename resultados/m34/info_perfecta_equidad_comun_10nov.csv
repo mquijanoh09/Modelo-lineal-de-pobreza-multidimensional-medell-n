@@ -1,0 +1,7 @@
+modelo,escenario,B,estado,gap,personas_salen,costo_mm,segundos
+M1_info_perfecta,comun_10nov,2.0,Optimal,0.0,97286.45023669585,1.989812652728663,2.0
+M1_info_perfecta,comun_10nov,5.0,Optimal,0.0,135907.57768441678,4.996596528949728,2.6
+M1_info_perfecta,comun_10nov,10.0,Optimal,0.0,161253.94722942822,9.997261887044942,2.7
+M1_info_perfecta,comun_10nov,25.0,Optimal,0.0,217909.7579635292,24.999482345753414,20.0
+M1_info_perfecta,comun_10nov,50.0,Optimal,0.0,284099.1826158229,49.999425899018014,1.9
+M1_info_perfecta,comun_10nov,100.0,Optimal,0.0,370507.5571699445,99.99292607179461,2.8

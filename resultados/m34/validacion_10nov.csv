@@ -1,0 +1,19 @@
+prueba,ok,detalle
+V1 mismos hogares pobres,True,"M1/M2 523, M3/M4 523"
+V1 mismas privaciones,True,J_i del M1 = M_ij de M3/M4 en los 523 pobres
+V1 mismo M0,True,"M1/M2 0.038684431, M3/M4 0.038684431"
+V1 misma poblacion,True,"7,231,754.0 personas"
+V1 misma severidad inicial,True,"Sev0 117,908.5 vs 117,908.5"
+V2 mismos pares privados (pobres),True,2592 pares
+V2 mismo 'se puede quitar' (sin rezago),True,"2443 pares, 0 distintos {}"
+V2 mismo 'se puede quitar' (rezago),True,"149 pares, 0 distintos {}"
+V2 mismo costo en los pares que el M1 paga por par,True,"1368 pares, error relativo máximo 1.5e-16"
+V4 rezago no quitable en un año,True,el M1 podría quitar 0 de 149 pares de rezago
+"V5 granularidad maxima, meta 2%",True,"M3 un grupo por hogar $0.185 mm vs M2 $0.185 mm (exceso -0.00 %, 2 s)"
+"V5 granularidad maxima, meta 6%",True,"M3 un grupo por hogar $0.506 mm vs M2 $0.506 mm (exceso -0.00 %, 3 s)"
+"V5 granularidad maxima, meta 10%",True,"M3 un grupo por hogar $1.324 mm vs M2 $1.324 mm (exceso 0.00 %, 3 s)"
+"V5 granularidad maxima, meta 20%",True,"M3 un grupo por hogar $6.847 mm vs M2 $6.466 mm (exceso 5.90 %, 5 s)"
+"V5 granularidad maxima, meta 30%",True,"M3 un grupo por hogar $25.065 mm vs M2 $24.399 mm (exceso 2.73 %, 4 s)"
+"V5 granularidad maxima, equidad B = 2",True,"M3 un grupo por hogar 97,286 personas vs M1 97,286 (0.00 %)"
+"V5 granularidad maxima, equidad B = 10",True,"M3 un grupo por hogar 160,212 personas vs M1 161,254 (-0.65 %)"
+"V5 granularidad maxima, equidad B = 50",True,"M3 un grupo por hogar 282,563 personas vs M1 284,099 (-0.54 %)"

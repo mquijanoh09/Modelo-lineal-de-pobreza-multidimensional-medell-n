@@ -41,8 +41,8 @@ Así que la sensibilidad con ρ solo existe para B = 25 y 50.
 
 ## 2. El resultado: con r_B, M3 y M4 son infactibles en el 100 % de las réplicas
 
-En las **1.170 corridas** de cobertura (M3, M4 y placebo; 100 réplicas con B ≤ 10 y 30 con B ≥ 25; con r_B y con
-r_B + ρ_B), ninguna es factible (`resultados/m34/cobertura_rB_crudo_12nov.csv`).
+En las **1.350 corridas** de cobertura (M3, M4 y placebo; 100 réplicas con B ≤ 10 y 30 con B ≥ 25; 1.170 con r_B y
+180 con r_B + ρ_B en B = 25 y 50), ninguna es factible (`resultados/m34/cobertura_rB_crudo_12nov.csv`).
 
 **No es un error:**
 1. Con un hogar por celda, la misma restricción reproduce tu M1 (validación anterior), así que está bien escrita.
@@ -139,3 +139,7 @@ pero el M4 ya casi no supera al M3, y con metas del 28–30 % es más caro. El p
 
 Sigo esperando que confirmes los r_B, ρ_B y el M2 con meta por zona (sección 1). Reescribo los resultados del
 paper con esto en la rama `paper-12nov` y los paso a `main` cuando estén verificados.
+
+**Actualización (12-nov, noche):** los resultados del paper ya están reescritos con esto en la rama `paper-12nov`
+(secciones 10–13, resumen, apéndice B; cifras verificadas 16/16 con `m34_verificar_12nov.py`). Corrección: las
+corridas infactibles de cobertura son 1.350, no 1.170 (1.170 eran solo las de r_B).

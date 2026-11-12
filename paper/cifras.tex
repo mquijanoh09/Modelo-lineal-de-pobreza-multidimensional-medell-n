@@ -69,3 +69,31 @@
 \newcommand{\cMtresPctMax}{65\,\%}
 \newcommand{\cMcuatroPlacEq}{9--10\,\%}
 \newcommand{\cInfactiblesRho}{900}
+% ===== Comparación principal (12-nov): restricciones de equidad de Martín tal cual =====
+% Criterio de costo con meta de M0 en cada zona. Fuente: resultados/m34/costo_meta_zona_crudo_12nov.csv e
+% ic_costo_meta_zona_12nov.csv (m34_tablas_12nov.py); IP = info_perfecta_meta_zona_12nov.csv (M2 sin E-7).
+\newcommand{\zReplicas}{54}
+\newcommand{\zCorridas}{2.430}
+\newcommand{\zGapMax}{$8{,}8\times10^{-7}$}
+\newcommand{\zMtresIPmin}{3,2}            % M3/IP, mínimo (meta 28 %)
+\newcommand{\zMtresIPmax}{12,5}           % M3/IP, máximo (meta 2 %)
+\newcommand{\zMtresIPbaja}{5,5 a 12,5}    % metas del 2 al 10 %
+\newcommand{\zMtresIPalta}{3,2 a 3,9}     % metas del 20 al 30 %
+\newcommand{\zMcuatroIPmin}{3,4}
+\newcommand{\zMcuatroIPmax}{8,3}
+\newcommand{\zMcuatroMtresMenor}{5}       % metas con IC de M4/M3 < 1 (2, 12, 20, 22, 24 %)
+\newcommand{\zMcuatroMtresMayor}{2}       % metas con IC de M4/M3 > 1 (28, 30 %)
+\newcommand{\zMcuatroMtresIgual}{8}
+\newcommand{\zPlacMin}{14\,\%}            % M4 más barato que el placebo, desde la meta del 6 %
+\newcommand{\zPlacMax}{37\,\%}
+\newcommand{\zInclMtres}{27 y 55\,\%}     % inclusión mediana por meta, M3
+\newcommand{\zInclMcuatro}{21 y 49\,\%}
+\newcommand{\zExclMtres}{56 y 93\,\%}
+\newcommand{\zIPzonaDiez}{5,17}           % IP (M2) con meta del 10 % por zona
+\newcommand{\cIPglobalDiez}{1,32}         % IP (M2) con meta global del 10 % (10-nov)
+% Criterio de cobertura con r_B. Fuente: resultados/m34/cobertura_rB_crudo_12nov.csv y rmax_12nov.csv
+% (m34_rmax_12nov.py; ic_rmax_12nov.csv con m34_tablas_12nov.py), 100 réplicas.
+\newcommand{\zCorridasCob}{1.350}           % 1.170 con r_B y 180 con r_B y rho_B (B = 25 y 50)
+\newcommand{\zCorridasRmax}{1.800}
+\newcommand{\zRmaxFracMin}{0}             % r_max(M3)/r_max(IP), mediana, B = 2
+\newcommand{\zRmaxFracMax}{56\,\%}        % B = 100

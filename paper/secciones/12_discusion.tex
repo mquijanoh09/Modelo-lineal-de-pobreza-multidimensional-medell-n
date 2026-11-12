@@ -1,21 +1,22 @@
 % Responsable: Jerónimo (interpretación); Martín agrega lo de M1/M2
 % Tesis: la brecha M2 -> M3 es el costo de no saber quién es pobre; M4 recupera
-% parte, pero con presupuesto bajo esa ganancia es de la partición, no de la demografía.
+% parte; con metas por zona la demografía vale lo que la geografía (placebo), y la equidad territorial
+% garantizable cae (r_max). Cifras del 12-nov (restricciones de Martín tal cual).
 \section{Discusión}\label{sec:discusion}
 
 \subsection{El valor de saber quién es pobre}
 
 El precio de la información se puede leer como lo máximo que valdría la pena
-invertir en información para un programa. Con la meta del 6\,\%, por ejemplo,
-focalizar solo por zona cuesta \$5,66 mil millones y con información perfecta
-\$0,51 mil millones (Tabla~\ref{tab:costos}). Un sistema que permitiera
+invertir en información para un programa. Con la meta del 6\,\% en cada zona,
+por ejemplo, focalizar solo por zona cuesta \$14,09 mil millones y con
+información perfecta \$2,30 mil millones (Tabla~\ref{tab:costos}). Un sistema que permitiera
 identificar hogar por hogar a quién atender, como un registro social actualizado,
-pagaría su costo mientras costara menos que la diferencia, unos \$5 mil millones
+pagaría su costo mientras costara menos que la diferencia, unos \$12 mil millones
 para ese solo programa. Como la brecha relativa es mayor con metas modestas y
 presupuestos pequeños, el argumento pesa más para los programas acotados.
 
-El error de inclusión requiere una lectura cuidadosa. Que entre una cuarta parte
-y dos terceras partes del gasto llegue a hogares no pobres no significa que ese
+El error de inclusión requiere una lectura cuidadosa. Que entre una quinta parte
+y algo más de la mitad del gasto llegue a hogares no pobres no significa que ese
 gasto se pierda: esos hogares sí tenían la privación que se les quita. Lo que se
 pierde es eficacia frente al objetivo, que es reducir la pobreza
 multidimensional. Un programa evaluado por su cobertura puede verse exitoso y,
@@ -32,6 +33,13 @@ la variable con la que se agrupa está relacionada con la privación que se quie
 quitar. En nuestros datos, los tipos de hogar no ayudan a focalizar el
 aseguramiento y las barreras de acceso en salud, pero sí la educación, que
 depende de la composición del hogar.
+
+Las dos fuentes se ven distinto según lo que se le exija al programa. Sin
+metas por zona, la granularidad basta: el M4 es más barato que el M3, pero no
+que una partición al azar. Con metas por zona, la granularidad sin contenido
+estorba, porque las celdas al azar mezclan las zonas y el gasto no se puede
+dirigir a la zona rural; ahí solo una partición con contenido (la geográfica o
+la demográfica) evita el sobrecosto, y las dos rinden más o menos lo mismo.
 
 Para el diseño de programas, esto implica que no existe una variable de
 focalización buena para todo. Antes de focalizar un programa por tipo de hogar
@@ -61,8 +69,9 @@ modelo actúa sobre ellos aunque sean privaciones frecuentes.
 
 \paragraph{Costos por par.} En M3 y M4 cada privación se costea por separado,
 mientras que el Modelo 1 puede usar un mismo ciclo de educación para adultos para
-quitar dos privaciones de una persona. La validación acota el efecto: ninguno con
-metas de hasta el 10\,\% y a lo sumo \cVcincoVeinte{} con metas mayores.
+quitar dos privaciones de una persona. La validación acota el efecto: con la meta en cada zona, ninguno con metas de
+hasta el 20\,\% y \cGunoTreinta{} con la del 30\,\%; con el piso $r_B$,
+entre \cGdosMin{} y \cGdosMax{} menos personas con $B\ge\$25$~mm.
 
 \paragraph{Celdas con pocos hogares.} Algunas celdas (indicador, zona o tipo)
 tienen menos de 10 hogares privados en la muestra. En ellas la cobertura avanza a
@@ -83,3 +92,9 @@ entre indicadores, como en el paper original. En la práctica, los errores de
 focalización suelen estar correlacionados: un hogar que no aparece en los
 registros tiende a quedar por fuera de varios programas a la vez. Con esa
 correlación, la exclusión real podría ser mayor que la que reportamos.
+
+Por último, como en el paper original, el modelo elige la cobertura de cada celda
+conociendo el resultado del sorteo de esa réplica. Un Estado real decide la
+cobertura antes de saber a quién le llegará. Nuestras cifras de M3 y M4 son, por
+eso, optimistas: el precio real de la información sería algo mayor y el piso
+garantizable algo menor.

@@ -22,7 +22,7 @@ cuatro se comparan en un \emph{escenario común} que fija todo lo demás:
   representarlas porque solo dependen de cuántas personas salen o de cuánto baja
   $\Mcero$ en cada zona, no de saber quién es quién. Con el criterio de costo, la
   meta de reducción de $\Mcero$ se exige \emph{en cada zona}, como en el Modelo 2.
-  Con el criterio de presupuesto, se exige que en cada zona salga de la pobreza
+  Con el criterio de cobertura, se exige que en cada zona salga de la pobreza
   al menos una fracción $r_B$ de los pobres (la restricción (4) del Modelo 1), y,
   como sensibilidad, que la severidad baje al menos una fracción $\rho_B$. Los
   valores de $r_B$ y $\rho_B$ se calculan una sola vez con el Modelo 1 (por el
@@ -40,7 +40,7 @@ cuatro se comparan en un \emph{escenario común} que fija todo lo demás:
 
 \begin{table}[ht]
 \centering\footnotesize
-\caption{Parámetros de equidad del criterio de presupuesto, calculados con el
+\caption{Parámetros de equidad del criterio de cobertura, calculados con el
 Modelo 1 sin las obligaciones niño por niño y comunes a los cuatro modelos. Con
 $B=2$, 5, 10 y 100 la regla de la brecha no se alcanza, y esos presupuestos van
 sin techo de severidad.}
@@ -64,8 +64,10 @@ criterios:
   $\Esf_X(\MPIr)/\Esf_{\text{M2}}(\MPIr)$.
 \item \textbf{Criterio de cobertura} (Modelo 1 frente a M3 y M4): ¿cuántas personas
   salen de la pobreza con un presupuesto $B$, respetando $r_B$? Aquí el precio de
-  la información se mide como la fracción del techo que se logra,
-  $H_X(B)/H_{\text{M1}}(B)$. Reservamos la palabra ``equidad'' para $r$, $\rho$ y
+  la información se mediría como la fracción del techo que se logra,
+  $H_X(B)/H_{\text{M1}}(B)$; como M3 y M4 resultan infactibles con $r_B$, se
+  reporta además el piso por zona máximo que cada modelo puede garantizar
+  (Sección~\ref{sec:res34}). Reservamos la palabra ``equidad'' para $r$, $\rho$ y
   la severidad educativa.
 \end{itemize}
 Las versiones sin restricciones de equidad (meta global y $r=0$) se reportan como
@@ -120,18 +122,22 @@ verdadera. Si se exige que esa distancia sea a lo sumo una fracción $e$ de la
 media, se obtiene $n\ge (1{,}96\,\mathrm{CV}/e)^2$, donde $\mathrm{CV}$ es el
 coeficiente de variación entre réplicas. La
 variabilidad entre réplicas depende mucho de la meta y del presupuesto. Con el
-criterio de costo usamos 100 réplicas: el coeficiente de variación del M3 llega a
-0,46 con metas bajas, pero el IC de la mediana queda dentro de $\pm 10\,\%$ en
-todas las metas y dentro de $\pm 5\,\%$ desde la del 12\,\%. Con el criterio de equidad
-usamos 100 réplicas con $B\le\$10$~mm (coeficiente de variación de 0,32 a 0,55)
-y 30 con $B\ge\$25$~mm (coeficiente de variación de 0,05 o menos, para el que la
-regla pide menos de 5 réplicas).
+criterio de costo y la meta en cada zona usamos \zReplicas{} réplicas: el
+coeficiente de variación del M3 llega a 0,41 con la meta del 2\,\%, y el IC de
+la mediana queda dentro de $\pm 16\,\%$ con esa meta, de $\pm 12\,\%$ hasta la
+del 8\,\% y de $\pm 8\,\%$ desde la del 10\,\%; el del M4 y el placebo, dentro
+de $\pm 10\,\%$ en todas. Con el criterio de cobertura usamos 100 réplicas con
+$B\le\$10$~mm y 30 con $B\ge\$25$~mm, y 100 en el piso máximo garantizable. En
+la sensibilidad sin equidad territorial usamos 100 réplicas en el criterio de
+costo (IC de la mediana dentro de $\pm 10\,\%$) y las mismas del criterio de
+cobertura.
 
 \subsubsection{Solución}
 
 Todos los modelos se resuelven con HiGHS mediante PuLP, con brecha relativa de
 optimalidad de $10^{-6}$; la única excepción es la segunda etapa del objetivo de
-equidad en M3 y M4, que usa $10^{-4}$. Se reportan el estado y la brecha de cada
+cobertura en M3 y M4 de la sensibilidad sin equidad territorial, que usa
+$10^{-4}$. Se reportan el estado y la brecha de cada
 corrida, y solo se cuentan las corridas con optimalidad demostrada. Los modelos
 con dos etapas (desempate lexicográfico y equidad) se resuelven en ese orden: la
 segunda etapa mantiene el óptimo de la primera con una tolerancia relativa no

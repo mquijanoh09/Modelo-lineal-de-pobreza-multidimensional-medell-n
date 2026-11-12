@@ -1,73 +1,59 @@
-% Responsable: Jerónimo (relación entre los 4 modelos) — tabla y figura centrales del paper
-% Fuentes: out10/final (ic_bootstrap_costos.csv, ic_bootstrap_equidad.csv), m34_grafica_precio_info.py
+% Responsable: Jerónimo (relación entre los 4 modelos) — figura central del paper
+% Fuentes (12-nov): resultados/m34/ic_costo_meta_zona_12nov.csv, ic_rmax_12nov.csv, m34_grafica_12nov.py
 \subsection{Comparación de los cuatro modelos: el precio de la información}\label{sec:comparacion}
 
-La Figura~\ref{fig:precio} junta los dos criterios. El panel A muestra cuántas
-veces cuesta el M3, el M4 y el placebo lo que costaría alcanzar la misma meta con
-información perfecta (M2). El panel B muestra qué fracción de las personas que
-saldrían de la pobreza con información perfecta (M1) logra sacar cada modelo con
-el mismo presupuesto. La Tabla~\ref{tab:equidad} da las cifras del panel B.
+La Figura~\ref{fig:precio} junta los dos criterios, con las mismas restricciones
+de equidad territorial en los cuatro modelos. El panel A muestra cuántas veces
+cuesta el M3, el M4 y el placebo lo que costaría cumplir la misma meta en cada
+zona con información perfecta (Modelo 2). El panel B muestra qué fracción del
+piso por zona que se podría garantizar con información perfecta logra
+garantizar cada modelo con el mismo presupuesto, junto al $r_B$ que exige el
+Modelo 1.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{precio_informacion}
-\caption{El precio de la información. A: costo de cumplir la meta de reducción de
-$\Mcero$ relativo al costo con información perfecta (escala logarítmica). B:
-personas que salen de la pobreza como porcentaje de las que saldrían con
-información perfecta y el mismo presupuesto. Líneas: mediana de las réplicas;
-bandas: IC del 95\,\% por \emph{bootstrap}.}
+\includegraphics[width=\textwidth]{precio_informacion_12nov}
+\caption{El precio de la información, con la equidad territorial de los
+Modelos 1 y 2. A: costo de reducir $\Mcero$ en cada zona relativo al costo con
+información perfecta (escala logarítmica). B: piso por zona máximo garantizable
+como porcentaje del que se garantizaría con información perfecta y el mismo
+presupuesto; la línea punteada es el $r_B$ del Modelo 1. Líneas: mediana de las
+réplicas; bandas: IC del 95\,\% por \emph{bootstrap}.}
 \label{fig:precio}
 \end{figure}
 
-\begin{table}[ht]
-\centering\footnotesize
-\caption{Personas que salen de la pobreza con un presupuesto $B$ (miles de
-millones de \$ de 2025; mediana de las réplicas: \cReplicasBajo{} con
-$B\le 10$ y \cReplicas{} con $B\ge 25$). Los cocientes son medianas pareadas
-réplica a réplica con su IC del 95\,\%. IP: información perfecta.}
-\label{tab:equidad}
-\begin{tabular}{@{}rrrrrrrcc@{}}
-\toprule
-& \multicolumn{4}{c}{Personas que salen} & \multicolumn{2}{c}{\% del techo} & & \\
-\cmidrule(lr){2-5}\cmidrule(lr){6-7}
-$B$ & IP (M1) & M3 & M4 & Placebo & M3 & M4 & M4/M3 & M4/placebo \\
-\midrule
-\csname @@input\endcsname tablas/equidad.tex 
-\bottomrule
-\end{tabular}
-\end{table}
-
 Los dos criterios cuentan la misma historia.
 
-\paragraph{1. No saber quién es pobre es caro.} Con metas de hasta el 10\,\%, el
-Estado que focaliza solo por zona gasta entre \cMtresIPmin{} y \cMtresIPmax{}
-veces lo necesario. Con el mismo presupuesto, saca de la pobreza a una fracción
-del techo que va del \cMtresPctMin{} con $B=\$2$~mm al \cMtresPctMax{} con
-$B=\$25$~mm. El costo de la falta de información es mayor justo donde están los
-programas reales, que tienen presupuestos acotados y metas modestas. Con metas
-o presupuestos grandes la brecha se reduce, aunque no desaparece: el M3 sigue
-costando unas \cMtresIPalta{} veces lo necesario y se queda en torno al 60\,\%
-del techo.
+\paragraph{1. No saber quién es pobre es caro.} Con metas de hasta el 10\,\% en
+cada zona, el Estado que focaliza solo por zona gasta entre \zMtresIPbaja{}
+veces lo necesario. El costo de la falta de información es mayor justo donde
+están los programas reales, que tienen presupuestos acotados y metas modestas.
+Con metas grandes la brecha se reduce, aunque no desaparece: el M3 sigue
+costando entre \zMtresIPalta{} veces lo necesario.
 
-\paragraph{2. El M4 recupera parte de la brecha, pero hay que entender por qué.}
-Según el placebo, con metas de hasta el 18\,\% y presupuestos de hasta
-$\$25$~mm, el M4 rinde lo mismo que una partición aleatoria del mismo tamaño. Su
-ventaja sobre el M3 en ese rango no viene de saber algo sobre los hogares, sino de
-focalizar en celdas más pequeñas. La información demográfica empieza a valer
-cuando el gasto entra en educación: con metas desde el 22\,\%, el M4 cuesta entre
-el \cMcuatroPlacMin{} y el \cMcuatroPlacMax{} menos que el placebo, y con
-$B\ge\$50$~mm saca de la pobreza alrededor de un \cMcuatroPlacEq{} más de
-personas.
+\paragraph{2. Sin información individual no se puede prometer la equidad
+territorial del Modelo 1.} Con el piso $r_B$ que el Modelo 1 cumple con
+información perfecta, M3 y M4 son infactibles en todas las réplicas. El piso
+máximo que pueden garantizar va de casi nada con $B=\$2$~mm a entre el 45 y el
+56\,\% del de la información perfecta con $B=\$100$~mm (panel B), siempre por debajo de
+$r_B$. Un Estado que no sabe quién es pobre no solo gasta más: tampoco puede
+asegurar que la reducción de la pobreza llegue a cada zona en la proporción que
+podría con información perfecta.
 
-\paragraph{3. Los techos de severidad son lo primero que se pierde.} Exigir
-además que la severidad de la pobreza baje un 10\,\% es posible con información
-perfecta desde $B=\$5$~mm, pero con información imperfecta no lo es en ninguna
-de las réplicas de M3, M4 y el placebo hasta $B=\$10$~mm. El presupuesto no
-alcanza para llegar a los hogares más pobres, porque el sorteo reparte la
-cobertura entre todos los privados.
+\paragraph{3. La información demográfica vale lo que la geográfica, no más.}
+Con la meta en cada zona, el M4 cuesta lo mismo que el M3 en la mayoría de las
+metas, y entre un \zPlacMin{} y un \zPlacMax{} menos que un placebo con su
+misma partición. La comparación con el placebo muestra que los tipos de
+hogar sí contienen información útil, pero que con exigencias territoriales esa
+información solo compensa lo que se pierde al no focalizar los indicadores
+privados por zona. Sin exigencias territoriales (la sensibilidad de la
+Sección~\ref{sec:res34}) la conclusión es otra: el M4 es más barato que el M3,
+pero hasta metas del 18\,\% igual de barato que el placebo, de modo que su
+ventaja viene de usar celdas más finas.
 
 \paragraph{4. La diferencia es solo de información.} Con un hogar por celda, el
-M3 reproduce exactamente el costo del M2 y las personas del M1
+M3 reproduce el costo del M2 con la meta en cada zona y las personas del M1 con
+el piso $r_B$, salvo la desviación acotada del ciclo de educación para adultos
 (Sección~\ref{sec:diseno}). Por eso las brechas de la Figura~\ref{fig:precio} no
 se deben a que los modelos sean distintos: miden el valor de la información
 sobre quién es pobre.

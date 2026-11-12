@@ -1,20 +1,26 @@
 % Responsable: Jerónimo
-% Fuentes: rama claude/compat-10nov, out10/ (corridas del 10-nov, escenario común, 30 réplicas).
+% Fuentes (12-nov, restricciones de equidad de Martín tal cual): rama Modelo3, resultados/m34/
+%   costo_meta_zona_crudo_12nov.csv, ic_costo_meta_zona_12nov.csv, info_perfecta_meta_zona_12nov.csv,
+%   cobertura_rB_crudo_12nov.csv, rmax_12nov.csv, ic_rmax_12nov.csv (m34_tablas_12nov.py, m34_tabla_gasto.py).
+% Sensibilidad sin equidad territorial: datos congelados del 10-nov (*_10nov.csv).
 % Las tablas se generan desde los CSV (tablas/*.tex); no editar los números a mano.
 \subsection{Información imperfecta (Modelos 3 y 4)}\label{sec:res34}
 
 Todas las cifras de esta sección son del escenario común
-(Sección~\ref{sec:diseno}). El criterio de costo usa \cReplicasCosto{} réplicas
-del sorteo por meta, y las mismas réplicas para M3, M4 y el placebo. De las
-\cCorridasCosto{} corridas del criterio de costo, todas terminaron con
-optimalidad demostrada y brecha menor que $10^{-6}$.
+(Sección~\ref{sec:diseno}), con las restricciones de equidad territorial de los
+Modelos 1 y 2 tal cual: meta de reducción de $\Mcero$ en cada zona en el
+criterio de costo y piso $r_B$ por zona en el criterio de cobertura. M3, M4 y el
+placebo usan las mismas réplicas del sorteo. Las \zCorridas{} corridas del
+criterio de costo (\zReplicas{} réplicas por meta) terminaron todas con
+optimalidad demostrada y brecha de a lo sumo \zGapMax{}.
 
-\subsubsection{Costo de cumplir la meta}
+\subsubsection{Costo de cumplir la meta en cada zona}
 
-La Tabla~\ref{tab:costos} resume el costo de reducir $\Mcero$ en metas del 2 al
-30\,\%. Se lee de izquierda a derecha como la escalera de información:
+La Tabla~\ref{tab:costos} resume el costo de reducir $\Mcero$ en cada zona en
+metas del 2 al 30\,\%. Se lee de izquierda a derecha como la escalera de
+información:
 \begin{itemize}
-\item el costo con información perfecta (Modelo 2);
+\item el costo con información perfecta (Modelo 2, con la misma meta por zona);
 \item lo que cuesta la misma meta cuando el Estado solo conoce las zonas (M3) o
   las zonas y el tipo de hogar (M4);
 \item el placebo, que tiene la misma partición que el M4 pero sin contenido
@@ -23,59 +29,60 @@ La Tabla~\ref{tab:costos} resume el costo de reducir $\Mcero$ en metas del 2 al
 
 \begin{table}[ht]
 \centering\footnotesize
-\caption{Costo de cumplir la meta de reducción de $\Mcero$. IP: información perfecta.
-Montos en miles de millones de \$ de 2025, mediana de \cReplicasCosto{} réplicas. M4/placebo es la mediana del
-cociente pareado réplica a réplica, con su IC del 95\,\% por \emph{bootstrap}.
-Inclusión: fracción del gasto que llega a hogares no pobres (M3 / M4).}
+\caption{Costo de reducir $\Mcero$ en cada zona. IP: información perfecta
+(Modelo 2). Montos en miles de millones de \$ de 2025, mediana de \zReplicas{}
+réplicas. Los cocientes M4/M3 y M4/placebo son medianas del cociente pareado
+réplica a réplica, con su IC del 95\,\% por \emph{bootstrap}.}
 \label{tab:costos}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}rrrrrrrcc@{}}
 \toprule
 & \multicolumn{4}{c}{Costo} & \multicolumn{2}{c}{Veces la IP} & & \\
 \cmidrule(lr){2-5}\cmidrule(lr){6-7}
-Meta & IP (M2) & M3 & M4 & Placebo & M3 & M4 & M4/placebo & Inclusión \\
+Meta & IP (M2) & M3 & M4 & Placebo & M3 & M4 & M4/M3 & M4/placebo \\
 \midrule
-\csname @@input\endcsname tablas/costos.tex 
+\csname @@input\endcsname tablas/costos_zona.tex
 \bottomrule
 \end{tabular}
 \end{table}
 
-Tres resultados se destacan.
+Cuatro resultados se destacan.
 
 \paragraph{Focalizar sin información individual cuesta varias veces más.} Con
-metas modestas, del 2 al 10\,\%, el M3 cuesta entre \cMtresIPmin{} y
-\cMtresIPmax{} veces lo que costaría con información perfecta. Con metas del
-20 al 30\,\% la razón baja a unas \cMtresIPalta{} veces. La brecha se cierra con
-metas grandes porque para cumplirlas hay que llegar a casi todos los pobres
-de todas formas: la información sirve para elegir a quién atender primero, y
-pierde valor cuando hay que atender a casi todos.
+metas del 2 al 10\,\%, el M3 cuesta entre \zMtresIPbaja{} veces lo que costaría
+con información perfecta, y con metas del 20 al 30\,\%, entre \zMtresIPalta{}
+veces. El M4 cuesta entre \zMcuatroIPmin{} y \zMcuatroIPmax{} veces. La brecha se
+cierra con metas grandes porque para cumplirlas hay que llegar a casi todos los
+pobres de todas formas: la información sirve para elegir a quién atender
+primero, y pierde valor cuando hay que atender a casi todos.
 
-\paragraph{El M4 ahorra, pero hasta metas del 18\,\% el ahorro viene de la
-partición.} El M4 es más barato que el M3 en todas las metas salvo la del 16\,\%, y el
-intervalo del cociente pareado M4/M3 queda por debajo de 1 en 13 de las 15 metas. Sin embargo,
-hasta la meta del 18\,\% su costo es en general indistinguible del placebo: el
-cociente pareado M4/placebo ronda 1 y su intervalo contiene el 1 en 6 de las 9
-metas, y en las otras tres la diferencia es pequeña y va en ambos sentidos (0,90
-con la meta del 6\,\% y 1,04 con las del 16 y 18\,\%). En ese rango la ventaja
-del M4 sobre el M3 se debe a repartir los indicadores privados en más celdas, no
-a la información demográfica.
+\paragraph{Con la meta en cada zona, el tipo de hogar no supera a la zona.} El
+cociente pareado M4/M3 ronda 1. Su intervalo queda por debajo de 1 en
+\zMcuatroMtresMenor{} de las 15 metas, por encima en \zMcuatroMtresMayor{} (las
+del 28 y el 30\,\%, en las que el M4 cuesta un 21 y un 29\,\% más) y contiene el
+1 en las otras \zMcuatroMtresIgual{}. La única ventaja clara del M4 está en la
+meta del 2\,\% (0,64).
 
-La Tabla~\ref{tab:gasto} muestra por qué. Hasta la meta del 18\,\% los tres
-modelos gastan entre el 97 y el 100\,\% del presupuesto en salud (aseguramiento
-y barreras de acceso). Esas privaciones varían entre tipos de hogar tan poco como
-entre zonas (Tabla~\ref{tab:discrimina}), así que focalizarlas por tipo no rinde
-más que una partición al azar. La educación entra desde la meta del
-20\,\% y con la del 30\,\% se lleva entre el 68 y el 81\,\% del gasto. Ahí la
-demografía sí focaliza, porque las privaciones educativas se concentran en
-ciertos tipos de hogar: la inasistencia escolar, por ejemplo, es
-\cDiscInasClu{} veces más frecuente en el tipo más privado que en el menos
-privado. Desde metas del 22\,\% el M4 cuesta entre un \cMcuatroPlacMin{} y un
-\cMcuatroPlacMax{} menos que el placebo. En ningún modelo el gasto en niñez y
-vivienda pasa del 2\,\%, y el de trabajo no pasa del 13\,\%.
+\paragraph{Pero la demografía sí reemplaza a la geografía.} El placebo, que
+reparte los indicadores privados en celdas al azar, es mucho más caro que el
+M4: desde la meta del 6\,\% el M4 cuesta entre un \zPlacMin{} y un \zPlacMax{}
+menos, con intervalos que excluyen el 1. La razón es que la meta se exige en
+cada zona. El M3 puede dirigir la cobertura de cualquier indicador a la zona
+rural, donde está la mayor parte de la pobreza, y lo hace: desde la meta del
+8\,\% pone allí entre el 65 y el 78\,\% del gasto. El placebo no puede, porque sus
+celdas mezclan las tres zonas en la misma proporción que la población: la mitad
+de su gasto cae en la cabecera en todas las metas, y para cumplir la meta rural
+tiene que comprar cobertura en todas partes. El M4 también mezcla zonas, pero sus
+tipos de hogar se relacionan con las privaciones, sobre todo con las educativas,
+y eso le permite llegar a los pobres sin saber dónde viven
+(Tabla~\ref{tab:gasto}). Así, la información demográfica vale aproximadamente lo
+mismo que la geográfica, y mucho más que una partición sin contenido.
 
 \begin{table}[ht]
 \centering\footnotesize
-\caption{En qué se gasta: participación promedio de la salud, la educación y la
-zona de cabecera en el gasto (\%, \cReplicasCosto{} réplicas).}
+\caption{En qué se gasta, con la meta en cada zona: participación promedio de la
+salud, la educación y la zona de cabecera en el gasto (\%, \zReplicas{}
+réplicas).}
 \label{tab:gasto}
 \begin{tabular}{@{}rccccccccc@{}}
 \toprule
@@ -83,52 +90,145 @@ zona de cabecera en el gasto (\%, \cReplicasCosto{} réplicas).}
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
 Meta & M3 & M4 & Plac. & M3 & M4 & Plac. & M3 & M4 & Plac. \\
 \midrule
-\csname @@input\endcsname tablas/gasto.tex
+\csname @@input\endcsname tablas/gasto_zona.tex
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{El M3 se concentra en la cabecera.} Con metas del 6 al 14\,\%, el M3
-pone entre el 84 y el 97\,\% del gasto en la cabecera, frente a entre el 58 y el
-73\,\% del M4 y el placebo (Tabla~\ref{tab:gasto}). En la cabecera vive más de
-la mitad de las personas pobres del departamento, pero la incidencia es la más
-baja (\cHcabecera{}). Al comprar cobertura en esa zona, la mayor parte de los
-privados atendidos no es pobre, y eso coincide con que el error de inclusión del
-M3 sea más alto que el del M4 justo en esas metas.
+La Tabla~\ref{tab:gasto} muestra además que la meta por zona adelanta la
+entrada de la educación. Con la meta del 10\,\%, el M4 y el placebo ya gastan
+más del 70\,\% en educación y el M3 el 38\,\%; con la meta del 2\,\%, los tres
+gastan al menos el 90\,\% en salud (aseguramiento y barreras de acceso). En ningún
+modelo el gasto en niñez y vivienda, ni el de trabajo, pasa del 3\,\%.
 
-\paragraph{Los errores de focalización son grandes.} Entre el 25 y el 69\,\% del
-gasto llega a hogares que no eran pobres. La inclusión es máxima con metas
-intermedias, cuando el modelo compra cobertura en zonas donde la mayoría de los
-privados no es pobre. Al mismo tiempo, con metas del 2\,\% el 97\,\% de las
-personas pobres no recibe ninguna intervención, y con metas del 30\,\%, el 58\,\%.
+\paragraph{Los errores de focalización son grandes.} Según la meta, la mediana
+del error de inclusión (la fracción del gasto que llega a hogares no pobres) va
+del \zInclMtres{} en el M3 y del \zInclMcuatro{} en el M4. Al mismo tiempo,
+entre el \zExclMtres{} de las personas pobres no recibe ninguna intervención en
+el M3, según la meta.
 
 \subsubsection{Personas que salen de la pobreza con un presupuesto dado}
 
-Con el criterio de equidad (Tabla~\ref{tab:equidad}), el M3 saca de la pobreza
-entre el \cMtresPctMin{} y el \cMtresPctMax{} de las personas que saldrían con
-información perfecta, y el M4 entre el 19 y el 67\,\%. Con $B=\$2$~mm la
-diferencia entre M4 y M3 no es significativa. Con $B=\$5$~mm el M4 saca 1,86
-veces las personas del M3, aunque el placebo logra lo mismo. Con $B\ge\$50$~mm el
-M4 supera al placebo en un \cMcuatroPlacEq{}, con intervalos que excluyen el 1.
-Si además se exige que la severidad baje un 10\,\% ($\rho=0{,}10$), M3, M4 y el
-placebo son infactibles con $B\le\$10$~mm en las \cInfactiblesRho{} corridas, y
-factibles en todas con $B\ge\$25$~mm. Comprobamos que la infactibilidad es real
-y no un artefacto del preprocesamiento del solver: se mantiene al resolver sin
-él. Con $B=\$2$~mm el techo es infactible incluso con información perfecta. Con
-$B=\$5$ y $\$10$~mm el Modelo 1 sí lo cumple, y la infactibilidad de M3 y M4 se
-debe a la falta de información.
+Con el criterio de cobertura, los cuatro modelos deben sacar de la pobreza, en
+cada zona, al menos una fracción $r_B$ de los pobres (Tabla~\ref{tab:rrho}). Con
+información imperfecta ese piso no se puede cumplir: las \zCorridasCob{}
+corridas de M3, M4 y el placebo (100 réplicas con $B\le\$10$~mm y 30 con
+$B\ge\$25$~mm; con $r_B$ y, donde existe, con $r_B$ y $\rho_B$) son
+infactibles, es decir, la fracción de réplicas factibles es del 0\,\% en todos
+los presupuestos. Comprobamos que la infactibilidad es real por tres vías: se
+mantiene al resolver sin el preprocesamiento del solver; con un hogar por celda
+la misma restricción reproduce al Modelo 1 (Sección~\ref{sec:diseno}); y es
+aritmética, porque el piso calibrado con información perfecta exige sacar a más
+personas de las que M3 o M4 logran sacar en total con ese presupuesto.
+
+Para medir cuánta equidad territorial sí puede garantizar el Estado sin
+información individual, resolvimos en cada réplica el piso máximo garantizable,
+\[
+r^{\max}=\max\ t\quad\text{s.a.}\quad
+\sum_{i\in I^0,\,d(i)=d} p_i\,y_i\;\ge\;t\cdot\text{Pobres}_d^0
+\quad\forall d,
+\]
+con el presupuesto $B$, el mecanismo de cortes y la condición de salida de
+siempre (\zCorridasRmax{} corridas, 100 réplicas, todas óptimas con brecha de a lo sumo $3\times10^{-6}$). Con información
+perfecta, $r^{\max}$ es el extremo superior del rango en el que el Modelo 1 busca
+el codo, y por eso siempre es al menos $r_B$. La Tabla~\ref{tab:rmax} da los
+resultados.
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Piso por zona máximo garantizable, en \% de los pobres de cada zona.
+IP: información perfecta (un hogar por celda). Mediana de 100 réplicas con su
+IC del 95\,\% por \emph{bootstrap}; la última columna es la mejor réplica del M3.}
+\label{tab:rmax}
+\begin{tabular}{@{}rrrccrr@{}}
+\toprule
+$B$ (mm) & $r_B$ (M1) & IP & M3 & M4 & Placebo & Mejor M3 \\
+\midrule
+\csname @@input\endcsname tablas/rmax.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+Sin información individual, el Estado puede garantizar en cada zona entre nada
+(con $B=\$2$~mm) y algo más de la mitad (con $B=\$100$~mm) del piso que
+garantizaría con información perfecta. Ni la mejor de las 100 réplicas del M3
+alcanza el $r_B$ del Modelo 1 en ningún presupuesto. El M4 garantiza más que el
+M3 con $B\le\$5$~mm, lo mismo con $B=\$25$ y $\$50$~mm y menos con $B=\$10$ y $\$100$~mm, y supera al placebo desde
+$B=\$25$~mm. La falta de información no solo encarece la reducción de la
+pobreza: también limita cuánta equidad territorial puede prometer el Estado.
+
+\subsubsection{Sensibilidad: sin restricciones de equidad territorial}
+
+Como sensibilidad, repetimos la comparación sin restricciones de equidad
+territorial: con la meta de $\Mcero$ global y con $r=0$. Las cifras
+(\cReplicasCosto{} réplicas en el criterio de costo) están en las
+Tablas~\ref{tab:costos_global} y~\ref{tab:equidad}. Tres diferencias con el caso
+principal merecen atención.
+
+\begin{itemize}
+\item \textbf{La equidad territorial es cara para todos.} Con la meta global del
+  10\,\%, la información perfecta cuesta \$\cIPglobalDiez{}~mm, y con la misma
+  meta en cada zona, \$\zIPzonaDiez{}~mm. El precio relativo de la información,
+  en cambio, es algo mayor con la meta global: el M3 cuesta entre \cMtresIPmin{}
+  y \cMtresIPmax{} veces la IP con metas de hasta el 10\,\%, frente a
+  \zMtresIPbaja{} con la meta en cada zona.
+\item \textbf{Con meta global, el M4 sí es más barato que el M3, pero por la
+  partición.} El M4 cuesta menos que el M3 en casi todas las metas, y hasta la
+  del 18\,\% rinde lo mismo que el placebo. Sin la exigencia por zona, cualquier
+  partición más fina ayuda; con ella, solo ayuda la que tiene contenido.
+\item \textbf{Sin piso por zona, sí hay cobertura que comparar.} Con $r=0$, el M3
+  saca de la pobreza entre el \cMtresPctMin{} y el \cMtresPctMax{} de las personas
+  que saldrían con el Modelo 1. Con un techo de severidad del 10\,\%, M3, M4 y el
+  placebo son infactibles con $B\le\$10$~mm en las \cInfactiblesRho{} corridas.
+\end{itemize}
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Sensibilidad sin equidad territorial: costo de reducir $\Mcero$ con una
+meta global (datos del 10-nov). Montos en miles de millones de \$ de 2025,
+mediana de \cReplicasCosto{} réplicas. Inclusión: fracción del gasto que llega a
+hogares no pobres (M3 / M4).}
+\label{tab:costos_global}
+\begin{tabular}{@{}rrrrrrrcc@{}}
+\toprule
+& \multicolumn{4}{c}{Costo} & \multicolumn{2}{c}{Veces la IP} & & \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+Meta & IP (M2) & M3 & M4 & Placebo & M3 & M4 & M4/placebo & Inclusión \\
+\midrule
+\csname @@input\endcsname tablas/costos.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Sensibilidad sin equidad territorial ($r=0$): personas que salen de la
+pobreza con un presupuesto $B$ (miles de millones de \$ de 2025; mediana de las
+réplicas: \cReplicasBajo{} con $B\le 10$ y \cReplicas{} con $B\ge 25$). Los
+cocientes son medianas pareadas con su IC del 95\,\%. IP: Modelo 1 con $r=0$.}
+\label{tab:equidad}
+\begin{tabular}{@{}rrrrrrrcc@{}}
+\toprule
+& \multicolumn{4}{c}{Personas que salen} & \multicolumn{2}{c}{\% del techo} & & \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+$B$ & IP (M1) & M3 & M4 & Placebo & M3 & M4 & M4/M3 & M4/placebo \\
+\midrule
+\csname @@input\endcsname tablas/equidad.tex
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsubsection{Sensibilidad a $k$}
 
 La elección de $k$ se apoyó en un análisis con 50 réplicas pareadas para
 $k\in\{2,3,4,5,6,8\}$. Ese análisis se hizo con una versión simplificada de los
-costos (una intervención por hogar, $u_{ij}=1$), así que lo usamos solo por su
-forma, no por sus cifras. Muestra tres cosas. Primero, con $k=2$ el M4 saca de la
-pobreza \emph{menos} personas que el M3 (0,71 veces con $B=\$10$~mm): la
-partición separa los hogares por tamaño, que casi no se relaciona con la pobreza.
-Segundo, de $k=3$ a $k=4$ la ganancia es grande, y desde ahí se aplana (1,92 veces
-el M3 con $k=4$ y 1,93 con $k=5$). Tercero, con $k=8$ el M4 mejora otra vez, pero
-lo hace con 26 celdas de menos de 10 hogares privados: está simulando información
-individual más que focalización por tipo. La lección de política es que la
-información demográfica solo ayuda si está correlacionada con las privaciones
-que se quieren atacar.
+costos (una intervención por hogar, $u_{ij}=1$) y sin equidad territorial, así que
+lo usamos solo por su forma, no por sus cifras. Muestra tres cosas. Primero, con
+$k=2$ el M4 saca de la pobreza \emph{menos} personas que el M3 (0,71 veces con
+$B=\$10$~mm): la partición separa los hogares por tamaño, que casi no se
+relaciona con la pobreza. Segundo, de $k=3$ a $k=4$ la ganancia es grande, y desde
+ahí se aplana (1,92 veces el M3 con $k=4$ y 1,93 con $k=5$). Tercero, con $k=8$ el
+M4 mejora otra vez, pero lo hace con 26 celdas de menos de 10 hogares privados:
+está simulando información individual más que focalización por tipo. La lección
+de política es que la información demográfica solo ayuda si está correlacionada
+con las privaciones que se quieren atacar.

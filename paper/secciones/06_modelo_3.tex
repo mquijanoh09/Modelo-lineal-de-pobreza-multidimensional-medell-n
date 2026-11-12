@@ -241,7 +241,12 @@ el objetivo \eqref{eq:m3c-obj} y la meta \eqref{eq:m3-meta} por
 \qquad\text{s.a.}\qquad
 \sum_{(j,d)}\sum_{c\in F_{jd}}\mathrm{cumK}_{jd}(c)\,z_{jdc}\le B,
 \] junto con las restricciones
-de equidad por zona del Modelo 1 (Sección~\ref{sec:m12}). Así cada modelo se
+de equidad por zona del Modelo 1 (Sección~\ref{sec:m12}). Como en el Modelo 1,
+los empates se resuelven en una segunda etapa: entre las soluciones que sacan de
+la pobreza a las mismas personas, se elige la de menor severidad. En la
+implementación, la condición de salida se escribe como en el Modelo 1,
+$s_i\le 0{,}33+(s_i^0-0{,}33)(1-b1_i)$, con el Big-M más ajustado posible,
+$s_i^0-0{,}33$. Así cada modelo se
 evalúa con los dos criterios: el del paper, que es el costo de cumplir una meta,
 y el del Modelo 1, que es cuántas personas salen de la pobreza con un
 presupuesto dado.

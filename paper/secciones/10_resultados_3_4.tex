@@ -110,9 +110,13 @@ información perfecta, y el M4 entre el 19 y el 67\,\%. Con $B=\$2$~mm la
 diferencia entre M4 y M3 no es significativa. Con $B=\$5$~mm el M4 saca 1,86
 veces las personas del M3, aunque el placebo logra lo mismo. Con $B\ge\$50$~mm el
 M4 supera al placebo en un \cMcuatroPlacEq{}, con intervalos que excluyen el 1.
-Las restricciones de severidad del Modelo 1 ($\rho=0{,}10$) son infactibles con
-$B\le\$10$~mm en las \cInfactiblesRho{} corridas de M3, M4 y el placebo, y
-factibles en todas con $B\ge\$25$~mm.
+Si además se exige que la severidad baje un 10\,\% ($\rho=0{,}10$), M3, M4 y el
+placebo son infactibles con $B\le\$10$~mm en las \cInfactiblesRho{} corridas, y
+factibles en todas con $B\ge\$25$~mm. Comprobamos que la infactibilidad es real
+y no un artefacto del preprocesamiento del solver: se mantiene al resolver sin
+él. Con $B=\$2$~mm el techo es infactible incluso con información perfecta. Con
+$B=\$5$ y $\$10$~mm el Modelo 1 sí lo cumple, y la infactibilidad de M3 y M4 se
+debe a la falta de información.
 
 \subsubsection{Sensibilidad a $k$}
 

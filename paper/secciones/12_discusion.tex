@@ -78,4 +78,8 @@ Alkire--Foster censurada.
 que, dentro de una celda, cualquier hogar privado tiene la misma probabilidad de
 ser atendido. Un programa real puede ser mejor (si usa información local) o peor
 (si llega primero a los hogares más accesibles, que suelen ser los menos pobres).
-El modelo no distingue entre esos casos.
+El modelo no distingue entre esos casos. Además, los sorteos de un mismo hogar son independientes
+entre indicadores, como en el paper original. En la práctica, los errores de
+focalización suelen estar correlacionados: un hogar que no aparece en los
+registros tiende a quedar por fuera de varios programas a la vez. Con esa
+correlación, la exclusión real podría ser mayor que la que reportamos.

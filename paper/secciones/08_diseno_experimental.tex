@@ -72,8 +72,12 @@ que:
 \item cualquier corrida se puede reproducir de forma exacta. Lo comprobamos
   repitiendo réplicas en dos computadores distintos.
 \end{itemize}
-El número de réplicas se justifica con la regla del teorema del límite central
-que proponen \citet[ec.~8]{hamie2024}, $n\ge (z\,\mathrm{CV}/e)^2$. La
+El número de réplicas se justifica con la condición del teorema del límite
+central que proponen \citet[ec.~8]{hamie2024}: con probabilidad cercana al
+95\,\%, la media muestral queda a menos de $1{,}96\,\sigma/\sqrt{n}$ de la media
+verdadera. Si se exige que esa distancia sea a lo sumo una fracción $e$ de la
+media, se obtiene $n\ge (1{,}96\,\mathrm{CV}/e)^2$, donde $\mathrm{CV}$ es el
+coeficiente de variación entre réplicas. La
 variabilidad entre réplicas depende mucho de la meta y del presupuesto. Con el
 criterio de costo usamos 100 réplicas: el coeficiente de variación del M3 llega a
 0,46 con metas bajas, pero el IC de la mediana queda dentro de $\pm 10\,\%$ en

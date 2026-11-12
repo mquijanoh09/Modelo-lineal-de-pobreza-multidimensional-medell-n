@@ -93,8 +93,9 @@ $\cob\le R-\varepsilon$ con $\varepsilon=10^{-6}$.
 
 \subsubsection{Reformulación por cortes}
 
-Incluso después de las simplificaciones del Apéndice~\ref{app:lin} (una binaria
-por par activo y $b1_i$ solo para los hogares pobres), el modelo tiene
+Lo medimos en la versión inicial del modelo, con una meta del 10\,\%. Incluso
+después de las simplificaciones del Apéndice~\ref{app:lin} (una binaria por par
+activo y $b1_i$ solo para los hogares pobres), el modelo tenía
 \cBinDirecta{} variables binarias y \cRestrDirecta{} restricciones, y HiGHS no
 cierra el gap en más de 200 segundos; escrito literalmente como en el paper
 tendría \cBinPaper{} binarias.
@@ -150,13 +151,17 @@ Las restricciones \eqref{eq:m3-r4}--\eqref{eq:m3-meta} dependen solo de $\Ndec$,
 así que se cumplen en las dos formulaciones a la vez.
 \end{proof}
 
-La reformulación pasa de \cBinDirecta{} binarias a \cBinCortes{}
-(\cCortesMtres{} cortes en \cParesMtres{} pares más una $b1_i$ por hogar pobre) y
-de \cRestrDirecta{} restricciones a \cRestrCortes{}. Se resuelve en
-\cTiempoCortes{}. En una submuestra de 600 hogares, donde la formulación directa
+En esa misma instancia, la reformulación pasa de \cBinDirecta{} binarias a
+\cBinCortes{} y de \cRestrDirecta{} restricciones a \cRestrCortes{}, y se resuelve
+en \cTiempoCortes{}. En una submuestra de 600 hogares, donde la formulación directa
 sí se resuelve, las dos dan el mismo óptimo, el mismo $\Mcero$ final y las mismas
 celdas elegidas. Además, en 40 de 40 instancias pequeñas el modelo por cortes
 coincidió con la enumeración exhaustiva.
+En el escenario final de la comparación, el M3 tiene
+\cParesMtresFin{} pares y, según la réplica del sorteo, entre \cCortesMtresFin{}
+cortes admisibles (de \cBinMtresFin{} binarias con las $b1_i$). Cada instancia,
+incluido el desempate, se resuelve en \cTiempoMtresMed{} de mediana y
+\cTiempoMtresMax{} como máximo.
 
 \subsubsection{Privaciones que no se pueden quitar en un año}
 

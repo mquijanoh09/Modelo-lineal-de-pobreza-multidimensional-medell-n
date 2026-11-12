@@ -29,9 +29,9 @@ Big-M & Constante genérica & $\HS_i\HW_i$ por hogar en la censura; 1 en el rest
   & Con un M global el solver no cerraba el gap. La lógica de Lin~6--10 es correcta (Apéndice~\ref{app:lin}). \\
 Formulación & Directa, una variable por hogar e indicador & Por cortes enumerados (Proposición~\ref{prop:cortes})
   & Mismo óptimo; pasa de no resolverse en 200~s a resolverse en 2~s. \\
-Cotas de esfuerzo (Con 5*--6*) & Cotas inferiores por indicador & No se usan
+Cotas de esfuerzo (Con 5*--6*) & Cotas inferior y superior de esfuerzo & No se usan
   & Eran la principal fuente de infactibilidad (celdas con un solo hogar privado). \\
-Unidad geográfica & Regiones administrativas & Las 3 clases de zona del DANE
+Unidad geográfica & Celdas de población (regiones geográficas) & Las 3 clases de zona del DANE
   & La base no identifica municipios. Celdas más gruesas hacen al M3 más pesimista. \\
 \emph{Clustering} del M4 & Privaciones privadas y \emph{proxy} de ingreso, k-medoides & $k$-medias sobre 8 rasgos demográficos, sin privaciones
   & Usar las privaciones sería información perfecta disfrazada; la base no trae ingreso. \\
@@ -47,7 +47,7 @@ Costos & Costo unitario por indicador & Costo por hogar ($u_{ij}$ personas, tabl
   & Sin él, el error de inclusión dependía del solver (de 42 a 62\,\% con el mismo costo). \\
 Objetivo & Mínimo esfuerzo sujeto a una meta & El del paper y, además, el de equidad del Modelo 1
   & Permite comparar con M1 y M2 con sus propias métricas. \\
-Número de réplicas & Regla del TLC (ec.~8) & Regla del TLC e IC \emph{bootstrap} de la mediana y de los cocientes pareados
+Número de réplicas & Condición del TLC (ec.~8) & Regla del TLC e IC \emph{bootstrap} de la mediana y de los cocientes pareados
   & Las diferencias M4 frente a M3 se reportan con su incertidumbre. \\
 \end{xltabular}
 }

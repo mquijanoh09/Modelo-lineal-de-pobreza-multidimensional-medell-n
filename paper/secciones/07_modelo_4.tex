@@ -21,12 +21,35 @@ tipo de hogar. Tomamos
 \Vpub=\{\text{acueducto},\ \text{alcantarillado}\},\qquad
 \Upriv=\Ind\setminus\Vpub\ \ (\text{los otros 13 indicadores}).
 \]
-La partición se apoya en los datos, además de la intuición: la privación de
-acueducto es \cDiscAcuZona{} veces más frecuente en la zona más privada que en la
-menos privada, frente a \cDiscAcuClu{} veces entre tipos de hogar. En cambio, la
-privación de atención integral a la primera infancia solo existe en hogares con
-menores de cinco años, y la inasistencia escolar y el hacinamiento varían más
-entre tipos de hogar que entre zonas.
+La partición se apoya en los datos. La Tabla~\ref{tab:discrimina} compara qué
+tanto varía cada privación entre zonas y entre tipos de hogar, medido como la
+razón entre la incidencia en la celda más privada y en la menos privada. El
+acueducto y el alcantarillado varían más entre zonas que entre tipos, así que
+la geografía es la forma natural de focalizarlos. La inasistencia escolar, el
+hacinamiento y la atención integral a la primera infancia varían mucho más entre
+tipos de hogar; la última solo existe en hogares con menores de cinco años. En
+las privaciones de salud, que son las primeras que atienden los modelos
+(Sección~\ref{sec:res34}), las dos particiones discriminan casi lo mismo.
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Razón entre la incidencia de la privación en la celda más privada y en
+la menos privada, por zona y por tipo de hogar ($k=4$; personas expandidas).}
+\label{tab:discrimina}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Privación & Entre zonas & Entre tipos de hogar \\
+\midrule
+Acueducto (bien público)        & \cDiscAcuZona{} & \cDiscAcuClu{} \\
+Alcantarillado (bien público)   & 4,7  & 3,2 \\
+Inasistencia escolar            & 4,8  & \cDiscInasClu{} \\
+Hacinamiento                    & 2,7  & 26,6 \\
+Atención integral (0--5 años)   & 2,2  & solo en hogares con niños \\
+Aseguramiento en salud          & 1,9  & 1,9 \\
+Barreras de acceso a salud      & 2,7  & 1,8 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsubsection{Tipos de hogar}
 
@@ -106,7 +129,8 @@ depende de todos los indicadores sin importar cómo se focalizó cada uno. La
 propiedad de prefijo de la Proposición~\ref{prop:cortes} solo usa que la
 cobertura es común dentro de una celda, así que vale igual dentro de un tipo de
 hogar, y la reformulación por cortes se aplica sin cambios. El Modelo 4 tiene
-\cParesMcuatro{} pares y \cCortesMcuatro{} cortes admisibles, y cada instancia se
+\cParesMcuatro{} pares y entre \cCortesMcuatro{} cortes admisibles según la
+réplica, y cada instancia se
 resuelve en segundos.
 
 \subsubsection{Placebo: ¿información demográfica o partición más fina?}

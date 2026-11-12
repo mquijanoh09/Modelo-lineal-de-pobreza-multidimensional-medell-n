@@ -92,11 +92,18 @@ def construir(info, dat, B, r=0.0, rho=0.0, etapa=1, H_star=None):
     return m, z
 
 
-def resolver(info, dat, B, r=0.0, rho=0.0, tiempo=180):
+def resolver(info, dat, B, r=0.0, rho=0.0, tiempo=180, gap2=1e-4):
+    """gap2: brecha de la etapa 2. 1e-4 reproduce los datos congelados del 10-nov; la especificación del
+    12-nov (Martín, §3.3) pide 1e-6 en las dos etapas de los cuatro modelos."""
     t0 = time.time()
-    m, z = construir(info, dat, B, r, rho, etapa=1)
-    m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=1e-6))
-    est, st_h, gap1 = estado_real(m, pulp.LpStatus[m.status])
+    # Etapa 1. Auditoría 12-nov (h7): si HiGHS declara infactible, se confirma sin presolve, porque la
+    # infactibilidad es ahora un RESULTADO que se reporta (fracción de réplicas factibles).
+    for opciones1 in [{}, {"presolve": "off"}]:
+        m, z = construir(info, dat, B, r, rho, etapa=1)
+        m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=1e-6, **opciones1))
+        est, st_h, gap1 = estado_real(m, pulp.LpStatus[m.status])
+        if est == "Optimal":
+            break
     if est != "Optimal":
         return dict(estado=est + "_etapa1", segundos=time.time() - t0, estado_highs=st_h, gap_etapa1=gap1)
     H_star = pulp.value(m.objective)
@@ -106,7 +113,7 @@ def resolver(info, dat, B, r=0.0, rho=0.0, tiempo=180):
     # presolve: se reintenta con presolve="off", que da el optimo. Se registra en la salida.
     for opciones in [{}, {"presolve": "off"}]:
         m, z = construir(info, dat, B, r, rho, etapa=2, H_star=H_star)
-        m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=1e-4, **opciones))
+        m.solve(pulp.HiGHS(msg=False, timeLimit=tiempo, gapRel=gap2, **opciones))
         est, st_h, gap2 = estado_real(m, pulp.LpStatus[m.status])
         if est == "Optimal":
             break

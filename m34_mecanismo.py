@@ -90,7 +90,7 @@ def enumerar_cortes(M, R, V, K, grupo, eps=EPS, excluir=(), pobre0=None, fijos=N
 
 
 def resolver_paper(M, w, pers, pobre0, M0, info, mpi_r, solver="highs", gap=1e-6, tmax=300,
-                   desempate=False, tol_lex=1e-6):
+                   desempate=False, tol_lex=1e-6, zona=None):
     """min sum Costo_jg  s.a.  corte unico, censura AF (Big-M por hogar), meta de M0.
 
     Big-M de R4/R5 = pers_i = HS_i*HW_i (indexado por hogar, NUNCA global).
@@ -128,7 +128,17 @@ def resolver_paper(M, w, pers, pobre0, M0, info, mpi_r, solver="highs", gap=1e-6
         m += C[i] + Mi * b1[i] >= Mi * s
         m += C[i] - Mi * b1[i] <= Mi * s
         m += s - (1 - b1[i]) <= K_GRID
-    m += pulp.lpSum(C.values()) <= M0 * (1 - mpi_r) * pers.sum()
+    if zona is None:
+        # meta GLOBAL de M0 (escenario común del 5/10-nov; sensibilidad desde el 12-nov)
+        m += pulp.lpSum(C.values()) <= M0 * (1 - mpi_r) * pers.sum()
+    else:
+        # Meta de M0 EN CADA ZONA (especificación de Martín del 12-nov, §4.3 = (M-d) del M2):
+        # sum_{i in I0, d(i)=d} C_i <= (1 - m) sum_{i in I0, d(i)=d} p_i s_i^0. Las tres implican la global.
+        s0 = np.round(M @ w, 2)
+        for d in np.unique(zona):
+            en_d = [i for i in C if zona[i] == d]
+            m += (pulp.lpSum(C[i] for i in en_d) <= (1 - mpi_r) * float(sum(pers[i] * s0[i] for i in en_d)),
+                  f"META_{str(d).replace(' ', '_')}")
     m += pulp.lpSum(v["cumK"][c] * z[(jj, g, c)] for (jj, g), v in info.items() for c in v["F"])
     if solver == "highs":
         sv = pulp.HiGHS(msg=False, gapRel=gap, timeLimit=tmax)

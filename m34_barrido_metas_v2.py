@@ -42,6 +42,9 @@ def preparar(raiz):
               var={"u1": (HWm, Kp)})   # variante "pp" (V = K = HS) retirada: auditoria 4-nov, h12
 
 
+META_ZONA = False   # 12-nov: True = meta de M0 en cada zona (especificación de Martín, §4.3)
+
+
 def tarea(args):
     modelo, var, rep = args
     g = G_
@@ -52,7 +55,8 @@ def tarea(args):
     filas = []
     for meta in METAS:
         res = X.resolver_paper(g["M"], g["w"], g["b"]["pers"], g["b"]["pobre0"], g["b"]["M0"], info, meta,
-                               solver="highs", gap=1e-6, tmax=180, desempate=True)
+                               solver="highs", gap=1e-6, tmax=180, desempate=True,
+                               zona=g["zona"] if META_ZONA else None)
         f = dict(modelo=modelo, variante=var, replica=rep, meta=meta, estado=res["estado"],
                  objetivo=res["obj"], segundos=res["segundos"],
                  estado_highs=res.get("estado_highs"), gap=res.get("gap"))

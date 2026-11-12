@@ -142,19 +142,19 @@ donde $\mathrm{rank}_{ij}$ es la posición del hogar $i$ en el orden de su par.
   % corte elegido c = 5: cobertura p(5) = 5/8
   \fill[orange!12] (0,0.15) rectangle (0.625,0.95);
   \draw[orange!80!black,thick,dashed] (0.625,-0.25) -- (0.625,1.05);
-  \node[orange!80!black,anchor=west] at (0.63,0.15) {$p(5)=5/8$};
+  \node[orange!80!black,anchor=west] at (0.63,0.15) {$\theta(5)=5/8$};
   % hogares privados de la celda, ordenados por R
   \foreach \r [count=\k] in {0.04,0.10,0.31,0.36,0.47} \fill[blue!70!black] (\r,0.55) circle[radius=3.5pt] node[above=3pt] {\scriptsize\k};
   \foreach \r [count=\k from 6] in {0.66,0.80,0.93} \draw[blue!70!black,thick,fill=white] (\r,0.55) circle[radius=3.5pt] node[above=3pt] {\scriptsize\k};
-  \node[anchor=west] at (0.005,1.35) {\textbf{atendidos} ($R\le p$)};
-  \node[anchor=east] at (1.0,1.35) {\textbf{siguen privados} ($R>p$)};
+  \node[anchor=west] at (0.005,1.35) {\textbf{atendidos} ($R\le\theta$)};
+  \node[anchor=east] at (1.0,1.35) {\textbf{siguen privados} ($R>\theta$)};
   % cortes admisibles
   \node[anchor=west] at (0,-0.85) {Corte $c$:};
   \foreach \c/\m in {0/\checkmark,1/$\times$,2/\checkmark,3/$\times$,4/$\times$,5/\checkmark,6/\checkmark,7/\checkmark,8/\checkmark}
      \node at (0.18+0.095*\c,-0.85) {\c\,\m};
 \end{tikzpicture}
 \caption{Ejemplo con 8 hogares privados de igual peso en una celda, ordenados por
-su sorteo $R$. Si el Estado compra la cobertura $p=5/8$, se atienden exactamente
+su sorteo $R$. Si el Estado compra la cobertura $\theta=5/8$, se atienden exactamente
 los 5 hogares con $R\le 5/8$: el conjunto de atendidos es siempre un prefijo del
 orden. Abajo, los cortes admisibles ($\checkmark$): por ejemplo, $c=3$ no lo es,
 porque la cobertura $3/8=0{,}375$ también alcanzaría al cuarto hogar

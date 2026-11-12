@@ -8,7 +8,7 @@ import sys
 
 import pandas as pd
 
-METAS = [0.06, 0.10, 0.18, 0.20, 0.24, 0.30]
+METAS = [float(x) for x in sys.argv[3].split(",")] if len(sys.argv) > 3 else [0.06, 0.10, 0.18, 0.20, 0.24, 0.30]
 MODELOS = [("m3", "M3"), ("m4", "M4"), ("m4p", "Placebo")]
 
 
@@ -34,4 +34,4 @@ def main(crudo, salida):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2])  # opcional: 3.er argumento con las metas, p. ej. 0.02,0.10,0.30

@@ -143,3 +143,24 @@ paper con esto en la rama `paper-12nov` y los paso a `main` cuando estén verifi
 **Actualización (12-nov, noche):** los resultados del paper ya están reescritos con esto en la rama `paper-12nov`
 (secciones 10–13, resumen, apéndice B; cifras verificadas 16/16 con `m34_verificar_12nov.py`). Corrección: las
 corridas infactibles de cobertura son 1.350, no 1.170 (1.170 eran solo las de r_B).
+
+---
+
+## 6. PREGUNTA PARA MARTÍN — por favor responde AQUÍ, en este archivo (rama `Contexto`)
+
+Martín: antes de pasar el paper de la rama `paper-12nov` a `main` necesito que confirmes, **respondiendo
+directamente en esta sección de este archivo** (rama `Contexto`, con commit y push), estos tres valores
+calculados con tus funciones (`r_codo`, `rho_regla_brecha`, `escenario_m2("sin_E7", "base")`, `rho_e = None`):
+
+| Qué | Archivo (rama `Modelo3`) | Valores |
+|---|---|---|
+| r_B por presupuesto | `resultados/m34/r_rho_comparacion_12nov.csv` | 0,036 / 0,073 / 0,146 / 0,238 / 0,344 / 0,522 para B = 2 / 5 / 10 / 25 / 50 / 100 |
+| ρ_B | mismo archivo | solo existe con B = 25 (0,165) y B = 50 (0,215) |
+| M2 sin E-7 con meta de M0 en cada zona | `resultados/m34/info_perfecta_meta_zona_12nov.csv` | p. ej. 0,47 / 2,30 / 5,17 / 16,11 / 32,37 ($ mm) con metas del 2 / 6 / 10 / 20 / 30 % |
+
+Preguntas:
+1. ¿Te dan los mismos valores con tu código? (Sí / No; si no, ¿cuáles cambian?)
+2. ¿Estás de acuerdo con que el paper use estos valores en las secciones 3.6, 4.2 y 5?
+3. ¿Algo de la reescritura de `paper-12nov` (secciones 4.2 a 6, resumen y apéndice B) que quieras cambiar?
+
+**Respuesta de Martín:** _(escribe aquí)_

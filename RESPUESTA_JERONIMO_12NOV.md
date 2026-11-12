@@ -109,3 +109,33 @@ la equidad en todos los modelos como comparación principal.
 
 Mientras respondes no reescribo los resultados del paper. Lo que ya cambió está en la rama `paper-12nov`: el
 diseño experimental (§3.6) con tu especificación, la tabla de r_B y ρ_B, y la notación m / θ.
+
+---
+
+## 5. Decisión de Jerónimo (12-nov, 15:25): tus restricciones tal cual
+
+Vamos con tu especificación **sin modificar las restricciones**, es decir, con las piezas 1 y 2 de la sección 4.
+La pieza 3 (piso común) **no se hace**.
+
+- **Comparación principal:** el criterio de costo con meta de M0 en cada zona, contra tu M2 sin E-7 con meta
+  por zona. 54 réplicas, 2.430 MILP óptimos (`resultados/m34/costo_meta_zona_crudo_12nov.csv`).
+- **Criterio de cobertura:** con tu r_B, M3, M4 y placebo son infactibles en el 100 % de las réplicas. Se
+  reporta así, con la fracción de factibles (0 %) y el piso máximo garantizable de la sección 2.
+- **Sensibilidad sin equidad territorial:** meta global y r = 0 (datos congelados del 10-nov).
+
+Resultados del criterio de costo con meta por zona (mediana de 54 réplicas, $ mm de 2025):
+
+| Meta | IP (tu M2) | M3 | M4 | Placebo | M3/IP | M4/IP | M4/M3 (IC 95 %) | M4/placebo (IC 95 %) |
+|---|---|---|---|---|---|---|---|---|
+| 2 % | 0,47 | 5,91 | 3,93 | 4,05 | 12,5 | 8,3 | 0,64 (0,55–0,73) | 0,94 (0,89–1,04) |
+| 6 % | 2,30 | 14,09 | 15,27 | 18,28 | 6,1 | 6,6 | 1,04 (0,94–1,14) | 0,84 (0,76–0,93) |
+| 10 % | 5,17 | 28,23 | 25,64 | 38,40 | 5,5 | 5,0 | 0,92 (0,85–1,00) | 0,68 (0,63–0,71) |
+| 20 % | 16,11 | 63,32 | 60,54 | 93,17 | 3,9 | 3,8 | 0,95 (0,86–0,98) | 0,65 (0,62–0,66) |
+| 30 % | 32,37 | 105,81 | 138,28 | 161,06 | 3,3 | 4,3 | 1,29 (1,24–1,35) | 0,86 (0,84–0,89) |
+
+**Lo que cambia frente a la meta global:** el precio de la información sigue alto (M3 de 3,2 a 12,5 veces la IP),
+pero el M4 ya casi no supera al M3, y con metas del 28–30 % es más caro. El placebo queda muy por debajo del M4
+(14–37 % más caro desde la meta del 8 %). Con metas por zona, la focalización geográfica es irremplazable.
+
+Sigo esperando que confirmes los r_B, ρ_B y el M2 con meta por zona (sección 1). Reescribo los resultados del
+paper con esto en la rama `paper-12nov` y los paso a `main` cuando estén verificados.

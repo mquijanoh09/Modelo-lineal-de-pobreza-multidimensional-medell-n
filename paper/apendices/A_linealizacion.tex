@@ -2,8 +2,40 @@
 \section{Linealización con Big-M}\label{app:lin}
 
 \subsection{Condiciones de pobreza (Modelos 1--4)}
-\pendiente{Martín: Lin 1--5 en la versión del M1/M2. En M3/M4 son
-\eqref{eq:m3-r4}--\eqref{eq:m3-r6}.}
+
+La censura de Alkire--Foster dice que un hogar contribuye al $\Mcero$ final con su
+puntaje si sigue siendo pobre ($s_i\ge k$) y con cero si sale ($s_i<k$).
+\citet[Apéndice~1]{hamie2024} la linealizan con dos binarias por hogar, $b1_i$ y
+$b2_i$, y una constante $\mathrm{M}$ suficientemente grande:
+\begin{align}
+\Cont_i + \mathrm{M}\, b1_i &\ge s_i\,\HS_i\HW_i, \tag{Lin 1}\\
+\Cont_i - \mathrm{M}\, b1_i &\le s_i\,\HS_i\HW_i, \tag{Lin 2}\\
+s_i - \mathrm{M}\,(1-b1_i) &< k, \tag{Lin 3}\\
+\Cont_i - \mathrm{M}\, b2_i &\le 0, \tag{Lin 4}\\
+s_i + \mathrm{M}\,(1-b2_i) &\ge k. \tag{Lin 5}
+\end{align}
+Con $b2_i=1-b1_i$, como sugiere el propio paper, las ramas son:
+\begin{itemize}
+\item $b1_i=0$: Lin~1 y 2 fijan $\Cont_i=s_i\HS_i\HW_i$ y Lin~5 exige $s_i\ge k$.
+  El hogar sigue pobre y aporta su puntaje.
+\item $b1_i=1$: Lin~3 exige $s_i<k$ y Lin~4, junto con $\Cont_i\ge 0$, fija
+  $\Cont_i=0$. El hogar sale y no aporta.
+\end{itemize}
+
+En M3 y M4 usamos solo Lin~1--3, escritas como
+\eqref{eq:m3-r4}--\eqref{eq:m3-r6}, con $\mathrm{M}=\HS_i\HW_i$ en Lin~1--2,
+$\mathrm{M}=1$ en Lin~3 y $s_i<k$ escrito como $s_i\le 0{,}33$. Omitir Lin~4 y 5 no
+cambia el óptimo. Tomemos una solución factible sin ellas y redefinamos
+$b1_i'=\mathbf{1}[s_i<k]$ y $\Cont_i'=s_i\HS_i\HW_i(1-b1_i')$. Si $b1_i=1$,
+entonces $s_i\le 0{,}33$, de modo que $b1_i'=1$ y $\Cont_i'=0\le\Cont_i$. Si
+$b1_i=0$, entonces $\Cont_i=s_i\HS_i\HW_i\ge\Cont_i'$. En los dos casos la
+contribución no aumenta, la meta~\eqref{eq:m3-meta} se sigue cumpliendo y
+$(\Ndec,b1',\Cont')$ satisface Lin~1--5 con el mismo gasto. Por eso basta con
+Lin~1--3, y las métricas finales se recalculan desde $\Ndec$ sin confiar en
+$b1_i$ ni en $\Cont_i$.
+
+\nota{Jerónimo}{Martín: si el M1 usa la versión compacta con $y_i$ y
+$\mathrm{M}_i=c_i^0-0{,}33$ (sin $\Cont_i$), agrega aquí un párrafo corto.}
 
 \subsection{Mecanismo de cobertura (Modelos 3--4)}
 

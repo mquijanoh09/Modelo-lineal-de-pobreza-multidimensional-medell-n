@@ -17,42 +17,81 @@ cuatro se comparan en un \emph{escenario común} que fija todo lo demás:
   en un año en ningún modelo: el rezago escolar, el logro educativo cuyo déficit
   excede un ciclo de educación para adultos, el analfabetismo de un adulto que no
   ganaría años con el ciclo y el desempleo sin un desocupado identificable.
-\item \textbf{Las mismas dos preguntas para todos.} Con el criterio del paper
-  (M2 frente a M3 y M4), ¿cuánto cuesta reducir $\Mcero$ en una meta $\MPIr$
-  fijada globalmente para el departamento? Con el criterio de equidad (M1 frente
-  a M3 y M4), ¿cuántas personas salen de la pobreza con un presupuesto $B$?
-\item \textbf{Sin las obligaciones propias del Modelo 1.} El caso base de los
-  Modelos 1 y 2 incluye la cobertura escolar obligatoria del artículo 67 de la
-  Constitución y un techo de severidad educativa, que M3 y M4 no pueden
-  representar porque exigen información niño por niño. En la comparación los
-  quitamos de los cuatro modelos. Usamos la versión que el Modelo 1 ya prevé como
-  ``comparable con M3/M4'': sin esas obligaciones, con equidad por zona $r=0$ y sin
-  techo de severidad. Los resultados con esas obligaciones se reportan aparte
-  (Sección~\ref{sec:res12}).
+\item \textbf{Las mismas restricciones de equidad.} En vez de quitarle al Modelo 1
+  sus restricciones de equidad, se las agregamos a M3 y M4, que sí pueden
+  representarlas porque solo dependen de cuántas personas salen o de cuánto baja
+  $\Mcero$ en cada zona, no de saber quién es quién. Con el criterio de costo, la
+  meta de reducción de $\Mcero$ se exige \emph{en cada zona}, como en el Modelo 2.
+  Con el criterio de presupuesto, se exige que en cada zona salga de la pobreza
+  al menos una fracción $r_B$ de los pobres (la restricción (4) del Modelo 1), y,
+  como sensibilidad, que la severidad baje al menos una fracción $\rho_B$. Los
+  valores de $r_B$ y $\rho_B$ se calculan una sola vez con el Modelo 1 (por el
+  codo de la curva de personas que salen contra $r$ y por la regla de la brecha)
+  y se imponen iguales a los cuatro modelos (Tabla~\ref{tab:rrho}). Si cada modelo
+  calibrara los suyos, la diferencia mediría parámetros distintos y no
+  información.
+\item \textbf{Sin las obligaciones que exigen información niño por niño.} El caso
+  base de los Modelos 1 y 2 incluye la cobertura escolar obligatoria del artículo
+  67 de la Constitución, y el del Modelo 1 un techo de severidad educativa. Las
+  dos exigen decidir qué niño concreto se atiende, algo que en M3 y M4 decide el
+  sorteo. Por eso quedan fuera de la comparación en los cuatro modelos; los
+  resultados con ellas se reportan aparte (Sección~\ref{sec:res12}).
 \end{enumerate}
-En adelante, ``IP'' designa la información perfecta (el Modelo 2 con el criterio
-de costo y el Modelo 1 con el de equidad), y los montos se expresan en miles de
-millones de pesos de 2025, abreviados ``mm''. Con esto, el \textbf{precio de la información} de un modelo $X\in\{\text{M3},\text{M4}\}$
-se define como el cociente entre su costo y el de la información perfecta para la
-misma meta, $\Esf_X(\MPIr)/\Esf_{\text{M2}}(\MPIr)$. Con el criterio de equidad,
-es la fracción del techo del Modelo 1 que logra, $H_X(B)/H_{\text{M1}}(B)$.
+
+\begin{table}[ht]
+\centering\footnotesize
+\caption{Parámetros de equidad del criterio de presupuesto, calculados con el
+Modelo 1 sin las obligaciones niño por niño y comunes a los cuatro modelos. Con
+$B=2$, 5, 10 y 100 la regla de la brecha no se alcanza, y esos presupuestos van
+sin techo de severidad.}
+\label{tab:rrho}
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+$B$ (mm) & $r_B$ & $\rho_B$ & IP con $r_B$ & IP con $r_B$ y $\rho_B$ \\
+\midrule
+\csname @@input\endcsname tablas/rrho.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+En adelante, ``IP'' designa la información perfecta, y los montos se expresan en
+miles de millones de pesos de 2025, abreviados ``mm''. La comparación usa dos
+criterios:
+\begin{itemize}
+\item \textbf{Criterio de costo} (Modelo 2 frente a M3 y M4): ¿cuánto cuesta
+  reducir $\Mcero$ un $\MPIr$ en cada zona? El \textbf{precio de la información}
+  de un modelo $X\in\{\text{M3},\text{M4}\}$ es el cociente
+  $\Esf_X(\MPIr)/\Esf_{\text{M2}}(\MPIr)$.
+\item \textbf{Criterio de cobertura} (Modelo 1 frente a M3 y M4): ¿cuántas personas
+  salen de la pobreza con un presupuesto $B$, respetando $r_B$? Aquí el precio de
+  la información se mide como la fracción del techo que se logra,
+  $H_X(B)/H_{\text{M1}}(B)$. Reservamos la palabra ``equidad'' para $r$, $\rho$ y
+  la severidad educativa.
+\end{itemize}
+Las versiones sin restricciones de equidad (meta global y $r=0$) se reportan como
+sensibilidad, porque miden cuánto cuesta la equidad territorial en cada modelo.
+Cuando una configuración resulta infactible en algunas réplicas, se reporta la
+fracción de réplicas factibles y las medianas se calculan sobre ellas. Descartar
+en silencio las infactibles sesgaría la muestra hacia los sorteos favorables.
 
 \subsubsection{Validación de la comparación}
 
 Verificamos con pruebas independientes que el escenario común cumple lo que
 promete. Las pruebas se hicieron contra el código final de los Modelos 1 y 2, y
-pasaron las \cValidOK{}:
+pasaron las \cValidOK{} del escenario común y las 11 de granularidad máxima con las
+restricciones de equidad:
 \begin{itemize}
 \item \textbf{Línea base:} mismos hogares pobres, privaciones, $\Mcero$, severidad
   inicial y población.
 \item \textbf{Pares privados de los hogares pobres (\cParesPobres{}):} coinciden
   par por par la regla de si la privación se puede quitar y el costo de quitarla.
-\item \textbf{Granularidad máxima.} Si cada hogar es su propia celda, el Modelo 3
-  debe reproducir la información perfecta. Con metas del 2, 6 y 10\,\% su costo
-  coincide con el del Modelo 2 hasta el centavo, y con $B=\$2$~mm saca de la
-  pobreza exactamente a las mismas personas que el Modelo 1. Con metas del 20 y
-  30\,\% cuesta \cVcincoVeinte{} y \cVcincoTreinta{} más. La diferencia es la única
-  desviación declarada: el Modelo 1 puede usar un mismo ciclo de educación para
+\item \textbf{Granularidad máxima, con las restricciones de equidad.} Si cada
+  hogar es su propia celda, el Modelo 3 debe reproducir la información perfecta.
+  Con la meta en cada zona, su costo coincide con el del Modelo 2 hasta el
+  centavo con metas del 2 al 20\,\%, y es \cGunoTreinta{} mayor con la del
+  30\,\%. Con el piso $r_B$, saca de la pobreza exactamente a las mismas personas
+  que el Modelo 1 con $B\le\$10$~mm, y entre \cGdosMin{} y \cGdosMax{} menos con
+  $B\ge\$25$~mm. La diferencia es la única desviación declarada: el Modelo 1 puede usar un mismo ciclo de educación para
   adultos para quitar a la vez el logro y el analfabetismo de una persona,
   mientras que en M3 y M4 cada par se costea por separado.
 \end{itemize}
@@ -69,7 +108,7 @@ de confianza del 95\,\% obtenido por \emph{bootstrap} de las réplicas. El sorte
 de cada par se genera con una semilla derivada del hogar y de la réplica, de modo
 que:
 \begin{itemize}
-\item M3, M4 y el placebo usan el mismo $R$ en la réplica $r$, y sus diferencias
+\item M3, M4 y el placebo usan el mismo $R$ en cada réplica, y sus diferencias
   son \emph{pareadas};
 \item cualquier corrida se puede reproducir de forma exacta. Lo comprobamos
   repitiendo réplicas en dos computadores distintos.

@@ -148,6 +148,9 @@ corridas infactibles de cobertura son 1.350, no 1.170 (1.170 eran solo las de r_
 
 ## 6. PREGUNTA PARA MARTÍN — por favor responde AQUÍ, en este archivo (rama `Contexto`)
 
+> **Actualización del 14-nov.** Las corridas de costo ya tienen 100 réplicas (4.500, todas óptimas) y se auditó todo: `AUDITORIA_M34_14NOV.md`. Para ponerte al día sin leer la conversación, empieza por `graphify-out/comparacion_12_14nov/GRAPH_REPORT.md`. El paper corregido está en `paper-12nov` (commit `049a1ee`). Las preguntas de esta sección siguen abiertas.
+
+
 Martín: antes de pasar el paper de la rama `paper-12nov` a `main` necesito que confirmes, **respondiendo
 directamente en esta sección de este archivo** (rama `Contexto`, con commit y push), estos tres valores
 calculados con tus funciones (`r_codo`, `rho_regla_brecha`, `escenario_m2("sin_E7", "base")`, `rho_e = None`):

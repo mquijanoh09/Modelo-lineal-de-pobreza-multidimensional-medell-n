@@ -12,7 +12,8 @@ Modelos 1 y 2 tal cual: meta de reducción de $\Mcero$ en cada zona en el
 criterio de costo y piso $r_B$ por zona en el criterio de cobertura. M3, M4 y el
 placebo usan las mismas réplicas del sorteo. Las \zCorridas{} corridas del
 criterio de costo (\zReplicas{} réplicas por meta) terminaron todas con
-optimalidad demostrada y brecha de a lo sumo \zGapMax{}.
+optimalidad demostrada; la brecha registrada, que es la de la etapa de
+desempate, fue de a lo sumo \zGapMax{}.
 
 \subsubsection{Costo de cumplir la meta en cada zona}
 
@@ -62,7 +63,9 @@ en \zMcuatroMtresMenor{} de las 15 metas (la del 2\,\% y las del 10 al
 24\,\%), contiene el 1 en \zMcuatroMtresIgual{} (las del 4 al 8\,\%) y queda por
 encima en \zMcuatroMtresMayor{} (las del 26 al 30\,\%, en las que el M4 cuesta
 entre un 7 y un 30\,\% más). La única ventaja grande del M4 está en la meta del
-2\,\% (0,64); en las del 10 al 24\,\% cuesta entre un 4 y un 11\,\% menos.
+2\,\% (0,64); en las del 10 al 24\,\% cuesta entre un 4 y un 11\,\% menos. Esas
+cifras son medianas: en las metas del 10 al 24\,\% el M4 es más barato que el
+M3 en entre el 61 y el 72\,\% de las réplicas, no en todas.
 
 \paragraph{Pero la demografía sí reemplaza a la geografía.} El placebo, que
 reparte los indicadores privados en celdas al azar, es mucho más caro que el
@@ -118,9 +121,12 @@ $B\ge\$25$~mm; con $r_B$ y, donde existe, con $r_B$ y $\rho_B$) son
 infactibles, es decir, la fracción de réplicas factibles es del 0\,\% en todos
 los presupuestos. Comprobamos que la infactibilidad es real por tres vías: se
 mantiene al resolver sin el preprocesamiento del solver; con un hogar por celda
-la misma restricción reproduce al Modelo 1 (Sección~\ref{sec:diseno}); y es
-aritmética, porque el piso calibrado con información perfecta exige sacar a más
-personas de las que M3 o M4 logran sacar en total con ese presupuesto.
+la misma restricción reproduce al Modelo 1 (Sección~\ref{sec:diseno}); y el piso
+máximo garantizable que se calcula enseguida queda por debajo de $r_B$ en todas
+las réplicas. La razón cambia con el presupuesto. Con $B\ge\$25$~mm el piso exige
+sacar a más personas de las que M3 o M4 logran sacar en total. Con
+$B\le\$10$~mm el total sí alcanzaría, pero no su reparto: el sorteo no permite
+asegurar la fracción exigida en las tres zonas a la vez.
 
 Para medir cuánta equidad territorial sí puede garantizar el Estado sin
 información individual, resolvimos en cada réplica el piso máximo garantizable,
@@ -155,7 +161,7 @@ Sin información individual, el Estado puede garantizar en cada zona entre nada
 garantizaría con información perfecta. Ni la mejor de las 100 réplicas del M3
 alcanza el $r_B$ del Modelo 1 en ningún presupuesto. El M4 garantiza más que el
 M3 con $B\le\$5$~mm, lo mismo con $B=\$25$ y $\$50$~mm y menos con $B=\$10$ y $\$100$~mm, y supera al placebo desde
-$B=\$25$~mm. La falta de información no solo encarece la reducción de la
+$B=\$25$~mm; con $B=\$5$~mm, en cambio, el placebo garantiza algo más que el M4. La falta de información no solo encarece la reducción de la
 pobreza: también limita cuánta equidad territorial puede prometer el Estado.
 
 \subsubsection{Sensibilidad: sin restricciones de equidad territorial}

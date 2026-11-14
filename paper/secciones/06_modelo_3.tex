@@ -231,6 +231,18 @@ y errores de inclusión distintos. Para que el error reportado no dependa del
 solver, resolvemos una segunda etapa lexicográfica: entre las soluciones con
 gasto a lo sumo $\Esf^*(1+10^{-6})$, minimizamos el gasto en hogares no pobres.
 
+\paragraph{Meta en cada zona.} En la comparación principal
+(Sección~\ref{sec:diseno}) la meta no se exige sobre el total sino en cada zona,
+como en el Modelo 2. La restricción \eqref{eq:m3-meta} se reemplaza por
+\begin{equation}\label{eq:m3-meta-zona}
+\sum_{i\in\Hog^0:\,d(i)=d}\Cont_i\;\le\;(1-\MPIr)\sum_{i\in\Hog^0:\,d(i)=d}\HS_i\HW_i\,s_i^0
+\qquad\forall d\in\Zon,
+\end{equation}
+donde $s_i^0$ es el puntaje inicial del hogar. El lado derecho es la
+contribución inicial de la zona a $\Mcero$, reducida en la meta. Las tres
+restricciones juntas implican la meta global, así que cumplir la meta en cada
+zona nunca cuesta menos que cumplirla en el total.
+
 \subsubsection{Objetivo de equidad}
 
 Para comparar con el Modelo 1, que maximiza las personas que salen de la pobreza

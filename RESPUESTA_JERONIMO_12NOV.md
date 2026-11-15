@@ -148,6 +148,8 @@ corridas infactibles de cobertura son 1.350, no 1.170 (1.170 eran solo las de r_
 
 ## 6. PREGUNTA PARA MARTÍN — por favor responde AQUÍ, en este archivo (rama `Contexto`)
 
+> **Actualización 15-nov:** estas preguntas pasaron a `RESPUESTA_JERONIMO_15NOV.md` (sección 3), junto con las nuevas sobre el puente con B = 424. Martín, responde allá, por favor.
+
 > **Actualización del 14-nov.** Las corridas de costo ya tienen 100 réplicas (4.500, todas óptimas) y se auditó todo: `AUDITORIA_M34_14NOV.md`. Para ponerte al día sin leer la conversación, empieza por `graphify-out/comparacion_12_14nov/GRAPH_REPORT.md`. El paper corregido está en `paper-12nov` (commit `049a1ee`). Las preguntas de esta sección siguen abiertas.
 
 

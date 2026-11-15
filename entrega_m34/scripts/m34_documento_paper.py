@@ -187,7 +187,10 @@ def cifras(D):
     reg("r0_m1_424", n(q.IP_M1), q.IP_M1, f, "IP_M1 (B = 424)")
     reg("r0_m3_424", n(q.m3_mediana), q.m3_mediana, f, "m3_mediana (B = 424)")
     reg("r0_m4_424", n(q.m4_mediana), q.m4_mediana, f, "m4_mediana (B = 424)")
-    rango("r0_pct_424", q.m3_pct_IP, q.m4_pct_IP, lambda y: n(y, 0), f, "m3_pct_IP y m4_pct_IP (B = 424)", " y ")
+    if n(q.m3_pct_IP, 0) == n(q.m4_pct_IP, 0):  # M3 y M4 redondean igual: una sola cifra
+        reg("r0_pct_424", n(q.m3_pct_IP, 0), f"{q.m3_pct_IP}|{q.m4_pct_IP}", f, "m3_pct_IP y m4_pct_IP (B = 424)")
+    else:
+        rango("r0_pct_424", q.m3_pct_IP, q.m4_pct_IP, lambda y: n(y, 0), f, "m3_pct_IP y m4_pct_IP (B = 424)", " y ")
     v = pd.read_csv(D / "validacion_granularidad_maxima.csv")
     f = "validacion_granularidad_maxima.csv"
     reg("valid_ok", f"{int(v.ok.sum())}/{len(v)}", int(v.ok.sum()), f, "ok")

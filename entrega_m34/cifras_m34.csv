@@ -89,7 +89,7 @@ rmax_frac_424,49 y 56,48.89434130533344|55.873441278250354,datos_m34/rmax_piso_g
 r0_m1_424,"629,400",629400.1123383683,datos_m34/sens_r0_personas_que_salen.csv,IP_M1 (B = 424),True
 r0_m3_424,"389,359",389359.4128500281,datos_m34/sens_r0_personas_que_salen.csv,m3_mediana (B = 424),True
 r0_m4_424,"392,921",392921.1678364102,datos_m34/sens_r0_personas_que_salen.csv,m4_mediana (B = 424),True
-r0_pct_424,62 y 62,61.86198655152237|62.42788333427784,datos_m34/sens_r0_personas_que_salen.csv,m3_pct_IP y m4_pct_IP (B = 424),True
+r0_pct_424,62,61.86198655152237|62.42788333427784,datos_m34/sens_r0_personas_que_salen.csv,m3_pct_IP y m4_pct_IP (B = 424),True
 valid_ok,11/11,11,datos_m34/validacion_granularidad_maxima.csv,ok,True
 g1_30,0.38 %,0.3814294148727359,datos_m34/validacion_granularidad_maxima.csv,max |diferencia_pct| G1,True
 g2_rango,0.32 % y 0.97 %,0.321381102445506|0.971521399580888,datos_m34/validacion_granularidad_maxima.csv,|diferencia_pct| G2 distintas de 0,True

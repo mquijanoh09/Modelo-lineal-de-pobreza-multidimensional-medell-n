@@ -1,0 +1,99 @@
+cifra,texto,valor,archivo,columna,citada_en_texto
+hogares,"3,732",3732.0,datos_m34/linea_base.csv,hogares (Total Antioquia),True
+hogares_pobres,523,523.0,datos_m34/linea_base.csv,hogares_pobres (Total Antioquia),True
+personas_pobres,"683,406",683406.2979129804,datos_m34/linea_base.csv,personas_pobres (Total Antioquia),False
+poblacion,"7,231,754",7231754.000000002,datos_m34/linea_base.csv,poblacion (Total Antioquia),False
+H0,9.45 %,0.0945007667452433,datos_m34/linea_base.csv,H0 (Total Antioquia),True
+A0,40.94 %,0.4093557413927114,datos_m34/linea_base.csv,A0 (Total Antioquia),True
+M0,0.0387,0.0386844314331787,datos_m34/linea_base.csv,M0 (Total Antioquia),True
+pares_privados,"8,602",8602.0,datos_m34/linea_base.csv,pares_privados (Total Antioquia),False
+H0_cab,6.2 %,0.0621094066545715,datos_m34/linea_base.csv,H0 (Cabeceras),False
+H0_cp,17.9 %,0.1791177327991124,datos_m34/linea_base.csv,H0 (Centros poblados),False
+H0_rd,25.2 %,0.2518104779158612,datos_m34/linea_base.csv,H0 (Rural disperso),True
+pct_pobres_rural,37 %,0.36732314537850114,datos_m34/linea_base.csv,personas_pobres rural / total,False
+separa_pobreza,4.3,4.322382027740265,datos_m34/tipos_hogar.csv,max(H0) / min(H0),True
+disc_acu_z,14.5,14.52703251253934,datos_m34/discriminacion_privaciones.csv,razon_zonas (acueducto),True
+disc_acu_t,4.1,4.065220978867745,datos_m34/discriminacion_privaciones.csv,razon_tipos (acueducto),True
+disc_alc_z,4.7,4.70616665438477,datos_m34/discriminacion_privaciones.csv,razon_zonas (alcantarillado),False
+disc_alc_t,3.2,3.2224427780157185,datos_m34/discriminacion_privaciones.csv,razon_tipos (alcantarillado),False
+disc_inas_z,4.8,4.7910710313420735,datos_m34/discriminacion_privaciones.csv,razon_zonas (inasistencia_escolar),True
+disc_inas_t,51.7,51.68315391183191,datos_m34/discriminacion_privaciones.csv,razon_tipos (inasistencia_escolar),True
+disc_hac_z,2.7,2.6795100111090298,datos_m34/discriminacion_privaciones.csv,razon_zonas (hacinamiento),True
+disc_hac_t,26.6,26.55564477561044,datos_m34/discriminacion_privaciones.csv,razon_tipos (hacinamiento),True
+disc_aseg_z,1.9,1.861068548209082,datos_m34/discriminacion_privaciones.csv,razon_zonas (aseguramiento_salud),False
+disc_aseg_t,1.9,1.8801994746436212,datos_m34/discriminacion_privaciones.csv,razon_tipos (aseguramiento_salud),False
+disc_barr_z,2.7,2.688544241300576,datos_m34/discriminacion_privaciones.csv,razon_zonas (barreras_acceso_salud),False
+disc_barr_t,1.8,1.8231938928845408,datos_m34/discriminacion_privaciones.csv,razon_tipos (barreras_acceso_salud),False
+replicas_costo,100,100,datos_m34/costo_meta_zona.csv,replicas,True
+corridas_costo,"4,500",4500,datos_m34/costo_meta_zona.csv,3 x suma de replicas,True
+m3_ip_baja,5.5 y 12.9,5.542277827313321|12.916284438624928,datos_m34/costo_meta_zona.csv,"precio_info_m3, metas 2-10 %",True
+m3_ip_alta,3.1 y 4.1,3.1365289526097664|4.059048192350923,datos_m34/costo_meta_zona.csv,"precio_info_m3, metas 20-30 %",True
+m3_ip_todas,3.1 y 12.9,3.1365289526097664|12.916284438624928,datos_m34/costo_meta_zona.csv,"precio_info_m3, todas las metas",False
+m4_ip_todas,3.4 y 8.8,3.403271016918477|8.797359432636958,datos_m34/costo_meta_zona.csv,"precio_info_m4, todas las metas",True
+n_m4_menor_m3,9,9,datos_m34/costo_meta_zona.csv,metas con M4_sobre_M3_ic95_sup < 1,True
+n_m4_mayor_m3,3,3,datos_m34/costo_meta_zona.csv,metas con M4_sobre_M3_ic95_inf > 1,True
+n_m4_igual_m3,3,3,datos_m34/costo_meta_zona.csv,las demás metas,True
+ahorro_m4_m3_medio,4 y 11,3.9099029615563774|10.649213691749226,datos_m34/costo_meta_zona.csv,"1 - M4_sobre_M3, metas 10-24 %",True
+pct_rep_m4_menor_m3_medio,61 y 72,61.0|72.0,datos_m34/costo_meta_zona.csv,"pct_replicas_M4_menor_M3, metas 10-24 %",True
+m4_m3_meta2,0.64,0.6359434649165535,datos_m34/costo_meta_zona.csv,M4_sobre_M3 (meta 2 %),False
+sobrecosto_m4_alto,7 y 30,6.539851786075301|29.91247796653511,datos_m34/costo_meta_zona.csv,"M4_sobre_M3 - 1, metas 26-30 %",True
+ahorro_m4_placebo,14 y 38,14.2261162901397|37.58815605445095,datos_m34/costo_meta_zona.csv,"1 - M4_sobre_placebo, metas 6-30 %",True
+incl_m3,26 y 55,26.08986412674559|55.185753019328445,datos_m34/costo_meta_zona.csv,inclusion_m3,True
+incl_m4,18 y 50,18.458746196386087|50.24867489943114,datos_m34/costo_meta_zona.csv,inclusion_m4,True
+excl_m3,56 y 93,55.85551010682731|92.99468946149348,datos_m34/costo_meta_zona.csv,exclusion_m3,True
+ip_6,2.30,2.3044587748062013,datos_m34/costo_meta_zona.csv,costo_M2_mm (meta 6 %),True
+m3_6,14.16,14.16372906753121,datos_m34/costo_meta_zona.csv,costo_m3_mediana_mm (meta 6 %),True
+dif_6,12,11.859270292725009,datos_m34/costo_meta_zona.csv,costo_m3_mediana_mm - costo_M2_mm (meta 6 %),True
+ip_10,5.17,5.173659360288312,datos_m34/costo_meta_zona.csv,costo_M2_mm (meta 10 %),True
+m3_rural,65 y 79,65.10534114612734|78.63924062832442,datos_m34/gasto_por_zona_y_dimension.csv,"pct_gasto_Rural disperso, Modelo 3, metas 8-30 %",True
+plac_cab,50 y 62,49.50850019652189|61.88836812672746,datos_m34/gasto_por_zona_y_dimension.csv,"pct_gasto_Cabeceras, Placebo",True
+edu10_m3,32,31.7821995816735,datos_m34/gasto_por_zona_y_dimension.csv,"pct_gasto_Educacion (Modelo 3, meta 10 %)",True
+edu10_m4,75,75.33065906791457,datos_m34/gasto_por_zona_y_dimension.csv,"pct_gasto_Educacion (Modelo 4, meta 10 %)",True
+edu10_plac,72,71.98731902224552,datos_m34/gasto_por_zona_y_dimension.csv,"pct_gasto_Educacion (Placebo, meta 10 %)",True
+salud2_min,91,91.08100423478152,datos_m34/gasto_por_zona_y_dimension.csv,"min pct_gasto_Salud, meta 2 %",True
+otros_max,3,2.5727905472627493,datos_m34/gasto_por_zona_y_dimension.csv,"max de pct_gasto_Ninez, _Vivienda y _Trabajo",True
+H10_m2,8.38 %,0.0837733902697986,datos_m34/H_A_M0_por_zona.csv,"H (Modelo 2, meta 10 %, total)",True
+redH10_m2,11.4 %,11.351629034252952,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 2, meta 10 %, total)",False
+A10_m2,41.52 %,0.4151590635578306,datos_m34/H_A_M0_por_zona.csv,"A (Modelo 2, meta 10 %, total)",False
+H10_m3,8.15 %,0.081459550774754,datos_m34/H_A_M0_por_zona.csv,"H (Modelo 3, meta 10 %, total)",True
+redH10_m3,13.8 %,13.8001165701078,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 3, meta 10 %, total)",False
+A10_m3,41.06 %,0.4106347239210439,datos_m34/H_A_M0_por_zona.csv,"A (Modelo 3, meta 10 %, total)",False
+H10_m4,8.15 %,0.0815302569273315,datos_m34/H_A_M0_por_zona.csv,"H (Modelo 4, meta 10 %, total)",True
+redH10_m4,13.7 %,13.725295851702302,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 4, meta 10 %, total)",False
+A10_m4,40.50 %,0.4050171016325093,datos_m34/H_A_M0_por_zona.csv,"A (Modelo 4, meta 10 %, total)",False
+H10_plac,7.89 %,0.0788938894364285,datos_m34/H_A_M0_por_zona.csv,"H (Placebo, meta 10 %, total)",False
+redH10_plac,16.5 %,16.51508008489293,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Placebo, meta 10 %, total)",False
+A10_plac,40.97 %,0.4097004544001134,datos_m34/H_A_M0_por_zona.csv,"A (Placebo, meta 10 %, total)",False
+n_H_m3_menor,13,13,datos_m34/H_A_M0_por_zona.csv,metas con H total de Modelo 3 <= H total del Modelo 2,True
+n_H_m4_menor,12,12,datos_m34/H_A_M0_por_zona.csv,metas con H total de Modelo 4 <= H total del Modelo 2,True
+n_A_sube_m2,15,15,datos_m34/H_A_M0_por_zona.csv,metas con A > A0 en el Modelo 2 (total),True
+m3_10_redM0_cab,16.2 %,16.243534780723756,datos_m34/H_A_M0_por_zona.csv,"reduccion_M0_pct (Modelo 3, meta 10 %, Cabeceras; mediana)",True
+redH_min_zona,2.0 %,2.005435826344859,datos_m34/H_A_M0_por_zona.csv,"min reduccion_H_pct por zona, M3/M4/placebo",True
+redH30_m2,31.6 %,31.62621276218931,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 2, meta 30 %, total)",True
+redH30_m3,30.5 %,30.46723657697622,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 3, meta 30 %, total)",True
+redH30_m4,34.9 %,34.92243020287917,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 4, meta 30 %, total)",True
+corridas_cob,"1,350",1350,datos_m34/factibilidad_cobertura_rB.csv,suma de replicas,True
+pct_fact_max,0 %,0.0,datos_m34/factibilidad_cobertura_rB.csv,max pct_factibles,True
+rmax_reps,100,100,datos_m34/rmax_piso_garantizable.csv,n,True
+corridas_rmax,"1,800",1800,datos_m34/rmax_piso_garantizable.csv,3 x suma de n,True
+rmax_m3_100,29.9 %,0.2989210059545101,datos_m34/rmax_piso_garantizable.csv,m3 (B = 100),True
+rmax_ip_100,53.6 %,0.5362,datos_m34/rmax_piso_garantizable.csv,IP_max (B = 100),True
+rmax_frac_100,45 y 56,45.31571811543036|55.74804288595862,datos_m34/rmax_piso_garantizable.csv,M4_sobre_IP y M3_sobre_IP (B = 100),True
+rmax_m3_2,0.0 %,0.0,datos_m34/rmax_piso_garantizable.csv,m3 (B = 2),True
+mejor_bajo_rB,ninguna,1,datos_m34/rmax_piso_garantizable.csv,m3_mejor < r_B en todos los B,False
+valid_ok,11/11,11,datos_m34/validacion_granularidad_maxima.csv,ok,True
+g1_30,0.38 %,0.3814294148727359,datos_m34/validacion_granularidad_maxima.csv,max |diferencia_pct| G1,True
+g2_rango,0.32 % y 0.97 %,0.321381102445506|0.971521399580888,datos_m34/validacion_granularidad_maxima.csv,|diferencia_pct| G2 distintas de 0,True
+r0_m3_pct,13 y 65,12.770970743362932|65.02154166721135,datos_m34/sens_r0_personas_que_salen.csv,m3_pct_IP,True
+r0_m4_pct,19 y 67,18.6794976253597|67.05459040912717,datos_m34/sens_r0_personas_que_salen.csv,m4_pct_IP,True
+ip_global_10,1.32,1.323505045131445,datos_m34/sens_meta_global_costos.csv,IP_M2 (meta global 10 %),True
+glob_m3_ip_baja,6.2 y 16.9,6.248279798705831|16.905076646452308,datos_m34/sens_meta_global_costos.csv,"m3_sobre_IP, metas 2-10 %",True
+cob_paper,4.81,4.81,"Project Opti1: claude/revision-formulacion-modelo3.md (7-oct, versión inicial del modelo)",cobertura máxima con las unidades del paper,True
+t_directa,200,200,"Project Opti1: claude/revision-formulacion-modelo3.md (7-oct, versión inicial del modelo)","segundos sin cerrar la brecha, formulación directa, meta 10 %",True
+t_cortes,2,2.1,"Project Opti1: claude/revision-formulacion-modelo3.md (7-oct, versión inicial del modelo)",segundos de la reformulación por cortes en la base completa,True
+aud_sol,144,144,rama Contexto: AUDITORIA_M34_14NOV.md y auditoria_14nov/verif_soluciones.csv,soluciones re-resueltas y verificadas,True
+aud_fb,40,40,rama Contexto: AUDITORIA_M34_14NOV.md y auditoria_14nov/verif_soluciones.csv,instancias de fuerza bruta por criterio,True
+aud_frontera,72,72,rama Contexto: AUDITORIA_M34_14NOV.md y auditoria_14nov/verif_soluciones.csv,casos de la frontera de r_max,True
+k_m4_k2,0.71,0.71,datos_m34/sens_k_u1.csv,"vs_M3_mediana (m4_k2, B = 10)",True
+k_m4_k4,1.92,1.92,datos_m34/sens_k_u1.csv,"vs_M3_mediana (m4_k4, B = 10)",True
+k_m4_k5,1.93,1.93,datos_m34/sens_k_u1.csv,"vs_M3_mediana (m4_k5, B = 10)",True

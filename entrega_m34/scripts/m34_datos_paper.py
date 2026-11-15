@@ -113,7 +113,19 @@ def cobertura(R, out):
                           r_B=rr.at[int(B), "r_B"], rho_B=rr.at[int(B), "rho_B"] if esc != "r" else np.nan,
                           replicas=len(g), factibles=int((g.estado == "Optimal").sum()),
                           pct_factibles=100 * float((g.estado == "Optimal").mean())))
-    t = pd.DataFrame(filas).sort_values(["escenario", "B", "modelo"])
+    t = pd.DataFrame(filas)
+    t["nota"] = ""
+    if (R / "ic_rmax_424_15nov.csv").exists():
+        # B = 424 (puente con el caso base, 15-nov): no se corrió la cobertura con r_B; la factibilidad sale del
+        # piso máximo garantizable de cada réplica (si r_max < r_B, la réplica es infactible con r_B).
+        x = pd.read_csv(R / "ic_rmax_424_15nov.csv").iloc[0]
+        ref = pd.read_csv(R / "r_rho_424_15nov.csv").iloc[0]
+        for k in ["m3", "m4", "m4p"]:
+            t.loc[len(t)] = dict(B=424, modelo=MOD[k], escenario="r_B", r_B=ref.r_B, rho_B=np.nan, replicas=int(x.n),
+                                 factibles=int(round(x[f"{k}_pct_factible_rB"] * x.n / 100)),
+                                 pct_factibles=x[f"{k}_pct_factible_rB"], nota="derivado de r_max (15-nov)")
+        rr.loc[424] = {"r_B": ref.r_B, "rho_B": ref.rho_B, "M1_salen_r": ref.M1_salen_r}
+    t = t.sort_values(["escenario", "B", "modelo"])
     t.to_csv(out / "factibilidad_cobertura_rB.csv", index=False)
     rr.reset_index().to_csv(out / "r_rho_referencias_M1.csv", index=False)
     return t
@@ -122,6 +134,15 @@ def cobertura(R, out):
 def rmax(R, out):
     """Tabla M34-6 y Figura M34-2: piso máximo garantizable."""
     t = pd.read_csv(R / "ic_rmax_12nov.csv")
+    if (R / "ip_rmax_15nov.csv").exists():
+        # el r_max de información perfecta estaba escrito a mano (auditoría del 14-nov, hallazgo 11): ahora sale
+        # de ip_rmax_15nov.csv, que lo recalcula; deben coincidir en los 6 presupuestos del 12-nov
+        ip = pd.read_csv(R / "ip_rmax_15nov.csv").set_index("B").IP_max
+        assert (abs(t.set_index("B").IP_max - ip.loc[t.B].to_numpy()) < 5e-5).all()
+        t["IP_max"] = ip.loc[t.B].to_numpy()
+    if (R / "ic_rmax_424_15nov.csv").exists():
+        x = pd.read_csv(R / "ic_rmax_424_15nov.csv")
+        t = pd.concat([t, x[[c for c in t.columns if c in x.columns]]], ignore_index=True)
     t["M3_sobre_IP"] = t.m3 / t.IP_max
     t["M4_sobre_IP"] = t.m4 / t.IP_max
     t["placebo_sobre_IP"] = t.m4p / t.IP_max
@@ -133,6 +154,12 @@ def sens_r0(R, out):
     """Tabla M34-7: personas que salen con r = 0 (sensibilidad, datos congelados del 10-nov)."""
     e = pd.read_csv(R / "ic_bootstrap_equidad_10nov.csv")
     ip = pd.read_csv(R / "info_perfecta_equidad_comun_10nov.csv")
+    if (R / "ic_bootstrap_equidad_424_15nov.csv").exists():
+        x = pd.read_csv(R / "ic_bootstrap_equidad_424_15nov.csv")
+        e = pd.concat([e, x[[c for c in e.columns if c in x.columns]]], ignore_index=True)
+        ref = pd.read_csv(R / "r_rho_424_15nov.csv").iloc[0]
+        ip.loc[len(ip)] = dict(modelo="M1_info_perfecta", escenario="comun_15nov_B424", B=424.0, estado="Optimal",
+                               gap=np.nan, personas_salen=ref.M1_salen_r0, costo_mm=np.nan, segundos=np.nan)
     e.to_csv(out / "sens_r0_personas_que_salen.csv", index=False)
     ip.to_csv(out / "sens_r0_info_perfecta_M1.csv", index=False)
     c = pd.read_csv(R / "ic_bootstrap_costos_10nov.csv")

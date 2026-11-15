@@ -72,15 +72,24 @@ redH_min_zona,2.0 %,2.005435826344859,datos_m34/H_A_M0_por_zona.csv,"min reducci
 redH30_m2,31.6 %,31.62621276218931,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 2, meta 30 %, total)",True
 redH30_m3,30.5 %,30.46723657697622,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 3, meta 30 %, total)",True
 redH30_m4,34.9 %,34.92243020287917,datos_m34/H_A_M0_por_zona.csv,"reduccion_H_pct (Modelo 4, meta 30 %, total)",True
-corridas_cob,"1,350",1350,datos_m34/factibilidad_cobertura_rB.csv,suma de replicas,True
+corridas_cob,"1,350",1350,datos_m34/factibilidad_cobertura_rB.csv,suma de replicas corridas (sin B = 424),True
 pct_fact_max,0 %,0.0,datos_m34/factibilidad_cobertura_rB.csv,max pct_factibles,True
 rmax_reps,100,100,datos_m34/rmax_piso_garantizable.csv,n,True
-corridas_rmax,"1,800",1800,datos_m34/rmax_piso_garantizable.csv,3 x suma de n,True
+corridas_rmax,"2,100",2100,datos_m34/rmax_piso_garantizable.csv,3 x suma de n,True
 rmax_m3_100,29.9 %,0.2989210059545101,datos_m34/rmax_piso_garantizable.csv,m3 (B = 100),True
-rmax_ip_100,53.6 %,0.5362,datos_m34/rmax_piso_garantizable.csv,IP_max (B = 100),True
-rmax_frac_100,45 y 56,45.31571811543036|55.74804288595862,datos_m34/rmax_piso_garantizable.csv,M4_sobre_IP y M3_sobre_IP (B = 100),True
+rmax_ip_100,53.6 %,0.5362069476107796,datos_m34/rmax_piso_garantizable.csv,IP_max (B = 100),True
+rmax_frac_100,45 y 56,45.31513096158414|55.74732056092083,datos_m34/rmax_piso_garantizable.csv,M4_sobre_IP y M3_sobre_IP (B = 100),True
 rmax_m3_2,0.0 %,0.0,datos_m34/rmax_piso_garantizable.csv,m3 (B = 2),True
 mejor_bajo_rB,ninguna,1,datos_m34/rmax_piso_garantizable.csv,m3_mejor < r_B en todos los B,False
+rB_424,0.896,0.8961127807476005,datos_m34/rmax_piso_garantizable.csv,r_B (B = 424),True
+rmax_m3_424,51.2 %,0.5122142586520364,datos_m34/rmax_piso_garantizable.csv,m3 (B = 424),True
+rmax_m4_424,44.8 %,0.4482340484322368,datos_m34/rmax_piso_garantizable.csv,m4 (B = 424),True
+rmax_ip_424,91.7 %,0.9167401307916648,datos_m34/rmax_piso_garantizable.csv,IP_max (B = 424),True
+rmax_frac_424,49 y 56,48.89434130533344|55.873441278250354,datos_m34/rmax_piso_garantizable.csv,M4_sobre_IP y M3_sobre_IP (B = 424),True
+r0_m1_424,"629,400",629400.1123383683,datos_m34/sens_r0_personas_que_salen.csv,IP_M1 (B = 424),True
+r0_m3_424,"389,359",389359.4128500281,datos_m34/sens_r0_personas_que_salen.csv,m3_mediana (B = 424),True
+r0_m4_424,"392,921",392921.1678364102,datos_m34/sens_r0_personas_que_salen.csv,m4_mediana (B = 424),True
+r0_pct_424,62 y 62,61.86198655152237|62.42788333427784,datos_m34/sens_r0_personas_que_salen.csv,m3_pct_IP y m4_pct_IP (B = 424),True
 valid_ok,11/11,11,datos_m34/validacion_granularidad_maxima.csv,ok,True
 g1_30,0.38 %,0.3814294148727359,datos_m34/validacion_granularidad_maxima.csv,max |diferencia_pct| G1,True
 g2_rango,0.32 % y 0.97 %,0.321381102445506|0.971521399580888,datos_m34/validacion_granularidad_maxima.csv,|diferencia_pct| G2 distintas de 0,True

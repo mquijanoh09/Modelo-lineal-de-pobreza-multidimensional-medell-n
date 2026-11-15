@@ -10,6 +10,7 @@ Jerónimo Vélez, 15 de noviembre de 2026. Responde a `PLAN_INTEGRACION_M3_M4.md
 | `datos_m34/*.csv` | CSV de origen de cada tabla y figura | §2 y §5 |
 | `cifras_m34.csv` | Una fila por cifra: texto, valor, archivo y columna de origen, y si se cita en el texto | §2 |
 | `scripts/` | Cómo se generó todo (ver abajo) | |
+| `scripts_modelo3/`, `crudo/` | Scripts que corren sobre la rama `Modelo3` y sus salidas crudas (H, A y M0 por zona; B = 424) | §5 |
 
 ## Qué hay que saber al integrar
 
@@ -18,7 +19,7 @@ Jerónimo Vélez, 15 de noviembre de 2026. Responde a `PLAN_INTEGRACION_M3_M4.md
 3. **Notación del borrador.** I son los 523 hogares pobres y Ī los 3,732 hogares; cᵢⱼ es el costo, Gᵢ la contribución censurada (como en el Modelo 2) y A se reporta como decimal (0.409).
 4. **Supuestos.** Los Modelos 3 y 4 no cumplen los supuestos 3 y 7 del borrador (hay error de inclusión y se modelan todos los hogares), ni el 10 (E-7). Se agregan los supuestos 12 a 14.
 5. **Referencias provisionales.** r_B, ρ_B y el Modelo 2 con meta por zona se calcularon con las funciones de Martín sin cambiarlas. Coinciden con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`; siguen siendo provisionales hasta que Martín lo confirme por escrito.
-6. **Caso base y comparación (§6.3 del plan).** La comparación llega hasta B = $100 mil millones y se corre sin E-7 ni SevEdu. Cómo conectarla con el caso base (B = $424 mil millones) lo decide Martín; el texto no lo toma.
+6. **Caso base y comparación (§6.3 del plan): decisión del 15-nov.** Se tomó la opción B (dejar el rango de la comparación y explicar en una frase por qué usa otra versión del Modelo 1) con un puente: B = $424 mil millones se agregó al piso máximo garantizable (Tabla 9, Figura 12; 300 corridas) y a la sensibilidad con r = 0 (Tabla A13; 90 corridas). r_B y ρ_B con B = 424 salen de las funciones de Martín, sin E-7 ni SevEdu (`crudo/ref424.csv`). Martín puede objetar esta decisión en `RESPUESTA_JERONIMO_15NOV.md` (rama `Contexto`).
 7. **Colores.** Modelo 3 aqua #1baf7a, Modelo 4 amarillo #eda100 y placebo magenta #e87ba4, las ranuras 3 a 5 de la paleta de la Figura 9, validadas para daltonismo. Como su contraste con el fondo es bajo, cada serie lleva marcador propio y etiqueta o leyenda.
 
 ## Qué es nuevo frente a lo que ya estaba corrido
@@ -36,7 +37,13 @@ Desde la raíz de la rama `Modelo3`, con las versiones de `requirements-lock.txt
 python3 m34_zonas_costo_15nov.py data/DANE/DEPARTAMENTAL 100 out15/costo 2      # unas 3 horas con 2 núcleos
 python3 m34_ip_zonas_15nov.py <Modelos/ de main> out15/ip_zonas.csv              # 1 minuto
 python3 m34_base_paper_15nov.py data/DANE/DEPARTAMENTAL datos_m34/                # segundos
-# con resultados/m34/ más costo_zonas_crudo_15nov.csv e ip_zonas_15nov.csv en una carpeta R/:
+# puente con el caso base (B = 424), 15-nov:
+python3 m34_b424_15nov.py ref <Modelos/ de main> out424/ref424.csv                # ~8 minutos
+python3 m34_b424_15nov.py ipmax out424/ipmax.csv                                  # segundos
+python3 m34_b424_15nov.py rmax 100 <tabla con B=424> out424/rmax424.csv           # ~4 minutos
+python3 m34_equidad_comun.py data/DANE/DEPARTAMENTAL 30 out424/eq 2 424           # ~15 minutos
+python3 m34_b424_resumen_15nov.py out424/ R/
+# con resultados/m34/, costo_zonas_crudo_15nov.csv, ip_zonas_15nov.csv y lo de B = 424 en una carpeta R/:
 python3 scripts/m34_datos_paper.py R/ datos_m34/
 python3 scripts/m34_figuras_paper.py datos_m34/ figuras_m34/
 python3 scripts/m34_documento_paper.py datos_m34/ scripts/plantilla_M34.md M34_para_paper.md cifras_m34.csv

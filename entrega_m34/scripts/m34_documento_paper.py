@@ -155,7 +155,8 @@ def cifras(D):
     # ---- criterio de presupuesto ----
     fb = pd.read_csv(D / "factibilidad_cobertura_rB.csv")
     f = "factibilidad_cobertura_rB.csv"
-    reg("corridas_cob", n(fb.replicas.sum()), fb.replicas.sum(), f, "suma de replicas")
+    corr = fb[~fb.nota.astype(str).str.contains("r_max")]          # B = 424 se deriva de r_max, no se corrió
+    reg("corridas_cob", n(corr.replicas.sum()), corr.replicas.sum(), f, "suma de replicas corridas (sin B = 424)")
     reg("pct_fact_max", pc(fb.pct_factibles.max(), 0), fb.pct_factibles.max(), f, "max pct_factibles")
     rr = pd.read_csv(D / "rmax_piso_garantizable.csv")
     f = "rmax_piso_garantizable.csv"
@@ -172,6 +173,21 @@ def cifras(D):
     reg("mejor_bajo_rB", "ninguna" if mejor else "alguna", int(mejor), f, "m3_mejor < r_B en todos los B")
 
     # ---- validación y sensibilidades ----
+    x = rr[rr.B == 424].iloc[0]
+    f = "rmax_piso_garantizable.csv"
+    reg("rB_424", n(x.r_B, 3), x.r_B, f, "r_B (B = 424)")
+    reg("rmax_m3_424", pc(100 * x.m3, 1), x.m3, f, "m3 (B = 424)")
+    reg("rmax_m4_424", pc(100 * x.m4, 1), x.m4, f, "m4 (B = 424)")
+    reg("rmax_ip_424", pc(100 * x.IP_max, 1), x.IP_max, f, "IP_max (B = 424)")
+    rango("rmax_frac_424", 100 * x.M4_sobre_IP, 100 * x.M3_sobre_IP, lambda y: n(y, 0), f,
+          "M4_sobre_IP y M3_sobre_IP (B = 424)", " y ")
+    q = pd.read_csv(D / "sens_r0_personas_que_salen.csv")
+    q = q[q.B == 424].iloc[0]
+    f = "sens_r0_personas_que_salen.csv"
+    reg("r0_m1_424", n(q.IP_M1), q.IP_M1, f, "IP_M1 (B = 424)")
+    reg("r0_m3_424", n(q.m3_mediana), q.m3_mediana, f, "m3_mediana (B = 424)")
+    reg("r0_m4_424", n(q.m4_mediana), q.m4_mediana, f, "m4_mediana (B = 424)")
+    rango("r0_pct_424", q.m3_pct_IP, q.m4_pct_IP, lambda y: n(y, 0), f, "m3_pct_IP y m4_pct_IP (B = 424)", " y ")
     v = pd.read_csv(D / "validacion_granularidad_maxima.csv")
     f = "validacion_granularidad_maxima.csv"
     reg("valid_ok", f"{int(v.ok.sum())}/{len(v)}", int(v.ok.sum()), f, "ok")
@@ -285,8 +301,9 @@ def tablas(D):
         filas.append({"B": n(r.B), "r_B": n(r.r_B, 3), "ρ_B": "no se alcanza" if pd.isna(r.rho_B) else n(r.rho_B, 3),
                       "Salen con el Modelo 1 y r_B": n(r.M1_salen_r),
                       "Réplicas": n(a.replicas.iloc[0]),
-                      "Factibles con r_B (M3 / M4 / placebo)": " / ".join(pc(x, 0) for x in a.sort_values("modelo").pct_factibles),
-                      "Factibles con r_B y ρ_B": "no aplica" if b.empty else
+                      "Factibles con r_B (M3 / M4 / placebo)": " / ".join(pc(x, 0) for x in a.sort_values("modelo").pct_factibles)
+                      + (" (a partir de r_max)" if r.B == 424 else ""),
+                      "Factibles con r_B y ρ_B": ("no se corrió" if r.B == 424 else "no aplica") if b.empty else
                       " / ".join(pc(x, 0) for x in b.sort_values("modelo").pct_factibles)})
     T["factibilidad"] = md(pd.DataFrame(filas))
 

@@ -221,7 +221,7 @@ En el criterio de costo se usan {{replicas_costo}} réplicas por meta para el Mo
 
 *Se agrega al final de la sección 4, después del párrafo de sensibilidades.*
 
-Esta subsección compara los cuatro modelos en el escenario común de la sección 3: sin cobertura obligatoria ni SevEdu, con la meta de M0 en cada zona en el criterio de costo y con la tasa mínima de salida r\_B en cada zona en el de presupuesto fijo. Por eso sus cifras de los Modelos 1 y 2 no son las de la Tabla 2. El Modelo 1 no aparece en el criterio de costo, porque fija el presupuesto y maximiza las personas que salen.
+Esta subsección compara los cuatro modelos en el escenario común de la sección 3: sin cobertura obligatoria ni SevEdu, con la meta de M0 en cada zona en el criterio de costo y con la tasa mínima de salida r\_B en cada zona en el de presupuesto fijo. Por eso sus cifras de los Modelos 1 y 2 no son las de la Tabla 2. Para conectar la comparación con el caso base, el criterio de presupuesto fijo incluye también B = $424 mil millones en el piso garantizable y en la sensibilidad con r = 0. El Modelo 1 no aparece en el criterio de costo, porque fija el presupuesto y maximiza las personas que salen.
 
 #### Criterio de costo
 
@@ -305,9 +305,11 @@ La Tabla 8 presenta, para cada presupuesto, los parámetros de equidad que calcu
 
 {{TABLA:factibilidad}}
 
-*B en mil millones de pesos de 2025. r\_B y ρ\_B se calcularon con las funciones del Modelo 1 (r por el codo y ρ por la regla de la brecha), sin E-7 ni SevEdu; son provisionales hasta la confirmación de los autores del Modelo 1. Con B = 2, 5, 10 y 100 la regla de la brecha no se alcanza y no hay ρ\_B. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/factibilidad\_cobertura\_rB.csv y r\_rho\_referencias\_M1.csv.*
+*B en mil millones de pesos de 2025. r\_B y ρ\_B se calcularon con las funciones del Modelo 1 (r por el codo y ρ por la regla de la brecha), sin E-7 ni SevEdu; son provisionales hasta la confirmación de los autores del Modelo 1. Con B = 2, 5, 10 y 100 la regla de la brecha no se alcanza y no hay ρ\_B. Con B = 424 no se corrió la cobertura con r\_B: la factibilidad sale del piso máximo garantizable de cada réplica (Tabla 9), porque si ese piso es menor que r\_B la réplica es infactible. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/factibilidad\_cobertura\_rB.csv y r\_rho\_referencias\_M1.csv.*
 
 Con información imperfecta, la tasa mínima de salida del Modelo 1 no se puede cumplir: en las {{corridas_cob}} corridas, la fracción de réplicas factibles es del {{pct_fact_max}} en todos los presupuestos. Lo reportamos como resultado. La razón cambia con el presupuesto. Con B ≥ $25 mil millones, r\_B exige sacar de la pobreza a más personas de las que el Modelo 3 o el Modelo 4 logran sacar en total. Con B ≤ $10 mil millones el total sí alcanzaría, pero no su reparto: el sorteo no permite asegurar la fracción exigida en las tres zonas a la vez.
+
+El presupuesto del caso base no cambia el resultado. Con B = $424 mil millones, el Modelo 1 de la comparación, sin E-7 ni SevEdu, exige r\_B = {{rB_424}} (en el caso base de la Tabla 2, con E-7 y SevEdu, el codo da r = 0.833), y ninguna réplica de los Modelos 3 y 4 lo alcanza.
 
 Para medir cuánta equidad territorial sí puede garantizar el Estado sin información individual, resolvimos en cada réplica el piso máximo garantizable, r\_max = max t sujeto a Σᵢ∈I(d) pᵢ yᵢ ≥ t · Pobres⁰\_d en cada zona d, con el presupuesto B y el mismo mecanismo de cobertura. Con información perfecta, r\_max es el extremo superior del rango en el que el Modelo 1 busca el codo, y por eso siempre es al menos r\_B.
 
@@ -315,17 +317,17 @@ Para medir cuánta equidad territorial sí puede garantizar el Estado sin inform
 
 {{TABLA:rmax}}
 
-*B en mil millones de pesos de 2025. Información perfecta: un hogar por celda. Modelos 3 y 4 y placebo: mediana de {{rmax_reps}} réplicas, con su intervalo de confianza del 95 % por bootstrap; también se reporta la mejor réplica del Modelo 3. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/rmax\_piso\_garantizable.csv.*
+*B en mil millones de pesos de 2025. La fila de B = 424 (presupuesto del caso base) se agregó el 15 de noviembre. Información perfecta: un hogar por celda. Modelos 3 y 4 y placebo: mediana de {{rmax_reps}} réplicas, con su intervalo de confianza del 95 % por bootstrap; también se reporta la mejor réplica del Modelo 3. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/rmax\_piso\_garantizable.csv.*
 
 **Figura 12.** Piso por zona máximo garantizable según el presupuesto y la información del Estado.
 
 ![Figura 12](figuras_m34/figura_M34-2_piso_garantizable.png)
 
-*Cómo se lee.* Para cada presupuesto, la figura muestra la mayor fracción de los pobres de cada zona que el Estado puede asegurar que salga de la pobreza en las tres zonas a la vez. Las marcas horizontales son el r\_B que exige el Modelo 1.
+*Cómo se lee.* Para cada presupuesto, la figura muestra la mayor fracción de los pobres de cada zona que el Estado puede asegurar que salga de la pobreza en las tres zonas a la vez. Las marcas horizontales son el r\_B que exige el Modelo 1. El eje horizontal no es proporcional: los presupuestos están igualmente espaciados, y el último es el del caso base.
 
-*Qué se observa.* Con información perfecta, el piso garantizable siempre supera a r\_B. Sin información individual, siempre queda por debajo: en el Modelo 3 va de {{rmax_m3_2}} con B = $2 mil millones a {{rmax_m3_100}} con B = $100 mil millones, frente a {{rmax_ip_100}} con información perfecta. Ni la mejor réplica del Modelo 3 alcanza r\_B en ningún presupuesto.
+*Qué se observa.* Con información perfecta, el piso garantizable siempre supera a r\_B. Sin información individual, siempre queda por debajo: en el Modelo 3 va de {{rmax_m3_2}} con B = $2 mil millones a {{rmax_m3_100}} con B = $100 mil millones, frente a {{rmax_ip_100}} con información perfecta. Con el presupuesto del caso base, B = $424 mil millones, el Modelo 3 garantiza {{rmax_m3_424}} y el Modelo 4 {{rmax_m4_424}}, frente a {{rmax_ip_424}} con información perfecta. Ni la mejor réplica del Modelo 3 alcanza r\_B en ningún presupuesto.
 
-*Interpretación.* La falta de información no solo encarece la reducción de la pobreza: también limita cuánta equidad territorial puede prometer el Estado. Con B = $100 mil millones, los Modelos 3 y 4 garantizan entre el {{rmax_frac_100}} % del piso que garantizaría la información perfecta.
+*Interpretación.* La falta de información no solo encarece la reducción de la pobreza: también limita cuánta equidad territorial puede prometer el Estado. Con B = $100 mil millones, los Modelos 3 y 4 garantizan entre el {{rmax_frac_100}} % del piso que garantizaría la información perfecta, y con los $424 mil millones del caso base, entre el {{rmax_frac_424}} %: más presupuesto no cierra la brecha de información.
 
 *Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/rmax\_piso\_garantizable.csv y scripts/m34\_figuras\_paper.py.*
 
@@ -335,7 +337,7 @@ Para medir cuánta equidad territorial sí puede garantizar el Estado sin inform
 
 *Se agregan después del segundo párrafo de la sección 5 (implicaciones de política) y antes de los de limitaciones.*
 
-Al retirar el supuesto de información perfecta, el panorama cambia más en el costo que en el resultado. Con la meta en cada zona, focalizar solo por zona cuesta entre {{m3_ip_todas}} veces lo que cuesta con información perfecta, y focalizar también por tipo de hogar apenas reduce ese múltiplo. En los términos de Conconi et al. (2025), el presupuesto por desempeño tiene un costo oculto: la meta de M0 se puede cumplir sin información individual, pero a un costo varias veces mayor y con buena parte del gasto en hogares no pobres. Ese gasto no se pierde, porque esos hogares sí tenían la privación que se les quita, pero no mueve el IPM. Un programa evaluado por su cobertura puede verse exitoso y reducir poco la pobreza multidimensional. Con presupuesto fijo el efecto es más fuerte: la tasa mínima de salida por zona que el Modelo 1 cumple con información perfecta no la cumple ninguna réplica de los Modelos 3 y 4, y el piso que sí pueden garantizar con B = $100 mil millones es apenas entre el {{rmax_frac_100}} % del que garantizaría la información perfecta. La asignación según necesidad, con garantías por zona, depende más de la información que el presupuesto por desempeño.
+Al retirar el supuesto de información perfecta, el panorama cambia más en el costo que en el resultado. Con la meta en cada zona, focalizar solo por zona cuesta entre {{m3_ip_todas}} veces lo que cuesta con información perfecta, y focalizar también por tipo de hogar apenas reduce ese múltiplo. En los términos de Conconi et al. (2025), el presupuesto por desempeño tiene un costo oculto: la meta de M0 se puede cumplir sin información individual, pero a un costo varias veces mayor y con buena parte del gasto en hogares no pobres. Ese gasto no se pierde, porque esos hogares sí tenían la privación que se les quita, pero no mueve el IPM. Un programa evaluado por su cobertura puede verse exitoso y reducir poco la pobreza multidimensional. Con presupuesto fijo el efecto es más fuerte: la tasa mínima de salida por zona que el Modelo 1 cumple con información perfecta no la cumple ninguna réplica de los Modelos 3 y 4, y el piso que sí pueden garantizar con el presupuesto del caso base es apenas entre el {{rmax_frac_424}} % del que garantizaría la información perfecta. La asignación según necesidad, con garantías por zona, depende más de la información que el presupuesto por desempeño.
 
 El precio de la información también puede leerse como el valor máximo de mejorar la focalización. Como la diferencia relativa es mayor con metas modestas y presupuestos pequeños, el argumento pesa más para los programas acotados. El Modelo 4 y su placebo separan dos fuentes de mejora que en la práctica se confunden: la granularidad, que ayuda aunque las celdas no signifiquen nada, y el contenido de la partición, que solo ayuda si se relaciona con la privación. Con metas por zona, la granularidad sin contenido estorba, porque las celdas al azar mezclan las zonas. Antes de focalizar un programa por tipo de hogar hay que comprobar que esos tipos discriminan la privación que el programa ataca.
 
@@ -435,9 +437,9 @@ Los Modelos 3 y 4 tienen limitaciones propias. La base no identifica municipios,
 
 {{TABLA:r0}}
 
-*B en mil millones de pesos de 2025. Modelo 1 con r = 0, sin E-7 ni SevEdu. Mediana de las réplicas, con el intervalo de confianza del 95 % del cociente pareado. Corridas del 10 de noviembre. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/sens\_r0\_personas\_que\_salen.csv y sens\_r0\_info\_perfecta\_M1.csv.*
+*B en mil millones de pesos de 2025. Modelo 1 con r = 0, sin E-7 ni SevEdu. Mediana de las réplicas, con el intervalo de confianza del 95 % del cociente pareado. Corridas del 10 de noviembre; la fila de B = 424 se agregó el 15 de noviembre como puente con el caso base. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/sens\_r0\_personas\_que\_salen.csv y sens\_r0\_info\_perfecta\_M1.csv.*
 
-Sin piso por zona, los Modelos 3 y 4 sí son factibles. El Modelo 3 saca de la pobreza entre el {{r0_m3_pct}} % de las personas que saldrían con el Modelo 1, y el Modelo 4 entre el {{r0_m4_pct}} %.
+Sin piso por zona, los Modelos 3 y 4 sí son factibles. El Modelo 3 saca de la pobreza entre el {{r0_m3_pct}} % de las personas que saldrían con el Modelo 1, y el Modelo 4 entre el {{r0_m4_pct}} %. Con el presupuesto del caso base, el Modelo 3 saca a {{r0_m3_424}} personas y el Modelo 4 a {{r0_m4_424}}, frente a {{r0_m1_424}} del Modelo 1 sin E-7 ni SevEdu: entre el {{r0_pct_424}} %.
 
 **Número de tipos de hogar.** La elección de k se apoyó en un análisis con 50 réplicas pareadas para k de 2 a 8. Se hizo con una versión simplificada de los costos (una intervención por hogar, uᵢⱼ = 1) y sin equidad territorial, así que se lee por su forma y no por sus cifras. Con k = 2, el Modelo 4 saca de la pobreza {{k_m4_k2}} veces las personas del Modelo 3: la partición separa los hogares por tamaño, que casi no se relaciona con la pobreza. De k = 3 a k = 4 la ganancia es grande, y desde ahí se aplana ({{k_m4_k4}} veces con k = 4 y {{k_m4_k5}} con k = 5). Con k = 8 hay celdas con menos de 10 hogares privados, donde el sorteo deja de representar una focalización por tipo. Elegimos k = 4 con dos criterios: que menos del 15 % de los pares (indicador, celda) tenga menos de 10 hogares privados, y que al pasar a k + 1 la ganancia sea marginal.
 

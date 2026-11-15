@@ -54,7 +54,7 @@ def main(raiz, cifras_tex):
              ("zMcuatroMtresMenor", "n_m4_menor_m3", None, None), ("zMcuatroMtresMayor", "n_m4_mayor_m3", None, None),
              ("zMcuatroMtresIgual", "n_m4_igual_m3", None, None), ("zIPzonaDiez", "ip_10", None, None),
              ("cIPglobalDiez", "ip_global_10", None, None), ("zCorridas", "corridas_costo", None, None),
-             ("zCorridasCob", "corridas_cob", None, None), ("zCorridasRmax", "corridas_rmax", None, None),
+             ("zCorridasCob", "corridas_cob", None, None),
              ("cHogares", "hogares", None, None), ("cPobresHog", "hogares_pobres", None, None),
              ("cSeparaPobreza", "separa_pobreza", None, None), ("cDiscAcuZona", "disc_acu_z", None, None),
              ("cDiscAcuClu", "disc_acu_t", None, None), ("cDiscInasClu", "disc_inas_t", None, None)]
@@ -69,6 +69,9 @@ def main(raiz, cifras_tex):
         lt = latex_a_punto(mac[m]).replace(" %", "").strip()
         check(lt.split(" y ")[0] in v[k].split(" y "), f"{m} = {mac[m]} (paper-12nov) frente a {k} = {v[k]}")
 
+    # r_max: las 1,800 corridas del 12-nov más 300 de B = 424 (15-nov)
+    check(latex_a_punto(mac["zCorridasRmax"]) == "1800" and v["corridas_rmax"] == "2,100",
+          f"zCorridasRmax = {mac['zCorridasRmax']} (paper-12nov) + 300 de B = 424 = {v['corridas_rmax']}")
     rr = pd.read_csv(raiz / "datos_m34/r_rho_referencias_M1.csv").set_index("B")
     esperado = {2: (0.0365, 87034), 5: (0.0730, 129294), 10: (0.1462, 154347), 25: (0.2382, 214879),
                 50: (0.3442, 281588), 100: (0.5219, 369940)}

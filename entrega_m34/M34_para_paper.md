@@ -1,218 +1,217 @@
-# Modelos 3 y 4 para el paper
+# Modelos 3 y 4 para integrar al borrador del paper
 
-Entrega de Jerónimo Vélez para integrar al borrador de Martín Quijano, según `PLAN_INTEGRACION_M3_M4.md` (rama `Contexto`, 14 de noviembre de 2026).
+Entrega de Jerónimo Vélez según `PLAN_INTEGRACION_M3_M4.md` (rama `Contexto`, 14-nov), ajustada al borrador de Martín (`paper_borrador/borrador_paper_2026-11-14.md`, revisión 856).
 
-Cada bloque lleva el título de la sección del borrador donde se pega. Tablas, figuras y ecuaciones tienen numeración provisional (Tabla M34-1, Figura M34-1, ecuación M3.1). Todas las cifras del texto salen de los CSV de `datos_m34/`, y `cifras_m34.csv` indica para cada una el archivo y la columna de origen. Los valores de r_B, ρ_B y del Modelo 2 con meta por zona se tratan como provisionales hasta que Martín los confirme por escrito (sección 6 del plan).
+**Cómo usar este archivo.** Cada bloque empieza con una línea en cursiva que dice dónde se pega en el borrador. La numeración ya continúa la del borrador: Tabla 1 (reemplazo con cuatro columnas), Tablas 3 a 9 y Figuras 10 a 12 en el cuerpo, Tablas A2 y A3 (los huecos que el Apéndice 1 dejó para los Modelos 3 y 4) y Tablas A9 a A14 en los apéndices. Las ecuaciones siguen la convención del borrador: OBJ 3 y OBJ 4, Restricción₃ n y Restricción₄ n. Todas las cifras salen de los CSV de `datos_m34/`; `cifras_m34.csv` dice el archivo y la columna de cada una. Los valores de r\_B, ρ\_B y del Modelo 2 con meta por zona son provisionales hasta que Martín los confirme (§6 del plan).
 
 ---
 
 ## Resumen
 
-Sin información individual, el Estado paga caro por focalizar. Con metas de reducción de M0 de hasta el 10 % en cada zona, focalizar solo por zona (Modelo 3) cuesta entre 5.5 y 12.9 veces lo que costaría con información perfecta, y focalizar por zona y tipo de hogar (Modelo 4) cuesta casi lo mismo. Con un presupuesto fijo, ninguna réplica del sorteo permite garantizar en cada zona la tasa mínima de salida que el Modelo 1 cumple con información perfecta.
+*Se agrega al final del Resumen, antes de «Los resultados muestran estabilidad…».*
+
+Los Modelos 3 y 4 retiran el supuesto de información perfecta: el Estado solo conoce agregados por zona o por tipo de hogar, y un sorteo decide a qué hogares llega cada programa. Con metas de reducción de M0 de hasta el 10 % en cada zona, focalizar solo por zona cuesta entre 5.5 y 12.9 veces lo que costaría con información perfecta, y con un presupuesto fijo ninguna réplica del sorteo garantiza en cada zona la tasa mínima de salida del Modelo 1.
 
 ---
 
 ## 1. Motivación
 
-Los Modelos 1 y 2 suponen que el Estado sabe qué privaciones tiene cada hogar. Ningún programa social trabaja así: se asigna con estadísticas territoriales o con registros como el SISBÉN, y la ejecución llega a algunos hogares privados y no a otros. Por eso la pregunta de política no es solo cuánto cuesta reducir la pobreza, sino cuánto cuesta reducirla sin saber exactamente quién es pobre. Los Modelos 3 y 4 responden esa pregunta. El Estado decide cuánta cobertura comprar en cada zona o tipo de hogar, y un sorteo decide a qué hogares les llega. La diferencia de costo frente a los Modelos 1 y 2 es el precio de la información: lo máximo que valdría la pena invertir en mejorar los sistemas de focalización antes de ampliar el presupuesto de un programa.
+*Se agrega después del párrafo que termina en «…una distribución de las intervenciones que atiende también la intensidad de las privaciones».*
+
+Los Modelos 1 y 2 suponen que el Estado conoce las privaciones de cada hogar y puede intervenirlas de manera individual. Ningún programa social opera así: los recursos se asignan con estadísticas territoriales o con registros como el SISBÉN, y la ejecución llega a algunos hogares privados y no a otros. Por eso la pregunta de política no es solo cuánto cuesta reducir la pobreza, sino cuánto cuesta reducirla sin saber con exactitud quién es pobre. Los Modelos 3 y 4, que replican los modelos de focalización imperfecta de Hamie et al. (2024), responden esa pregunta. La diferencia de costo frente a los Modelos 1 y 2 es el precio de la información: lo máximo que valdría la pena invertir en mejorar los sistemas de focalización antes de ampliar el presupuesto de un programa.
+
+*Se agrega a la lista «Dos formulaciones complementarias la responden» (que pasa a «Cuatro formulaciones»).*
+
+- **Modelo 3 (focalización por zona).** El Estado conoce cuántas personas están privadas en cada indicador y zona, pero no quiénes son. Decide qué fracción de la población privada de cada zona cubre cada programa, y un sorteo decide a qué hogares llega.
+- **Modelo 4 (focalización por zona y tipo de hogar).** Como el Modelo 3, pero los bienes privados se focalizan por tipo de hogar, construido con rasgos demográficos que el Estado observa.
 
 ---
 
 ## 2. Escenarios de política modelados
 
-### Supuestos y salvedades propios de los Modelos 3 y 4
+### Supuestos y salvedades de los modelos
 
-Los Modelos 3 y 4 comparten con los Modelos 1 y 2 los datos, los costos, las reglas de qué privación se puede quitar en un año y las restricciones de equidad territorial. Agregan tres supuestos propios.
+*Se agrega al final de la lista de supuestos (después del 11).*
 
-1. **El sorteo R.** Cada par (hogar, indicador) recibe un número Rᵢⱼ uniforme entre 0 y 1, fijado antes de optimizar. El hogar sale de la privación si su número queda por debajo de la cobertura que el Estado compró en su celda. Así se representan los errores de focalización: dentro de una celda, cualquier hogar privado tiene la misma probabilidad de ser atendido, sea pobre o no.
-2. **Las celdas de focalización.** Una celda es el grupo de hogares al que el Estado le puede asignar una cobertura distinta. En el Modelo 3 son las tres zonas de P3 (cabeceras, centros poblados y rural disperso). En el Modelo 4 son las zonas para los bienes públicos y cuatro tipos de hogar para los bienes privados. La base del IPM no identifica municipios, así que no hay celdas geográficas más finas.
-3. **Las réplicas de Monte Carlo.** Como el resultado depende del sorteo, cada configuración se resuelve con muchos sorteos distintos (100 o 30, según el criterio) y se reporta la mediana con su intervalo. El Modelo 3, el Modelo 4 y el placebo usan el mismo sorteo en cada réplica, de modo que sus diferencias son pareadas.
+Los Modelos 3 y 4 comparten los supuestos 1, 4, 5, 6, 8 y 9. Cuatro supuestos de los Modelos 1 y 2 no se mantienen en ellos. Sin el supuesto 3, la cobertura llega a hogares privados que no son pobres; ese es el error de inclusión. Sin el supuesto 7, se modelan los 3,732 hogares de la muestra, no solo los 523 pobres, porque el programa llega a cualquier hogar privado de la celda. El supuesto 10 (cobertura obligatoria) no se incluye, porque exige saber qué niño concreto no asiste. Del supuesto 2 se pierde una dependencia: un ciclo CLEI no quita a la vez el logro educativo y el analfabetismo, porque cada par (hogar, indicador) se costea por separado. El supuesto 11 no aplica, porque no usan la severidad educativa. Agregan tres supuestos propios:
 
-Dos salvedades acompañan estos supuestos. Primero, como en el paper original, el modelo elige la cobertura conociendo el resultado del sorteo de esa réplica, lo que hace optimistas las cifras de los Modelos 3 y 4. Segundo, los sorteos de un mismo hogar son independientes entre indicadores; en la práctica, un hogar que no aparece en los registros suele quedar fuera de varios programas a la vez.
+12. **El sorteo.** Cada par (hogar, indicador) recibe un número aleatorio Rᵢⱼ, uniforme entre 0 y 1 y fijado antes de optimizar. El hogar sale de la privación si su número queda por debajo de la cobertura que el Estado compró en su celda. Dentro de una celda, cualquier hogar privado tiene la misma probabilidad de ser atendido, sea pobre o no.
+13. **Las celdas de focalización.** Una celda es el grupo de hogares al que el Estado puede asignar una cobertura distinta. En el Modelo 3 son las tres zonas de P3. En el Modelo 4 son las zonas para los bienes públicos y cuatro tipos de hogar para los bienes privados. Como la base no identifica municipios, no hay celdas geográficas más finas.
+14. **Las réplicas.** Como el resultado depende del sorteo, cada configuración se resuelve con 100 sorteos distintos (30 en algunas corridas del criterio de presupuesto fijo) y se reporta la mediana con su intervalo. El Modelo 3, el Modelo 4 y el placebo comparten el sorteo de cada réplica, así que sus diferencias son pareadas.
 
-### Modelo 3
+Como en el original, el modelo elige la cobertura conociendo el sorteo de la réplica, lo que hace optimistas sus cifras. Además, los sorteos de un mismo hogar son independientes entre indicadores, aunque en la práctica un hogar que no aparece en los registros suele quedar fuera de varios programas a la vez.
 
-**Qué sabe el Estado.** Para cada zona y cada indicador, cuántas personas están privadas y cuánto cuesta atenderlas. No sabe quiénes son.
+### Modelo 3: modelo por zona con focalización imperfecta
 
-**Qué decide.** La cobertura θ(j, d) de cada par (indicador, zona): la fracción de la población privada de la zona que el programa va a atender. El sorteo decide qué hogares reciben esa cobertura.
+*Se agrega después de la subsección del Modelo 2.*
 
-**Qué se fija.** Los costos por hogar e indicador, las reglas de qué se puede quitar en un año, el sorteo de cada réplica y, según el criterio, la meta m de reducción de M0 en cada zona o el presupuesto B con la tasa mínima de salida r_B en cada zona.
+El Modelo 3 representa la forma en que suele operar la política social: el Estado conoce, para cada zona, cuántas personas están privadas en cada indicador y cuánto cuesta atenderlas, pero no sabe quiénes son. Su decisión es la cobertura de cada programa en cada zona, es decir, la fracción de la población privada que va a atender. A qué hogares llega esa cobertura lo decide un sorteo, que representa los errores de la focalización real: el programa atiende a algunos hogares privados y no a otros, sin distinguir si son pobres.
 
-### Modelo 4
+Como en el Modelo 2 de Hamie et al. (2024), el modelo busca el costo mínimo de reducir M0 en un porcentaje dado, y la meta se exige en cada zona, igual que en nuestro Modelo 2. Lo fijo son los costos por hogar e indicador, las reglas de qué se puede quitar en un año, el sorteo de cada réplica y la meta. La misma estructura admite el objetivo del Modelo 1: con un presupuesto B, maximizar las personas que salen de la pobreza con la tasa mínima de salida por zona del Modelo 1.
 
-**Qué sabe el Estado.** Lo mismo que en el Modelo 3 y, además, el tipo de hogar, construido con rasgos demográficos que registra el SISBÉN (tamaño, edades, jefatura). Sigue sin saber quién está privado en qué.
+A diferencia de los Modelos 1 y 2, aquí sí hay errores de focalización. El error de inclusión es el gasto que llega a hogares privados que no son pobres; el error de exclusión, las personas pobres que no reciben ninguna intervención. Los dos son el resultado de focalizar sin información individual y no un defecto del modelo.
 
-**Qué decide.** La cobertura de cada par (indicador, celda). Los dos bienes públicos (acueducto y alcantarillado) se focalizan por zona; los otros 13 indicadores, por tipo de hogar.
+### Modelo 4: modelo mixto por zona y tipo de hogar
 
-**Qué se fija.** Lo mismo que en el Modelo 3, más la partición en cuatro tipos de hogar (k = 4), que se calcula una vez y no cambia entre réplicas.
+El Modelo 4 agrega una fuente de información: el tipo de hogar, construido con rasgos demográficos que registra el SISBÉN (tamaño, edades de los integrantes y características del jefe), sin usar ninguna privación. El Estado sigue sin saber quién está privado en qué. Siguiendo a Hamie et al. (2024), los indicadores se dividen en bienes públicos, que se proveen con infraestructura y solo pueden focalizarse por territorio (acueducto y alcantarillado), y bienes privados, que se entregan a personas u hogares (los otros 13). Los primeros se focalizan por zona y los segundos por tipo de hogar.
 
-### Columnas de los Modelos 3 y 4 para la Tabla 1
+El Modelo 4 cambia dos cosas a la vez frente al Modelo 3: usa información demográfica y reparte los bienes privados en cuatro celdas en lugar de tres. Una partición más fina focaliza mejor aunque no tenga contenido. Para separar los dos efectos se resuelve un placebo: el Modelo 4 con los tipos de hogar permutados al azar, que conserva el número y el tamaño de las celdas pero no su relación con las privaciones.
 
-> **Pendiente de alinear.** No tuve acceso al borrador de Martín, así que no conozco las 11 filas exactas de su Tabla 1. Las filas de abajo son las características que distinguen a los cuatro modelos. Al integrar, cada valor se pasa a la fila del borrador que corresponda.
+### Comparación de los modelos
 
-| Característica | Modelo 3 | Modelo 4 |
-|---|---|---|
-| Información hogar por hogar | N. El Estado solo conoce agregados por zona. | N. Conoce agregados por zona y el tipo de hogar, no las privaciones. |
-| Unidad de focalización | Parcial. Zona: 3 celdas para los 15 indicadores. | Parcial. Zona para los 2 bienes públicos y 4 tipos de hogar para los 13 privados. |
-| Componente estocástico | S. El sorteo Rᵢⱼ decide qué hogares reciben la cobertura. | S. El mismo sorteo, con las mismas réplicas que el Modelo 3. |
-| Errores de inclusión y exclusión | S. Se miden en cada réplica. | S. Se miden en cada réplica. |
-| Meta de reducción de M0 en cada zona | S. Criterio de costo. | S. Criterio de costo. |
-| Tasa mínima de salida por zona r | S. Criterio de presupuesto fijo, con el r_B del Modelo 1. | S. Igual que el Modelo 3. |
-| Techo de severidad ρ | Parcial. Solo en la sensibilidad, con el ρ_B del Modelo 1. | Parcial. Igual que el Modelo 3. |
-| Cobertura escolar obligatoria (E-7) | N. Exige saber qué niño no asiste; aquí lo decide el sorteo. | N. Igual que el Modelo 3. |
-| Techo de severidad educativa (SevEdu) | N. Exige decisiones niño por niño. | N. Igual que el Modelo 3. |
-| Privaciones que no se quitan en un año | S. Entran como constante en el puntaje, con las reglas del Modelo 1. | S. Igual que el Modelo 3. |
-| Clustering demográfico | N. | S. k-medias sobre ocho rasgos, sin usar privaciones. |
+*Reemplaza la Tabla 1 y la frase que la presenta. Las columnas de los Modelos 1 y 2 son las del borrador, sin cambios.*
+
+La Tabla 1 compara las características de los cuatro modelos. Las ocho primeras filas son las mismas de la Tabla 1 de Hamie et al. (2024); las tres últimas corresponden a las restricciones de equidad que agregamos. Los Modelos 1 y 2 comparten el supuesto de información completa sobre cada hogar. Los Modelos 3 y 4 lo retiran, y por eso son los únicos con desperdicio en hogares no pobres.
+
+**Tabla 1. Comparación de las características de los modelos**
+
+| Característica | Modelo 1: por hogar, presupuesto fijo | Modelo 2: por hogar, costo mínimo (*first best*) | Modelo 3: por zona, focalización imperfecta | Modelo 4: por zona y tipo de hogar |
+| --- | --- | --- | --- | --- |
+| Se puede intervenir cualquier hogar con privaciones | N: solo los hogares pobres | N: solo los hogares pobres | S: cualquier hogar privado de la zona, pobre o no | S: cualquier hogar privado de la celda, pobre o no |
+| Desperdicio por ayuda a hogares sin privaciones | N | N | N: la cobertura del indicador j solo llega a hogares privados en j | N: igual que el Modelo 3 |
+| Los hogares en pobreza multidimensional se focalizan con precisión | S | S | N: el Estado solo conoce agregados por zona | N: conoce agregados por zona y el tipo de hogar |
+| Gasto en hogares pobres que no salen de la pobreza (sin efecto en H) | S, a propósito: el techo de severidad y la escolarización obligatoria invierten en hogares que no salen; no cambia H, pero sí la severidad | S, a propósito: la meta de M0 premia reducir privaciones de quien sigue pobre, y la escolarización obligatoria se paga aunque el hogar no salga | S: el sorteo reparte la cobertura entre los pobres sin mirar cuánto les falta para salir | S: igual que el Modelo 3 |
+| Desperdicio por ayuda a hogares con privaciones pero no pobres (sin efecto en A ni en H) | N | N | S: error de inclusión, entre el 26 y 55 % del gasto según la meta | S: entre el 18 y 50 % del gasto |
+| Se distinguen privaciones de bienes privados y públicos | N | N | N | S: acueducto y alcantarillado por zona; los otros 13 por tipo de hogar |
+| El Estado ajusta las transferencias según el patrón de consumo del hogar | N | N | N | N: la base no trae ingreso ni gasto |
+| Desperdicio en transferencias por riesgo moral (el hogar usa la ayuda en otra cosa) | Parcial: casi todas las intervenciones son en especie; en la única transferencia (Renta Ciudadana) el incumplimiento se cobra con p = 0.369 | Parcial: igual que el Modelo 1 | Parcial: igual que el Modelo 1 | Parcial: igual que el Modelo 1 |
+| Techo de severidad (FGT α = 2) | S: ρ es el menor valor con A ≤ A₀ | N: la meta sobre M0 atenúa el sesgo, pero A sube levemente (sección 4) | Solo como sensibilidad, con el ρ\_B del Modelo 1 | Solo como sensibilidad, igual que el Modelo 3 |
+| Equidad territorial | S: tasa mínima de salida r en cada zona | S: meta de M0 en cada zona | S: meta de M0 en cada zona; con presupuesto fijo, la tasa r\_B del Modelo 1 es infactible | S: igual que el Modelo 3 |
+| Techo de severidad educativa (SevEdu) | S: ρ\_e = 14 % | Solo como sensibilidad | N: exige decisiones niño por niño | N: igual que el Modelo 3 |
+
+*S = sí; N = no. Fuente: elaboración propia con base en la Tabla 1 de Hamie et al. (2024). Las columnas de sus Modelos 1a y 1b (sin costos) no se incluyen.*
 
 ---
 
 ## 3. Métodos empíricos
 
-### Modelo 3: formulación
+### Modelo 3: modelo por zona con focalización imperfecta
 
-**Conjuntos.**
+*Se agrega después de la subsección del Modelo 2 y antes de «Resolución y verificación de los modelos».*
 
-- I: los 3,732 hogares de Antioquia; I⁰ ⊆ I: los 523 hogares pobres de la línea base.
-- J: los 15 indicadores del IPM.
-- D: las tres zonas de P3; d(i) es la zona del hogar i.
-- Para cada par (j, d), los hogares privados ordenados por su sorteo: R₍₁₎ < R₍₂₎ < … < R₍ₙ₎, con n = n(j, d).
-- F(j, d): los cortes admisibles del par (j, d), definidos en la ecuación M3.8.
+**Conjuntos.** Los del Modelo 1, con tres cambios:
 
-**Parámetros.**
+- **Ī ⊇ I**: los 3,732 hogares de la muestra. I sigue siendo el de los 523 hogares pobres. El mecanismo de cobertura actúa sobre Ī, porque un programa puede llegar a un hogar privado que no es pobre; la salida de la pobreza y la meta se miden sobre I.
+- **J**: los 15 indicadores; **Jᴵ ⊆ J**, los intervenibles en un año, con las reglas de los Modelos 1 y 2 (supuesto 4).
+- **D**: las tres zonas de P3, con d(i) la zona del hogar i. En cada par (j, d), los hogares privados se ordenan por su sorteo, R₍₁₎ < R₍₂₎ < … < R₍ₙ₎, con n = n(j, d), y **F(j, d)** es el conjunto de cortes admisibles definido abajo.
 
-- Mᵢⱼ ∈ {0, 1}: privación inicial; wⱼ: peso del indicador; k = 1/3: umbral de pobreza.
-- pᵢ = HSᵢ · HWᵢ: personas que representa el hogar; cᵢ⁰ = Σⱼ wⱼ Mᵢⱼ: puntaje inicial.
-- uᵢⱼ: personas del hogar que hay que atender para quitar la privación; eᵢⱼ: costo de quitarla en el hogar de la muestra.
-- Vᵢⱼ = uᵢⱼ · HWᵢ: población que atiende el par; Kᵢⱼ = eᵢⱼ · HWᵢ: gasto que exige el par en la población.
-- Den(j, d) = Σ_{i en d} Vᵢⱼ Mᵢⱼ: población privada en el indicador j dentro de la zona d.
-- Rᵢⱼ ∈ [0, 1]: sorteo del par, distinto en cada réplica.
-- m: meta de reducción de M0; B: presupuesto; r_B y ρ_B: los parámetros de equidad del Modelo 1 para ese presupuesto.
+**Parámetros de entrada.**
 
-**Variables.**
+- **Originales:** los del Modelo 1 (wⱼ, Mᵢⱼ, HWᵢ, HSᵢ y los costos unitarios por zona de la Tabla A6), ahora para todos los hogares de Ī; la meta m.
+- **Calculados:**
+  - cᵢ⁰, pᵢ, uᵢⱼ y el costo cᵢⱼ = costo unitario de la zona × uᵢⱼ × HWᵢ, como en el Modelo 1;
+  - Vᵢⱼ = uᵢⱼ · HWᵢ, la población que atiende el par (i, j);
+  - Den(j, d) = Σᵢ∈Ī(d) Vᵢⱼ Mᵢⱼ, la población privada en el indicador j dentro de la zona d;
+  - Rᵢⱼ ∈ [0, 1], el sorteo del par, distinto en cada réplica;
+  - Pob\_d y M0\_d⁰, como en el Modelo 2.
 
-- xᵢⱼ ∈ {0, 1}: 1 si se quita la privación j del hogar i.
-- sᵢ: puntaje final del hogar.
-- yᵢ ∈ {0, 1}: 1 si el hogar sale de la pobreza (en el código, b1ᵢ).
-- Cᵢ ≥ 0: contribución del hogar al M0 final (solo en el criterio de costo).
-- θ(j, d) ∈ [0, 1]: cobertura del par (indicador, zona).
-- E(j, d) ≥ 0: gasto en el indicador j dentro de la zona d.
+**Variables de decisión.**
 
-**Mecanismo de cobertura.** El gasto y la cobertura de cada par son
+- **Externas:** θ(j, d) ∈ [0, 1], la cobertura del indicador j en la zona d.
+- **Internas:** xᵢⱼ ∈ {0, 1}, igual a 1 si al hogar i se le quita la privación j; yᵢ ∈ {0, 1}, igual a 1 si el hogar pobre i sale de la pobreza; Gᵢ ≥ 0, la contribución censurada del hogar i al numerador de M0, como en el Modelo 2; E(j, d) ≥ 0, el gasto en el indicador j dentro de la zona d.
+- **Expresión auxiliar:** el puntaje final sᵢ = cᵢ⁰ − Σⱼ∈Jᴵ wⱼ xᵢⱼ. Las privaciones que no se pueden quitar en un año quedan como constante.
 
-(M3.1) E(j, d) = Σ_{i en d} Kᵢⱼ · xᵢⱼ
+A diferencia de los Modelos 1 y 2, xᵢⱼ no es una decisión del Estado: la determinan la cobertura θ y el sorteo.
 
-(M3.2) θ(j, d) = (1 / Den(j, d)) · Σ_{i en d} Vᵢⱼ · xᵢⱼ
+**Función objetivo.** Se minimiza el gasto total:
+
+min Σⱼ Σ\_d E(j, d)  (OBJ 3)
+
+**Restricciones.** *Mecanismo de cobertura.* El gasto y la cobertura de cada par se calculan con los hogares que efectivamente reciben la intervención:
+
+E(j, d) = Σᵢ∈Ī(d) cᵢⱼ xᵢⱼ  para todo j y toda zona d  (Restricción₃ 1)
+
+θ(j, d) = Σᵢ∈Ī(d) Vᵢⱼ xᵢⱼ / Den(j, d)  para todo j y toda zona d  (Restricción₃ 2)
 
 y el sorteo decide a quién llega la cobertura:
 
-(M3.3) xᵢⱼ = Mᵢⱼ si Rᵢⱼ ≤ θ(j, d(i)), y xᵢⱼ = 0 si Rᵢⱼ > θ(j, d(i)).
+xᵢⱼ = Mᵢⱼ si Rᵢⱼ ≤ θ(j, d(i)), y xᵢⱼ = 0 si Rᵢⱼ > θ(j, d(i))  para todo i ∈ Ī y j ∈ Jᴵ  (Restricción₃ 3)
 
-Numerador y denominador de M3.2 se miden en la misma unidad, personas de la población. En el paper original el numerador está ponderado por HWᵢ y el denominador cuenta hogares de la muestra; con esa definición la cobertura llega a 4.81 en nuestros datos, todo hogar privado se cura y el Modelo 3 se reduce al Modelo 1 sin que el solver lo advierta.
+Numerador y denominador de Restricción₃ 2 se miden en la misma unidad, personas de la población. En el original, el numerador está ponderado por HWᵢ y el denominador cuenta hogares de la muestra; con esa definición la cobertura llega a 4.81 en nuestros datos, todo hogar privado se cura y el Modelo 3 se reduce al Modelo 1 sin que el solver lo advierta.
 
-**Función objetivo (criterio de costo).**
+*Salida de la pobreza y censura.* Para cada hogar pobre i ∈ I, la censura de Alkire y Foster se escribe con las restricciones Lin 1 a Lin 3 de Hamie et al. (2024, Apéndice 1):
 
-(M3.4) min Σⱼ Σ_d E(j, d)
+Gᵢ ≥ pᵢ sᵢ − pᵢ yᵢ  para todo i ∈ I  (Restricción₃ 4)
 
-**Restricciones (criterio de costo).** El puntaje final es
+Gᵢ ≤ pᵢ sᵢ + pᵢ yᵢ  para todo i ∈ I  (Restricción₃ 5)
 
-(M3.5) sᵢ = cᵢ⁰ − Σ_{j intervenible} wⱼ · xᵢⱼ
+sᵢ ≤ 0.33 + (1 − yᵢ)  para todo i ∈ I  (Restricción₃ 6)
 
-donde las privaciones que no se pueden quitar en un año quedan como constante. Para cada hogar pobre i ∈ I⁰, la censura de Alkire y Foster se linealiza con Big-M:
+Restricción₃ 4 es la Restricción₂ 2 con big-M pᵢ en lugar de Uᵢ = pᵢ cᵢ⁰, y Restricción₃ 6 es la Restricción₂ 1 con big-M 1 en lugar de Mᵢ. Restricción₃ 5 es redundante cuando se minimiza el costo, pero la conservamos para que el Modelo 3 sea la formulación del original.
 
-(M3.6a) Cᵢ + pᵢ · yᵢ ≥ pᵢ · sᵢ
+*Meta sobre M0.* Igual que en el Modelo 2, el M0 final de cada zona debe bajar al menos un porcentaje m:
 
-(M3.6b) Cᵢ − pᵢ · yᵢ ≤ pᵢ · sᵢ
+Σᵢ∈I(d) Gᵢ ≤ (1 − m) · M0\_d⁰ · Pob\_d  para toda zona d ∈ D  (Restricción₃ 7)
 
-(M3.6c) sᵢ − (1 − yᵢ) ≤ 0.33
+Las tres metas por zona implican la meta global, así que cumplir la meta en cada zona nunca cuesta menos que cumplirla en el total.
 
-y la meta se exige en cada zona:
+**Reformulación exacta por cortes.** Escrito con las restricciones Lin 6 a Lin 10 del original, el Modelo 3 no se resuelve en un tiempo razonable: en una versión inicial con meta del 10 %, HiGHS no cerraba la brecha en más de 200 segundos. La razón es también la idea central del modelo. Como θ(j, d) es un solo número para toda la zona, Restricción₃ 3 cura exactamente a los hogares con Rᵢⱼ ≤ θ(j, d), y ese conjunto es siempre un prefijo del orden por R: si se cura el hogar en la posición c, se curan todos los anteriores. **El Estado elige cuántos hogares atiende, no cuáles.** La solución de cada par queda descrita por un corte c entre 0 y n. No todo corte es admisible, porque la cobertura que resulta de curar a los c primeros tiene que curar a esos c y a ninguno más:
 
-(M3.7) Σ_{i ∈ I⁰, d(i) = d} Cᵢ ≤ (1 − m) · Σ_{i ∈ I⁰, d(i) = d} pᵢ · cᵢ⁰ para cada zona d.
+F(j, d) = { c : R₍c₎ ≤ θ(j, d)(c) ≤ R₍c₊₁₎ − ε },  con ε = 10⁻⁶,
 
-El lado derecho de M3.7 es la contribución inicial de la zona a M0, reducida en la meta; es la misma restricción (M-d) del Modelo 2. Las tres metas por zona implican la meta global, así que cumplir la meta en cada zona nunca cuesta menos que cumplirla en el total.
+donde θ(j, d)(c) es la cobertura de los c primeros. F(j, d) depende solo de los datos y del sorteo, así que se enumera antes de optimizar. Con una binaria z(j, d, c) por corte admisible, el gasto del par es E(j, d) = Σ\_c∈F(j, d) gasto(j, d, c) · z(j, d, c), y Restricción₃ 1 a Restricción₃ 3 se reemplazan por
 
-**Criterio de presupuesto fijo.** El mismo mecanismo admite el objetivo del Modelo 1. Se reemplazan M3.4, M3.6 y M3.7 por
+Σ\_c∈F(j, d) z(j, d, c) = 1  para todo par (j, d)  (Restricción₃ 8)
 
-max Σ_{i ∈ I⁰} pᵢ · yᵢ
+xᵢⱼ = Σ\_c∈F(j, d(i)), c ≥ posición de i z(j, d(i), c)  para todo par privado (i, j)  (Restricción₃ 9)
 
-sujeto a Σⱼ Σ_d E(j, d) ≤ B, a la condición de salida sᵢ ≤ 0.33 + (cᵢ⁰ − 0.33)(1 − yᵢ) y a la tasa mínima de salida en cada zona,
+*Dominios.*
 
-Σ_{i ∈ I⁰, d(i) = d} pᵢ · yᵢ ≥ r_B · Σ_{i ∈ I⁰, d(i) = d} pᵢ,
+z(j, d, c), yᵢ ∈ {0, 1};  Gᵢ, E(j, d) ≥ 0  (Restricción₃ 10)
 
-que es la restricción (4) del Modelo 1. En la sensibilidad se agrega el techo de severidad del Modelo 1, con las mismas tangentes: qᵢ ≥ 2a · sᵢ − a² para cada valor posible a, y Σᵢ pᵢ · qᵢ ≤ (1 − ρ_B) · Sev₀. Los empates se resuelven en una segunda etapa que minimiza la severidad, como en el Modelo 1.
+Las dos formulaciones tienen las mismas soluciones factibles con el mismo gasto, así que tienen el mismo óptimo (Apéndice 1). La reformulación se resuelve en unos 2 segundos con la base completa.
 
-**Reformulación exacta por cortes.** Escrito literalmente, con la linealización del Apéndice 1 del paper, el Modelo 3 no se resuelve: en una versión inicial con meta del 10 %, HiGHS no cerraba la brecha en más de 200 segundos. La razón también es la idea central del modelo. Como la cobertura θ(j, d) es un solo número para toda la zona, M3.3 cura exactamente a los hogares con Rᵢⱼ ≤ θ(j, d), y ese conjunto es siempre un prefijo del orden por R: si se cura el hogar en la posición c, se curan todos los anteriores. **El Estado elige cuántos hogares atiende, no cuáles.** La solución de cada par queda descrita por un corte c entre 0 y n. No todo corte es admisible, porque la cobertura que resulta de curar los c primeros tiene que curar a esos c y a ninguno más:
+**Errores de focalización y desempate.** El error de inclusión es la fracción del gasto que llega a hogares no pobres; el de exclusión, la fracción de las personas pobres que no reciben ninguna intervención. Como OBJ 3 puede tener óptimos alternos con el mismo gasto y errores distintos, una segunda etapa elige, entre las soluciones con gasto a lo sumo E\* · (1 + 10⁻⁶), la que menos gasta en hogares no pobres. Así el error reportado no depende del solver.
 
-(M3.8) F(j, d) = { c : R₍c₎ ≤ θ(j, d)(c) ≤ R₍c₊₁₎ − ε }, con ε = 10⁻⁶,
+**Criterio de presupuesto fijo.** El mismo mecanismo admite el objetivo del Modelo 1. Se usan OBJ 1a y OBJ 1b con Restricción₁ 2, Restricción₁ 3 y, en la sensibilidad, Restricción₁ 4 y Restricción₁ 5, sobre los xᵢⱼ que determinan el sorteo y la cobertura, y la Restricción₁ 1 se reemplaza por Σⱼ Σ\_d E(j, d) ≤ B. La tasa r y el techo ρ se fijan con los valores r\_B y ρ\_B que calcula el Modelo 1 para ese presupuesto.
 
-donde θ(j, d)(c) es la cobertura de los c primeros. F(j, d) depende solo de los datos y del sorteo, así que se enumera antes de optimizar. Con una binaria z(j, d, c) por corte admisible, el modelo queda
+### Modelo 4: modelo mixto por zona y tipo de hogar
 
-(M3.9) min Σ_{(j, d)} Σ_{c ∈ F(j, d)} gasto(j, d, c) · z(j, d, c)
+**Conjuntos, parámetros y variables.** Los del Modelo 3, con la celda g en lugar de la zona d. Se agregan el conjunto **T** de los cuatro tipos de hogar, el tipo t(i) de cada hogar y la partición de los indicadores en **V** = {acueducto, alcantarillado} (bienes públicos) y **U** = J \ V (bienes privados). La celda del par (i, j) es
 
-(M3.10) Σ_{c ∈ F(j, d)} z(j, d, c) = 1 para cada par (j, d)
+g(i, j) = d(i) si j ∈ V, y g(i, j) = t(i) si j ∈ U.
 
-(M3.11) xᵢⱼ = Σ_{c ∈ F(j, d(i)), c ≥ posición de i} z(j, d(i), c) para cada par privado (i, j)
+**Función objetivo.**
 
-más M3.5 a M3.7. Las dos formulaciones tienen las mismas soluciones factibles y el mismo gasto en cada una, así que tienen el mismo óptimo (Apéndice 1). En la base completa, la reformulación se resuelve en unos 2 segundos.
+min Σⱼ∈U Σₜ∈T E(j, t) + Σⱼ∈V Σ\_d E(j, d)  (OBJ 4)
 
-**Errores de focalización.** El error de inclusión es la fracción del gasto que llega a hogares que no eran pobres. El error de exclusión es la fracción de las personas pobres que no reciben ninguna intervención. Como el objetivo puede tener óptimos alternos con el mismo gasto y errores distintos, una segunda etapa elige, entre las soluciones con gasto a lo sumo E* · (1 + 10⁻⁶), la que menos gasta en hogares no pobres. Así el error reportado no depende del solver.
+**Restricciones.** Restricción₄ 1 a Restricción₄ 10 son Restricción₃ 1 a Restricción₃ 10 con la celda g(i, j) en lugar de d(i). Las de censura y meta (Restricción₄ 4 a Restricción₄ 7) no cambian, porque el puntaje sᵢ depende de todos los indicadores sin importar cómo se focalizó cada uno, y la meta y la tasa r\_B se siguen exigiendo por zona de P3. La propiedad de prefijo solo usa que la cobertura es común dentro de una celda, así que la reformulación por cortes vale igual dentro de un tipo de hogar.
 
-### Modelo 4: formulación
+**Bienes públicos y privados.** Los datos apoyan la partición (Tabla A9): el acueducto es 14.5 veces más frecuente en la zona más privada que en la menos privada, y solo 4.1 veces entre tipos de hogar. La inasistencia escolar y el hacinamiento varían mucho más entre tipos (51.7 y 26.6 veces) que entre zonas (4.8 y 2.7).
 
-El Modelo 4 es el Modelo 3 con otra regla para asignar cada par a su celda:
-
-(M4.1) g(i, j) = d(i) si j es un bien público, y g(i, j) = t(i) si j es un bien privado,
-
-donde t(i) es el tipo del hogar. Los conjuntos, parámetros y variables son los del Modelo 3, con la celda g en lugar de la zona d. La función objetivo es
-
-(M4.2) min Σ_{j privado} Σ_t E(j, t) + Σ_{j público} Σ_d E(j, d).
-
-Las restricciones M3.5 a M3.7 no cambian, porque el puntaje sᵢ depende de todos los indicadores sin importar cómo se focalizó cada uno, y la meta y la tasa r_B se siguen exigiendo por zona de P3. La propiedad de prefijo solo usa que la cobertura es común dentro de una celda, así que la reformulación por cortes se aplica igual dentro de un tipo de hogar.
-
-**Bienes públicos y privados.** Los bienes públicos son acueducto y alcantarillado, que se proveen con infraestructura y solo pueden focalizarse por territorio. Los otros 13 indicadores son bienes privados. Los datos apoyan la partición: el acueducto es 14.5 veces más frecuente en la zona más privada que en la menos privada, y solo 4.1 veces entre tipos de hogar. La inasistencia escolar y el hacinamiento varían mucho más entre tipos (51.7 y 26.6 veces) que entre zonas (4.8 y 2.7). El detalle está en el Apéndice 1.
-
-**Tipos de hogar.** Se obtienen con k-medias sobre ocho rasgos que el Estado observa sin una encuesta de privaciones: número de personas, número de menores de 5 años, de personas de 5 a 17 y de mayores de 65, tasa de dependencia y edad, sexo y nivel educativo del jefe. Ninguna privación del IPM entra en el clustering: si entrara, el Estado usaría justo la información que el modelo supone que no tiene. Con k = 4 los tipos separan la pobreza sin haberla usado: la incidencia del tipo más pobre es 4.3 veces la del menos pobre.
-
-**Placebo.** El Modelo 4 cambia dos cosas a la vez frente al Modelo 3: usa información demográfica y reparte los bienes privados en cuatro celdas en vez de tres. Una partición más fina focaliza mejor aunque no tenga contenido. Para separar los dos efectos se resuelve un placebo: el Modelo 4 con las etiquetas de tipo permutadas al azar entre los hogares. Conserva el número y el tamaño de las celdas, pero no la relación entre el tipo y las privaciones.
+**Tipos de hogar.** Se obtienen con k-medias sobre ocho rasgos que el Estado observa sin una encuesta de privaciones: número de personas, número de menores de 5 años, de personas de 5 a 17 y de mayores de 65, tasa de dependencia y edad, sexo y nivel educativo del jefe. Ninguna privación entra en el clustering, porque si entrara el Estado usaría justo la información que el modelo supone que no tiene. Con k = 4 los tipos separan la pobreza sin haberla usado: la incidencia del tipo más pobre es 4.3 veces la del menos pobre (Tabla A10). La elección de k se explica en el Apéndice 2.
 
 ### Diseño de la comparación de los cuatro modelos
 
-Los cuatro modelos solo pueden diferir en qué sabe el Estado. Todo lo demás es común: los mismos 3,732 hogares y la misma línea base (H₀ = 9.45 %, A₀ = 40.94 %, M₀ = 0.0387), una sola tabla de costos y de reglas de qué se puede quitar en un año, y las mismas restricciones de equidad territorial. En vez de quitarle al Modelo 1 sus restricciones de equidad, se las agregamos a los Modelos 3 y 4, que pueden representarlas porque solo dependen de cuántas personas salen o de cuánto baja M0 en cada zona.
+*Se agrega antes de «Resolución y verificación de los modelos».*
 
-**Qué entra y qué no.** La Tabla M34-1 dice qué restricciones tienen los cuatro modelos en la comparación y por qué.
-
-**Tabla M34-1. Restricciones de la comparación de los cuatro modelos**
+Para que la comparación mida solo el efecto de la información, los cuatro modelos comparten los mismos 3,732 hogares y la línea base (H₀ = 9.45 %, A₀ = 0.409, M0⁰ = 0.0387), una sola tabla de costos y de reglas de qué se puede quitar en un año, y las mismas restricciones de equidad territorial. En lugar de quitarle al Modelo 1 sus restricciones de equidad, se agregan a los Modelos 3 y 4 las que pueden representar, que son las que solo dependen de cuántas personas salen o de cuánto baja M0 en cada zona. Las que exigen decisiones sobre un niño concreto quedan fuera de los cuatro.
 
 | Restricción | Modelos 1 y 2 en la comparación | Modelos 3 y 4 | Por qué |
-|---|---|---|---|
-| Cobertura escolar obligatoria (E-7) | No | No | Exige saber qué niño concreto no asiste |
-| Techo de severidad educativa (SevEdu) | No | No | Exige decisiones niño por niño |
-| Tasa mínima de salida por zona r | Sí, en el criterio de presupuesto | Sí, se agrega | Es lineal en yᵢ y no exige saber quién es quién |
-| Techo de severidad ρ | Sí, como sensibilidad | Sí, como sensibilidad | Lineal con tangentes |
-| Meta de M0 en cada zona | Sí, en el criterio de costo | Sí, reemplaza la meta global | Es la equidad territorial del Modelo 2 |
+| --- | --- | --- | --- |
+| Cobertura obligatoria (Restricción₁ 10, Restricción₂ 7) | No | No | Exige saber qué niño concreto no asiste |
+| Techo de SevEdu (Restricción₁ 9) | No | No | Exige decisiones niño por niño |
+| Tasa mínima de salida por zona (Restricción₁ 3) | Sí, en el criterio de presupuesto fijo | Sí, se agrega | Es lineal en yᵢ y no exige saber quién es quién |
+| Techo de severidad (Restricción₁ 5) | Sí, como sensibilidad | Sí, como sensibilidad | Lineal con tangentes |
+| Meta de M0 en cada zona (Restricción₂ 3) | Sí, en el criterio de costo | Sí, Restricción₃ 7 y Restricción₄ 7 | Es la equidad territorial del Modelo 2 |
 
-*Nota.* Especificación de la comparación de Martín (`ESPECIFICACION_COMPARACION_4_MODELOS.md`, rama `Contexto`, secciones 3.1 y 3.3). Los resultados propios de los Modelos 1 y 2, con E-7 y SevEdu, se reportan aparte.
+*Fuente: especificación de la comparación (rama Contexto, ESPECIFICACION\_COMPARACION\_4\_MODELOS.md, secciones 3.1 y 3.3). Los resultados de la sección 4 con E-7 y SevEdu son los del caso base de los Modelos 1 y 2, no los de la comparación.*
 
-**Los dos criterios.**
+La comparación usa dos criterios. En el **criterio de costo**, la pregunta es cuánto cuesta reducir M0 un m % en cada zona; la referencia de información perfecta es el Modelo 2 sin E-7, y el precio de la información de un modelo X es su costo dividido por el del Modelo 2. En el **criterio de presupuesto fijo**, la pregunta es cuántas personas salen de la pobreza con un presupuesto B si en cada zona debe salir al menos una fracción r\_B de los pobres; la referencia es el Modelo 1 sin E-7 ni SevEdu.
 
-- **Criterio de costo.** ¿Cuánto cuesta reducir M0 un m % en cada zona? La referencia de información perfecta es el Modelo 2 sin E-7, con meta en cada zona. El precio de la información de un modelo X es E_X(m) / E_M2(m).
-- **Criterio de presupuesto fijo.** ¿Cuántas personas salen de la pobreza con un presupuesto B, si en cada zona debe salir al menos una fracción r_B de los pobres? La referencia es el Modelo 1 sin E-7 ni SevEdu. El precio de la información es H_X(B) / H_M1(B).
+Tres reglas protegen la comparación. Primera, los mismos r y ρ en los cuatro modelos: para cada B, r\_B y ρ\_B se calculan una sola vez con el Modelo 1 (r por el codo y ρ por la regla de la brecha) y se imponen iguales a los Modelos 3 y 4; si cada modelo calibrara los suyos, la diferencia mediría parámetros distintos y no información. Segunda, la infactibilidad es un resultado: se reporta la fracción de réplicas factibles y las medianas se calculan sobre las factibles. Tercera, la misma tolerancia: brecha relativa de 10⁻⁶ en todas las etapas de los cuatro modelos.
 
-**Las tres reglas.**
+En el criterio de costo se usan 100 réplicas por meta para el Modelo 3, el Modelo 4 y el placebo, con el mismo sorteo en cada réplica (4,500 corridas). En el de presupuesto fijo, 100 réplicas con B ≤ $10 mil millones y 30 con B ≥ $25 mil millones (1,350 corridas), y 100 réplicas para el piso máximo garantizable (1,800 corridas). El número de réplicas cumple la condición del teorema del límite central de Hamie et al. (2024, ec. 8), n ≥ (1.96 · CV / e)², y se reporta el intervalo de confianza del 95 % de la mediana por bootstrap.
 
-1. **Los mismos r y ρ en los cuatro modelos.** Para cada B, r_B y ρ_B se calculan una sola vez con el Modelo 1 de la comparación (r por el codo y ρ por la regla de la brecha) y se imponen iguales a los Modelos 3 y 4. Si cada modelo calibrara los suyos, la diferencia mediría parámetros distintos y no información.
-2. **La infactibilidad es un resultado.** Para cada configuración se reporta la fracción de réplicas factibles, y las medianas se calculan sobre las factibles. Descartarlas en silencio sesgaría la muestra hacia los sorteos favorables.
-3. **La misma tolerancia.** Brecha relativa de 10⁻⁶ en todas las etapas de todos los modelos.
+### Resolución y verificación de los modelos
 
-**Réplicas.** En el criterio de costo, 100 réplicas por meta para el Modelo 3, el Modelo 4 y el placebo, todas con el mismo sorteo por réplica (4,500 corridas). En el criterio de presupuesto fijo, 100 réplicas con B ≤ $10 mil millones y 30 con B ≥ $25 mil millones (1,350 corridas), y 100 réplicas en el piso máximo garantizable (1,800 corridas). El número de réplicas se justifica con la condición del teorema del límite central de Hamie et al. (2024, ec. 8), n ≥ (1.96 · CV / e)², y se reporta el intervalo de confianza del 95 % de la mediana por bootstrap.
+*Se agrega a la subsección compartida, después de «Prueba cruzada entre los modelos».*
 
-### Resolución y verificación
+*Resolución de los Modelos 3 y 4.* Se resuelven con HiGHS a través de PuLP, con brecha relativa de 10⁻⁶ en las dos etapas, y solo se cuentan las corridas con optimalidad demostrada. Las 4,500 corridas del criterio de costo terminaron todas con optimalidad demostrada. Las del criterio de presupuesto fijo con r\_B son todas infactibles; para confirmar que la infactibilidad es real y no numérica, cada una se resolvió de nuevo sin el preprocesamiento del solver.
 
-Todos los modelos se resuelven con HiGHS mediante PuLP, con brecha relativa de 10⁻⁶, y solo se cuentan las corridas con optimalidad demostrada. Las 4,500 corridas del criterio de costo terminaron todas con optimalidad demostrada. Las del criterio de presupuesto fijo con r_B son todas infactibles; para confirmar que la infactibilidad es real y no un error numérico, cada una se resolvió de nuevo sin el preprocesamiento del solver.
+*Prueba de granularidad máxima.* Si cada hogar es su propia celda, el sorteo no tiene a quién más asignar la cobertura y el Modelo 3 debe reproducir la información perfecta. Con las restricciones de equidad territorial pasan 11/11 pruebas (Tabla A11). Con la meta en cada zona, el Modelo 3 reproduce el costo del Modelo 2 hasta el centavo con metas del 2 al 20 % y difiere en 0.38 % con la del 30 %. Con el piso r\_B saca exactamente a las mismas personas que el Modelo 1 con B ≤ $10 mil millones y difiere entre 0.32 % y 0.97 % con presupuestos mayores. La única diferencia es la del supuesto 2: el Modelo 1 puede usar un mismo ciclo CLEI para quitar a la vez el logro educativo y el analfabetismo de un adulto, mientras que en los Modelos 3 y 4 cada par se costea por separado.
 
-La prueba más exigente es la de granularidad máxima: si cada hogar es su propia celda, el sorteo no tiene a quién más asignar la cobertura y el Modelo 3 debe reproducir la información perfecta. Con las restricciones de equidad territorial pasan 11/11 pruebas (Tabla M34-11 del Apéndice 1). Con la meta en cada zona, el Modelo 3 reproduce el costo del Modelo 2 hasta el centavo con metas del 2 al 20 % y difiere en 0.38 % con la del 30 %. Con el piso r_B, saca exactamente a las mismas personas que el Modelo 1 con B ≤ $10 mil millones y difiere entre 0.32 % y 0.97 % con presupuestos mayores. La única diferencia es la ya declarada: el Modelo 1 puede usar un mismo ciclo de educación para adultos para quitar a la vez el logro y el analfabetismo de una persona, mientras que en los Modelos 3 y 4 cada par se costea por separado.
-
-Una auditoría independiente del 14 de noviembre no encontró hallazgos críticos. Re-resolvió 144 soluciones y las verificó con la regla directa del sorteo (R ≤ θ) y con la meta en cada zona, sin violaciones. Comparó el modelo por cortes con la enumeración exhaustiva en 40 instancias pequeñas de cada criterio (40 de 40) y comprobó la frontera del piso máximo garantizable en 72 de 72 casos. Los errores que encontró eran de redacción y ya están corregidos.
+*Verificación independiente de los Modelos 3 y 4.* Una auditoría del 14 de noviembre re-resolvió 144 soluciones y las verificó con la regla directa del sorteo (Rᵢⱼ ≤ θ) y con la meta en cada zona, sin violaciones. Comparó la reformulación por cortes con la enumeración exhaustiva en 40 instancias pequeñas de cada criterio (40 de 40) y comprobó la frontera del piso máximo garantizable en 72 de 72 casos.
 
 ---
 
@@ -220,13 +219,15 @@ Una auditoría independiente del 14 de noviembre no encontró hallazgos crítico
 
 ### Comparación de los cuatro modelos
 
-Las cifras de esta sección son del escenario común, con las restricciones de equidad territorial de los Modelos 1 y 2 tal cual: meta de reducción de M0 en cada zona en el criterio de costo y tasa mínima de salida r_B en cada zona en el criterio de presupuesto fijo. El Modelo 1 no aparece en el criterio de costo porque fija el presupuesto y maximiza las personas que salen; su referencia está en el criterio de presupuesto fijo.
+*Se agrega al final de la sección 4, después del párrafo de sensibilidades.*
+
+Esta subsección compara los cuatro modelos en el escenario común de la sección 3: sin cobertura obligatoria ni SevEdu, con la meta de M0 en cada zona en el criterio de costo y con la tasa mínima de salida r\_B en cada zona en el de presupuesto fijo. Por eso sus cifras de los Modelos 1 y 2 no son las de la Tabla 2. El Modelo 1 no aparece en el criterio de costo, porque fija el presupuesto y maximiza las personas que salen.
 
 #### Criterio de costo
 
-La Tabla M34-2 muestra el costo de cumplir cada meta. Se lee de izquierda a derecha como una escalera de información: el Modelo 2 sabe quién es pobre, el Modelo 4 conoce la zona y el tipo de hogar, el Modelo 3 solo la zona, y el placebo tiene la partición del Modelo 4 sin su contenido. El precio de la información es el cociente entre el costo de cada modelo y el del Modelo 2.
+La Tabla 3 presenta el costo de cumplir cada meta en los cuatro escenarios de información: el Modelo 2 sabe quién es pobre, el Modelo 4 conoce la zona y el tipo de hogar, el Modelo 3 solo la zona, y el placebo tiene la partición del Modelo 4 sin su contenido. El precio de la información es el cociente entre el costo de cada modelo y el del Modelo 2.
 
-**Tabla M34-2. Costo de reducir M0 en cada zona, por modelo (mil millones de pesos de 2025)**
+**Tabla 3.** Costo de reducir M0 en cada zona según la información del Estado (mil millones de pesos de 2025).
 
 | Meta m | Modelo 2 | Modelo 3 | Modelo 4 | Placebo | Precio M3 | Precio M4 | M4/M3 (IC 95 %) | Réplicas con M4 < M3 | M4/placebo (IC 95 %) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -246,97 +247,101 @@ La Tabla M34-2 muestra el costo de cumplir cada meta. Se lee de izquierda a dere
 | 28 % | 28.46 | 89.28 (75.8 a 107.9) | 113.07 (97.9 a 125.3) | 146.91 (126.5 a 157.7) | 3.1 | 4.0 | 1.24 (1.20 a 1.29) | 4 % | 0.77 (0.76 a 0.78) |
 | 30 % | 32.37 | 105.34 (89.5 a 125.8) | 138.61 (115.9 a 155.9) | 160.24 (140.0 a 173.5) | 3.3 | 4.3 | 1.30 (1.28 a 1.37) | 4 % | 0.86 (0.84 a 0.88) |
 
-*Nota.* Modelo 2: información perfecta, una sola solución. Modelos 3 y 4 y placebo: mediana de 100 réplicas, y entre paréntesis los percentiles 5 y 95 entre réplicas. Precio: costo del modelo dividido por el del Modelo 2. M4/M3 y M4/placebo: mediana del cociente pareado réplica a réplica, con su intervalo de confianza del 95 % por bootstrap. Fuente: `datos_m34/costo_meta_zona.csv`.
+*Modelo 2: información perfecta, una sola solución. Modelos 3 y 4 y placebo: mediana de 100 réplicas y, entre paréntesis, los percentiles 5 y 95 entre réplicas. Precio: costo del modelo dividido por el del Modelo 2. M4/M3 y M4/placebo: mediana del cociente pareado réplica a réplica, con su intervalo de confianza del 95 % por bootstrap. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/costo\_meta\_zona.csv.*
 
-**Figura M34-1. Costo de reducir M0 en cada zona según la información del Estado**
+**Figura 10.** Costo de reducir M0 en cada zona según la información del Estado.
 
-![Figura M34-1](figuras_m34/figura_M34-1_costo_contra_meta.png)
+![Figura 10](figuras_m34/figura_M34-1_costo_contra_meta.png)
 
-**Cómo se lee.** Cada línea es el costo de cumplir la meta del eje horizontal en las tres zonas a la vez. El eje vertical está en escala logarítmica, así que la distancia vertical entre dos líneas es el cociente de sus costos, es decir, el precio de la información. Las bandas son el intervalo de confianza del 95 % de la mediana.
+*Cómo se lee.* Cada línea es el costo de cumplir la meta del eje horizontal en las tres zonas a la vez. El eje vertical está en escala logarítmica, de modo que la distancia vertical entre dos líneas es el cociente de sus costos, es decir, el precio de la información. Las bandas son el intervalo de confianza del 95 % de la mediana.
 
-**Qué se observa.** Con metas de hasta el 10 %, el Modelo 3 cuesta entre 5.5 y 12.9 veces lo que costaría con información perfecta, y con metas del 20 al 30 %, entre 3.1 y 4.1 veces. El Modelo 4 cuesta entre 3.4 y 8.8 veces la información perfecta y casi lo mismo que el Modelo 3. El placebo es el más caro desde la meta del 6 %.
+*Qué se observa.* Con metas de hasta el 10 %, el Modelo 3 cuesta entre 5.5 y 12.9 veces lo que costaría con información perfecta, y con metas del 20 al 30 %, entre 3.1 y 4.1 veces. El Modelo 4 cuesta entre 3.4 y 8.8 veces la información perfecta y casi lo mismo que el Modelo 3. El placebo es el más caro desde la meta del 6 %.
 
-**Interpretación.** La información vale más con metas modestas, que son las de los programas reales: elige a quién atender primero, y pierde valor cuando hay que atender a casi todos los pobres de todas formas.
+*Interpretación.* La información vale más con metas modestas, que son las de los programas reales, porque permite elegir a quién atender primero. Pierde valor cuando hay que atender a casi todos los pobres de todas formas.
 
-*Fuente:* `datos_m34/costo_meta_zona.csv`.
+*Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/costo\_meta\_zona.csv y scripts/m34\_figuras\_paper.py.*
 
-Cuatro resultados se destacan.
+Cuatro resultados se destacan. El primero es que no saber quién es pobre resulta caro. Con la meta del 6 %, focalizar solo por zona cuesta $14.16 mil millones y con información perfecta $2.30 mil millones. Un sistema que permitiera identificar a quién atender, como un registro social actualizado, pagaría su costo mientras costara menos que la diferencia, unos $12 mil millones para ese solo programa.
 
-**No saber quién es pobre es caro.** Con la meta del 6 %, por ejemplo, focalizar solo por zona cuesta $14.16 mil millones y con información perfecta $2.30 mil millones. Un sistema que permitiera identificar hogar por hogar a quién atender, como un registro social actualizado, pagaría su costo mientras costara menos que la diferencia, unos $12 mil millones para ese solo programa.
+El segundo es que, con la meta en cada zona, el tipo de hogar apenas mejora a la zona. El intervalo del cociente M4/M3 queda por debajo de 1 en 9 de las 15 metas, contiene el 1 en 3 y queda por encima en 3. Con metas del 10 al 24 %, el Modelo 4 cuesta entre un 4 y 11 % menos que el Modelo 3, pero esas cifras son medianas: el Modelo 4 es más barato en entre el 61 y 72 % de las réplicas, no en todas. Con metas del 26 al 30 % cuesta entre un 7 y 30 % más.
 
-**Con la meta en cada zona, el tipo de hogar apenas mejora a la zona.** El intervalo del cociente M4/M3 queda por debajo de 1 en 9 de las 15 metas, contiene el 1 en 3 y queda por encima en 3. Con metas del 10 al 24 %, el Modelo 4 cuesta entre un 4 y 11 % menos que el Modelo 3, pero esas cifras son medianas: el Modelo 4 es más barato en entre el 61 y 72 % de las réplicas, no en todas. Con metas del 26 al 30 %, cuesta entre un 7 y 30 % más.
+El tercero es que la demografía sí reemplaza a la geografía. Desde la meta del 6 %, el Modelo 4 cuesta entre un 14 y 38 % menos que el placebo. La razón es que la meta se exige en cada zona. El Modelo 3 puede dirigir la cobertura al rural disperso, donde la incidencia es la más alta (25.2 %), y lo hace: desde la meta del 8 % pone allí entre el 65 y 79 % del gasto (Tabla 6). Las celdas del placebo mezclan las tres zonas, así que entre el 50 y 62 % de su gasto cae en las cabeceras, y para cumplir la meta rural tiene que comprar cobertura en todas partes. Los tipos del Modelo 4 también mezclan zonas, pero se relacionan con las privaciones, sobre todo con las educativas, y eso le permite llegar a los pobres sin saber dónde viven.
 
-**Pero la demografía sí reemplaza a la geografía.** Desde la meta del 6 %, el Modelo 4 cuesta entre un 14 y 38 % menos que el placebo. La razón es que la meta se exige en cada zona. El Modelo 3 puede dirigir la cobertura al rural disperso, donde la incidencia es la más alta (25.2 %), y lo hace: desde la meta del 8 % pone allí entre el 65 y 79 % del gasto (Tabla M34-5). Las celdas del placebo mezclan las tres zonas, así que entre el 50 y 62 % de su gasto cae en las cabeceras, y para cumplir la meta rural tiene que comprar cobertura en todas partes. Los tipos del Modelo 4 también mezclan zonas, pero se relacionan con las privaciones, sobre todo con las educativas, y eso le permite llegar a los pobres sin saber dónde viven.
+El cuarto es que los errores de focalización son grandes. Según la meta, la mediana del error de inclusión está entre el 26 y 55 % en el Modelo 3 y entre el 18 y 50 % en el Modelo 4, y entre el 56 y 93 % de las personas pobres no recibe ninguna intervención en el Modelo 3 (Tabla 7).
 
-**Los errores de focalización son grandes.** Según la meta, la mediana del error de inclusión está entre el 26 y 55 % en el Modelo 3 y entre el 18 y 50 % en el Modelo 4. Entre el 56 y 93 % de las personas pobres no recibe ninguna intervención en el Modelo 3 (Tabla M34-6).
+La pregunta de investigación es sobre la incidencia H, que no es el objetivo de los Modelos 3 y 4. La Tabla 4 muestra que también baja en las tres zonas: con la meta del 10 %, H pasa de 9.45 % a 8.38 % con información perfecta, a 8.15 % con el Modelo 3 y a 8.15 % con el Modelo 4.
 
-La Tabla M34-3 responde la pregunta de investigación, que es sobre la incidencia H. Aunque los Modelos 3 y 4 minimizan el costo de una meta sobre M0, la incidencia también baja en las tres zonas. Con la meta del 10 %, H pasa de 9.45 % a 8.38 % con información perfecta, a 8.15 % con el Modelo 3 y a 8.15 % con el Modelo 4.
+**Tabla 4.** Resultados de los Modelos 2, 3 y 4 y del placebo con la meta de reducción de M0 del 10 % en cada zona, en total y por zona.
 
-**Tabla M34-3. Valores finales de H, A y M0 por zona con la meta del 10 %**
+| Escenario | Zona | Personas que salen | H | A | M0 | Costo (mil millones) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Línea base | Total | — | 9.45 % | 0.409 | 0.0387 | — |
+|  | Cabecera | — | 6.21 % | 0.406 | 0.0252 | — |
+|  | Centro poblado | — | 17.91 % | 0.386 | 0.0691 | — |
+|  | Rural disperso | — | 25.18 % | 0.421 | 0.1060 | — |
+| Modelo 2 | Total | 77,578 | 8.38 % | 0.415 | 0.0348 (−10.1 %) | 5.2 |
+|  | Cabecera | 42,633 | 5.48 % | 0.413 | 0.0227 (−10.1 %) | 0.4 |
+|  | Centro poblado | 7,228 | 16.04 % | 0.386 | 0.0619 (−10.4 %) | 0.4 |
+|  | Rural disperso | 27,717 | 22.40 % | 0.426 | 0.0954 (−10.0 %) | 4.4 |
+| Modelo 3 | Total | 94,311 | 8.15 % | 0.411 | 0.0334 (−13.6 %) | 28.7 |
+|  | Cabecera | 60,168 | 5.18 % | 0.409 | 0.0211 (−16.2 %) | 6.0 |
+|  | Centro poblado | 9,701 | 15.40 % | 0.386 | 0.0595 (−13.9 %) | 1.4 |
+|  | Rural disperso | 25,918 | 22.58 % | 0.421 | 0.0952 (−10.3 %) | 20.6 |
+| Modelo 4 | Total | 93,800 | 8.15 % | 0.405 | 0.0331 (−14.5 %) | 26.9 |
+|  | Cabecera | 63,550 | 5.12 % | 0.403 | 0.0207 (−17.8 %) | 10.1 |
+|  | Centro poblado | 9,213 | 15.52 % | 0.383 | 0.0598 (−13.4 %) | 3.3 |
+|  | Rural disperso | 21,720 | 23.00 % | 0.414 | 0.0954 (−10.1 %) | 13.5 |
+| Placebo | Total | 112,865 | 7.89 % | 0.410 | 0.0324 (−16.3 %) | 38.1 |
+|  | Cabecera | 77,148 | 4.89 % | 0.407 | 0.0198 (−21.3 %) | 19.8 |
+|  | Centro poblado | 9,388 | 15.48 % | 0.386 | 0.0596 (−13.6 %) | 4.4 |
+|  | Rural disperso | 25,235 | 22.65 % | 0.420 | 0.0954 (−10.1 %) | 14.3 |
 
-La tabla da, para el total de Antioquia y cada zona, el gasto y los valores inicial y final de la incidencia H, la intensidad A y M0. Para los Modelos 3 y 4 y el placebo, cada cifra es la mediana de las réplicas.
+*Modelo 2 sin E-7, una sola solución. Modelos 3 y 4 y placebo: mediana de 100 réplicas en cada columna. Entre paréntesis, la reducción de M0 frente a la línea base. Las personas que salen son la diferencia entre las personas pobres iniciales y las finales. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/H\_A\_M0\_por\_zona.csv, que trae las 15 metas y los percentiles 5 y 95 de H.*
 
-| Zona | Modelo | Gasto | H inicial | H final | A inicial | A final | M0 inicial | M0 final |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Total Antioquia | Modelo 2 | 5.17 | 9.45 % | 8.38 % | 40.94 % | 41.52 % | 0.0387 | 0.0348 |
-| Total Antioquia | Modelo 3 | 28.67 | 9.45 % | 8.15 % | 40.94 % | 41.06 % | 0.0387 | 0.0334 |
-| Total Antioquia | Modelo 4 | 26.91 | 9.45 % | 8.15 % | 40.94 % | 40.50 % | 0.0387 | 0.0331 |
-| Total Antioquia | Placebo | 38.09 | 9.45 % | 7.89 % | 40.94 % | 40.97 % | 0.0387 | 0.0324 |
-| Cabeceras | Modelo 2 | 0.38 | 6.21 % | 5.48 % | 40.58 % | 41.32 % | 0.0252 | 0.0227 |
-| Cabeceras | Modelo 3 | 5.96 | 6.21 % | 5.18 % | 40.58 % | 40.87 % | 0.0252 | 0.0211 |
-| Cabeceras | Modelo 4 | 10.07 | 6.21 % | 5.12 % | 40.58 % | 40.26 % | 0.0252 | 0.0207 |
-| Cabeceras | Placebo | 19.78 | 6.21 % | 4.89 % | 40.58 % | 40.70 % | 0.0252 | 0.0198 |
-| Centros poblados | Modelo 2 | 0.43 | 17.91 % | 16.04 % | 38.56 % | 38.60 % | 0.0691 | 0.0619 |
-| Centros poblados | Modelo 3 | 1.37 | 17.91 % | 15.40 % | 38.56 % | 38.60 % | 0.0691 | 0.0595 |
-| Centros poblados | Modelo 4 | 3.28 | 17.91 % | 15.52 % | 38.56 % | 38.34 % | 0.0691 | 0.0598 |
-| Centros poblados | Placebo | 4.38 | 17.91 % | 15.48 % | 38.56 % | 38.56 % | 0.0691 | 0.0596 |
-| Rural disperso | Modelo 2 | 4.37 | 25.18 % | 22.40 % | 42.11 % | 42.60 % | 0.1060 | 0.0954 |
-| Rural disperso | Modelo 3 | 20.61 | 25.18 % | 22.58 % | 42.11 % | 42.11 % | 0.1060 | 0.0952 |
-| Rural disperso | Modelo 4 | 13.47 | 25.18 % | 23.00 % | 42.11 % | 41.41 % | 0.1060 | 0.0954 |
-| Rural disperso | Placebo | 14.29 | 25.18 % | 22.65 % | 42.11 % | 42.04 % | 0.1060 | 0.0954 |
+En todas las metas y zonas, la incidencia baja al menos un 2.0 % en los Modelos 3 y 4 y en el placebo. Con la misma meta, los Modelos 3 y 4 suelen bajar H tanto o más que el Modelo 2: el Modelo 3 deja una incidencia total menor o igual que la del Modelo 2 en 13 de las 15 metas, y el Modelo 4 en 12. No es una ventaja, es el reflejo del costo. Sin saber quién es pobre, la cobertura avanza a saltos y no se puede detener justo en la meta, así que en algunas zonas M0 baja más de lo exigido. Con la meta del 10 %, por ejemplo, el Modelo 3 reduce M0 un 16.2 % en las cabeceras. El Modelo 2, en cambio, cumple la meta casi exactamente en cada zona y gasta lo mínimo. Por la misma razón, la intensidad se comporta distinto: con información perfecta, A sube en 15 de las 15 metas, porque el Modelo 2 saca primero a los hogares más cercanos al umbral, como se discutió en la sección 3; en los Modelos 3 y 4 el sorteo no distingue esa cercanía, y A cambia poco o incluso baja. Con la meta del 30 %, H baja un 31.6 % con información perfecta, un 30.5 % con el Modelo 3 y un 34.9 % con el Modelo 4 (Tabla 5).
 
-*Nota.* Gasto en mil millones de pesos de 2025. M0 final cumple la meta en cada zona en todos los modelos; los Modelos 3 y 4 y el placebo la sobrepasan en algunas zonas. Fuente: `datos_m34/H_A_M0_por_zona.csv`, que trae también las otras 14 metas y los percentiles 5 y 95 de H.
+**Tabla 5.** Resultados de los Modelos 2, 3 y 4 y del placebo con la meta de reducción de M0 del 30 % en cada zona, en total y por zona.
 
-En todas las metas y zonas, la incidencia baja al menos un 2.0 % en los Modelos 3 y 4 y el placebo. Con la misma meta, los Modelos 3 y 4 suelen bajar H tanto o más que el Modelo 2: el Modelo 3 deja una incidencia total menor o igual que la del Modelo 2 en 13 de las 15 metas, y el Modelo 4 en 12. No es una ventaja, es el reflejo del costo. Sin saber quién es pobre, la cobertura avanza a saltos y no se puede parar justo en la meta, así que en algunas zonas se reduce M0 más de lo exigido. Con la meta del 10 %, por ejemplo, el Modelo 3 reduce M0 un 16.2 % en las cabeceras, cuando la meta es del 10 %. El Modelo 2, en cambio, cumple la meta casi exactamente en cada zona y gasta lo mínimo. Por la misma razón, la intensidad A se comporta distinto: con información perfecta sube en 15 de las 15 metas, porque el Modelo 2 saca primero a los hogares más cerca del umbral y los que quedan son más intensamente pobres; en los Modelos 3 y 4 el sorteo no distingue esa cercanía, y A cambia poco o incluso baja. Con la meta del 30 %, H baja un 31.6 % con información perfecta, un 30.5 % con el Modelo 3 y un 34.9 % con el Modelo 4 (Tabla M34-4).
+| Escenario | Zona | Personas que salen | H | A | M0 | Costo (mil millones) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Línea base | Total | — | 9.45 % | 0.409 | 0.0387 | — |
+|  | Cabecera | — | 6.21 % | 0.406 | 0.0252 | — |
+|  | Centro poblado | — | 17.91 % | 0.386 | 0.0691 | — |
+|  | Rural disperso | — | 25.18 % | 0.421 | 0.1060 | — |
+| Modelo 2 | Total | 216,136 | 6.46 % | 0.419 | 0.0270 (−30.1 %) | 32.4 |
+|  | Cabecera | 114,499 | 4.25 % | 0.414 | 0.0176 (−30.2 %) | 3.3 |
+|  | Centro poblado | 21,114 | 12.44 % | 0.389 | 0.0483 (−30.0 %) | 3.9 |
+|  | Rural disperso | 80,523 | 17.10 % | 0.434 | 0.0742 (−30.0 %) | 25.1 |
+| Modelo 3 | Total | 208,215 | 6.57 % | 0.406 | 0.0266 (−31.2 %) | 105.3 |
+|  | Cabecera | 112,941 | 4.28 % | 0.409 | 0.0175 (−30.5 %) | 16.5 |
+|  | Centro poblado | 21,093 | 12.44 % | 0.381 | 0.0476 (−31.0 %) | 17.7 |
+|  | Rural disperso | 72,085 | 17.95 % | 0.407 | 0.0734 (−30.7 %) | 68.4 |
+| Modelo 4 | Total | 238,662 | 6.15 % | 0.397 | 0.0244 (−36.8 %) | 138.6 |
+|  | Cabecera | 143,214 | 3.76 % | 0.391 | 0.0147 (−41.6 %) | 72.0 |
+|  | Centro poblado | 26,988 | 10.92 % | 0.385 | 0.0421 (−39.1 %) | 15.8 |
+|  | Rural disperso | 69,342 | 18.23 % | 0.407 | 0.0742 (−30.0 %) | 50.0 |
+| Placebo | Total | 236,053 | 6.19 % | 0.402 | 0.0249 (−35.6 %) | 160.2 |
+|  | Cabecera | 139,635 | 3.82 % | 0.399 | 0.0154 (−39.0 %) | 82.7 |
+|  | Centro poblado | 25,165 | 11.39 % | 0.381 | 0.0437 (−36.7 %) | 19.5 |
+|  | Rural disperso | 71,155 | 18.04 % | 0.411 | 0.0742 (−30.1 %) | 58.3 |
 
-**Tabla M34-4. Valores finales de H, A y M0 por zona con la meta del 30 %**
+*Igual que la Tabla 4. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/H\_A\_M0\_por\_zona.csv.*
 
-| Zona | Modelo | Gasto | H inicial | H final | A inicial | A final | M0 inicial | M0 final |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Total Antioquia | Modelo 2 | 32.37 | 9.45 % | 6.46 % | 40.94 % | 41.86 % | 0.0387 | 0.0270 |
-| Total Antioquia | Modelo 3 | 105.34 | 9.45 % | 6.57 % | 40.94 % | 40.56 % | 0.0387 | 0.0266 |
-| Total Antioquia | Modelo 4 | 138.61 | 9.45 % | 6.15 % | 40.94 % | 39.68 % | 0.0387 | 0.0244 |
-| Total Antioquia | Placebo | 160.24 | 9.45 % | 6.19 % | 40.94 % | 40.25 % | 0.0387 | 0.0249 |
-| Cabeceras | Modelo 2 | 3.33 | 6.21 % | 4.25 % | 40.58 % | 41.39 % | 0.0252 | 0.0176 |
-| Cabeceras | Modelo 3 | 16.50 | 6.21 % | 4.28 % | 40.58 % | 40.94 % | 0.0252 | 0.0175 |
-| Cabeceras | Modelo 4 | 71.97 | 6.21 % | 3.76 % | 40.58 % | 39.11 % | 0.0252 | 0.0147 |
-| Cabeceras | Placebo | 82.70 | 6.21 % | 3.82 % | 40.58 % | 39.87 % | 0.0252 | 0.0154 |
-| Centros poblados | Modelo 2 | 3.91 | 17.91 % | 12.44 % | 38.56 % | 38.85 % | 0.0691 | 0.0483 |
-| Centros poblados | Modelo 3 | 17.70 | 17.91 % | 12.44 % | 38.56 % | 38.10 % | 0.0691 | 0.0476 |
-| Centros poblados | Modelo 4 | 15.81 | 17.91 % | 10.92 % | 38.56 % | 38.47 % | 0.0691 | 0.0421 |
-| Centros poblados | Placebo | 19.49 | 17.91 % | 11.39 % | 38.56 % | 38.07 % | 0.0691 | 0.0437 |
-| Rural disperso | Modelo 2 | 25.13 | 25.18 % | 17.10 % | 42.11 % | 43.40 % | 0.1060 | 0.0742 |
-| Rural disperso | Modelo 3 | 68.35 | 25.18 % | 17.95 % | 42.11 % | 40.68 % | 0.1060 | 0.0734 |
-| Rural disperso | Modelo 4 | 50.02 | 25.18 % | 18.23 % | 42.11 % | 40.68 % | 0.1060 | 0.0742 |
-| Rural disperso | Placebo | 58.34 | 25.18 % | 18.04 % | 42.11 % | 41.10 % | 0.1060 | 0.0742 |
+**Figura 11.** Incidencia final por zona según la meta de reducción de M0, Modelos 2, 3 y 4 y placebo.
 
-*Nota.* Igual que la Tabla M34-3. Fuente: `datos_m34/H_A_M0_por_zona.csv`.
+![Figura 11](figuras_m34/figura_M34-3_H_por_zona.png)
 
-**Figura M34-3. Incidencia final por zona según la meta**
+*Cómo se lee.* Cada panel corresponde a una zona. Las líneas muestran la incidencia H final para cada meta de reducción de M0: la solución del Modelo 2 y la mediana de las réplicas en los Modelos 3 y 4 y el placebo. La línea punteada es la incidencia inicial de la zona.
 
-![Figura M34-3](figuras_m34/figura_M34-3_H_por_zona.png)
+*Qué se observa.* En las tres zonas, H baja con la meta en los cuatro escenarios. En el rural disperso, que parte de la incidencia más alta (25.2 %), el Modelo 2 baja H más que los demás desde las metas intermedias. En las cabeceras y los centros poblados ocurre lo contrario: los Modelos 3 y 4 y el placebo bajan H igual o más que el Modelo 2.
 
-**Cómo se lee.** Cada panel es una zona. Las líneas muestran la incidencia H final (mediana de las réplicas en los Modelos 3 y 4 y el placebo) para cada meta de reducción de M0. La línea punteada es la incidencia inicial de la zona.
+*Interpretación.* En el rural disperso, la meta obliga a los cuatro escenarios a reducir M0 casi lo mismo, pero el Modelo 2 lo logra sacando de la pobreza a los hogares más cercanos al umbral, así que con la misma reducción de M0 baja más la incidencia. En las otras zonas, los Modelos 3 y 4 sobrepasan la meta porque no pueden detener la cobertura justo donde haría falta. La información imperfecta no reduce menos la pobreza en total: la reduce de forma menos dirigida y mucho más cara.
 
-**Qué se observa.** En las tres zonas, H baja con la meta en los cuatro modelos. En el rural disperso, que parte de la incidencia más alta (25.2 %), el Modelo 2 baja H más que los demás desde las metas intermedias. En las cabeceras y los centros poblados ocurre lo contrario: los Modelos 3 y 4 y el placebo bajan H igual o más que el Modelo 2.
+*Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/H\_A\_M0\_por\_zona.csv y scripts/m34\_figuras\_paper.py.*
 
-**Interpretación.** En el rural disperso la meta obliga a los cuatro modelos a reducir M0 casi lo mismo, pero el Modelo 2 lo logra sacando de la pobreza a los hogares más cerca del umbral, así que con la misma reducción de M0 baja más la incidencia. En las otras zonas, los Modelos 3 y 4 sobrepasan la meta porque no pueden detener la cobertura justo donde haría falta. La información imperfecta no reduce menos la pobreza en total: la reduce de forma menos dirigida y mucho más cara.
+La Tabla 6 muestra en qué se gasta. Explica por qué el placebo es caro con metas por zona y cómo la meta por zona adelanta la entrada de la educación.
 
-*Fuente:* `datos_m34/H_A_M0_por_zona.csv`.
-
-**Tabla M34-5. En qué se gasta: participación de la salud, la educación y dos zonas en el gasto (%)**
-
-La tabla muestra, para algunas metas, qué parte del gasto va a cada dimensión y a cada zona. Explica por qué el placebo es caro con metas por zona.
+**Tabla 6.** Participación de la salud, la educación, las cabeceras y el rural disperso en el gasto de los Modelos 3 y 4 y del placebo (%).
 
 | Meta m | Salud M3 | Educación M3 | Cabeceras M3 | Rural disperso M3 | Salud M4 | Educación M4 | Cabeceras M4 | Rural disperso M4 | Salud Plac. | Educación Plac. | Cabeceras Plac. | Rural disperso Plac. |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -348,13 +353,11 @@ La tabla muestra, para algunas metas, qué parte del gasto va a cada dimensión 
 | 24 % | 27 | 72 | 12 | 71 | 14 | 86 | 45 | 43 | 10 | 89 | 50 | 38 |
 | 30 % | 19 | 77 | 18 | 65 | 22 | 75 | 52 | 37 | 8 | 91 | 51 | 37 |
 
-*Nota.* Promedio de la participación en las 100 réplicas. La salud incluye aseguramiento y barreras de acceso; los centros poblados completan el 100 % de las zonas. Ninguna corrida gasta más del 3 % en niñez, vivienda o trabajo. Fuente: `datos_m34/gasto_por_zona_y_dimension.csv`.
+*Promedio de la participación en las 100 réplicas. La salud incluye aseguramiento y barreras de acceso; los centros poblados completan el 100 % de las zonas. Ninguna corrida gasta más del 3 % en niñez, vivienda o trabajo. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/gasto\_por\_zona\_y\_dimension.csv.*
 
-La meta por zona adelanta la entrada de la educación. Con la meta del 2 %, los tres modelos gastan al menos el 91 % en salud. Con la del 10 %, el Modelo 4 ya gasta el 75 % en educación, el placebo el 72 % y el Modelo 3 el 32 %.
+Con la meta del 2 %, los tres escenarios gastan al menos el 91 % en salud. Con la del 10 %, el Modelo 4 ya gasta el 75 % en educación, el placebo el 72 % y el Modelo 3 el 32 %. A diferencia de los Modelos 1 y 2 (Figura 7), que concentran la inversión en educación de adultos y trabajo informal, los Modelos 3 y 4 casi no invierten en trabajo. Una explicación posible es que, sin saber quién es pobre, el aporte a pensión llegaría sobre todo a trabajadores informales de hogares no pobres, que son la mayoría de los informales.
 
-**Tabla M34-6. Errores de focalización por meta**
-
-La inclusión es la fracción del gasto que llega a hogares no pobres. La exclusión es la fracción de las personas pobres que no recibe ninguna intervención.
+**Tabla 7.** Errores de focalización de los Modelos 3 y 4 y del placebo según la meta.
 
 | Meta m | Inclusión M3 | Inclusión M4 | Inclusión placebo | Exclusión M3 | Exclusión M4 | Exclusión placebo |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -374,13 +377,13 @@ La inclusión es la fracción del gasto que llega a hogares no pobres. La exclus
 | 28 % | 27 % | 35 % | 34 % | 59 % | 50 % | 53 % |
 | 30 % | 27 % | 37 % | 35 % | 56 % | 47 % | 50 % |
 
-*Nota.* Mediana de 100 réplicas. Fuente: `datos_m34/costo_meta_zona.csv`.
+*Inclusión: fracción del gasto que llega a hogares no pobres. Exclusión: fracción de las personas pobres que no recibe ninguna intervención. Mediana de 100 réplicas. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/costo\_meta\_zona.csv.*
 
 #### Criterio de presupuesto fijo
 
-**Tabla M34-7. Factibilidad con la tasa mínima de salida del Modelo 1**
+La Tabla 8 presenta, para cada presupuesto, los parámetros de equidad que calcula el Modelo 1, las personas que saca de la pobreza con ellos y la fracción de réplicas en que los Modelos 3 y 4 y el placebo pueden cumplir r\_B en las tres zonas.
 
-Para cada presupuesto, la tabla da r_B y ρ_B, las personas que saca de la pobreza el Modelo 1 con r_B y la fracción de réplicas en que los Modelos 3 y 4 y el placebo pueden cumplir r_B en las tres zonas.
+**Tabla 8.** Factibilidad de la tasa mínima de salida del Modelo 1 con información imperfecta.
 
 | B | r_B | ρ_B | Salen con el Modelo 1 y r_B | Réplicas | Factibles con r_B (M3 / M4 / placebo) | Factibles con r_B y ρ_B |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -391,17 +394,13 @@ Para cada presupuesto, la tabla da r_B y ρ_B, las personas que saca de la pobre
 | 50 | 0.344 | 0.215 | 281,588 | 30 | 0 % / 0 % / 0 % | 0 % / 0 % / 0 % |
 | 100 | 0.522 | no se alcanza | 369,940 | 30 | 0 % / 0 % / 0 % | no aplica |
 
-*Nota.* B en mil millones de pesos de 2025. r_B y ρ_B se calcularon con las funciones del Modelo 1 (r por el codo y ρ por la regla de la brecha); son provisionales hasta la confirmación de Martín. Con B = 2, 5, 10 y 100, la regla de la brecha no se alcanza y no hay ρ_B. Fuente: `datos_m34/factibilidad_cobertura_rB.csv` y `datos_m34/r_rho_referencias_M1.csv`.
+*B en mil millones de pesos de 2025. r\_B y ρ\_B se calcularon con las funciones del Modelo 1 (r por el codo y ρ por la regla de la brecha), sin E-7 ni SevEdu; son provisionales hasta la confirmación de los autores del Modelo 1. Con B = 2, 5, 10 y 100 la regla de la brecha no se alcanza y no hay ρ\_B. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/factibilidad\_cobertura\_rB.csv y r\_rho\_referencias\_M1.csv.*
 
-Con información imperfecta, la tasa mínima de salida del Modelo 1 no se puede cumplir: en las 1,350 corridas, la fracción de réplicas factibles es del 0 % en todos los presupuestos. Lo reportamos como resultado. La razón cambia con el presupuesto. Con B ≥ $25 mil millones, r_B exige sacar a más personas de las que el Modelo 3 o el Modelo 4 logran sacar en total. Con B ≤ $10 mil millones el total sí alcanzaría, pero no su reparto: el sorteo no permite asegurar la fracción exigida en las tres zonas a la vez.
+Con información imperfecta, la tasa mínima de salida del Modelo 1 no se puede cumplir: en las 1,350 corridas, la fracción de réplicas factibles es del 0 % en todos los presupuestos. Lo reportamos como resultado. La razón cambia con el presupuesto. Con B ≥ $25 mil millones, r\_B exige sacar de la pobreza a más personas de las que el Modelo 3 o el Modelo 4 logran sacar en total. Con B ≤ $10 mil millones el total sí alcanzaría, pero no su reparto: el sorteo no permite asegurar la fracción exigida en las tres zonas a la vez.
 
-Para medir cuánta equidad territorial sí puede garantizar el Estado sin información individual, resolvimos en cada réplica el piso máximo garantizable,
+Para medir cuánta equidad territorial sí puede garantizar el Estado sin información individual, resolvimos en cada réplica el piso máximo garantizable, r\_max = max t sujeto a Σᵢ∈I(d) pᵢ yᵢ ≥ t · Pobres⁰\_d en cada zona d, con el presupuesto B y el mismo mecanismo de cobertura. Con información perfecta, r\_max es el extremo superior del rango en el que el Modelo 1 busca el codo, y por eso siempre es al menos r\_B.
 
-r_max = max t sujeto a Σ_{i ∈ I⁰, d(i) = d} pᵢ · yᵢ ≥ t · Σ_{i ∈ I⁰, d(i) = d} pᵢ para cada zona d,
-
-con el presupuesto B y el mismo mecanismo. Con información perfecta, r_max es el extremo superior del rango en el que el Modelo 1 busca el codo, y por eso siempre es al menos r_B.
-
-**Tabla M34-8. Piso por zona máximo garantizable (% de los pobres de cada zona)**
+**Tabla 9.** Piso por zona máximo garantizable según la información del Estado (% de los pobres de cada zona).
 
 | B | r_B (Modelo 1) | Información perfecta | Modelo 3 | Modelo 4 | Placebo | Mejor réplica M3 | M3 / IP | M4 / IP |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -412,55 +411,91 @@ con el presupuesto B y el mismo mecanismo. Con información perfecta, r_max es e
 | 50 | 34.4 % | 39.1 % | 15.7 % (15.1 a 16.3) | 15.3 % (15.1 a 15.7) | 12.1 % (11.7 a 12.5) | 20.8 % | 40 % | 39 % |
 | 100 | 52.2 % | 53.6 % | 29.9 % (28.9 a 30.4) | 24.3 % (24.1 a 24.5) | 20.3 % (20.0 a 20.6) | 32.2 % | 56 % | 45 % |
 
-*Nota.* B en mil millones de pesos de 2025. Información perfecta: un hogar por celda. Modelos 3 y 4 y placebo: mediana de 100 réplicas con su intervalo de confianza del 95 % por bootstrap. La última columna del Modelo 3 es su mejor réplica. Fuente: `datos_m34/rmax_piso_garantizable.csv`.
+*B en mil millones de pesos de 2025. Información perfecta: un hogar por celda. Modelos 3 y 4 y placebo: mediana de 100 réplicas, con su intervalo de confianza del 95 % por bootstrap; también se reporta la mejor réplica del Modelo 3. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/rmax\_piso\_garantizable.csv.*
 
-**Figura M34-2. Piso por zona garantizable según el presupuesto**
+**Figura 12.** Piso por zona máximo garantizable según el presupuesto y la información del Estado.
 
-![Figura M34-2](figuras_m34/figura_M34-2_piso_garantizable.png)
+![Figura 12](figuras_m34/figura_M34-2_piso_garantizable.png)
 
-**Cómo se lee.** Para cada presupuesto, la figura muestra la mayor fracción de los pobres de cada zona que el Estado puede asegurar que sale de la pobreza en las tres zonas a la vez. Las marcas horizontales son el r_B que exige el Modelo 1.
+*Cómo se lee.* Para cada presupuesto, la figura muestra la mayor fracción de los pobres de cada zona que el Estado puede asegurar que salga de la pobreza en las tres zonas a la vez. Las marcas horizontales son el r\_B que exige el Modelo 1.
 
-**Qué se observa.** Con información perfecta el piso garantizable siempre supera a r_B. Sin información individual queda siempre por debajo: va de 0.0 % con B = $2 mil millones a 29.9 % con B = $100 mil millones en el Modelo 3, frente a 53.6 % con información perfecta. Ni la mejor réplica del Modelo 3 alcanza r_B en ningún presupuesto.
+*Qué se observa.* Con información perfecta, el piso garantizable siempre supera a r\_B. Sin información individual, siempre queda por debajo: en el Modelo 3 va de 0.0 % con B = $2 mil millones a 29.9 % con B = $100 mil millones, frente a 53.6 % con información perfecta. Ni la mejor réplica del Modelo 3 alcanza r\_B en ningún presupuesto.
 
-**Interpretación.** La falta de información no solo encarece la reducción de la pobreza: también limita cuánta equidad territorial puede prometer el Estado. Con B = $100 mil millones, los Modelos 3 y 4 garantizan entre el 45 y 56 % del piso que garantizaría la información perfecta.
+*Interpretación.* La falta de información no solo encarece la reducción de la pobreza: también limita cuánta equidad territorial puede prometer el Estado. Con B = $100 mil millones, los Modelos 3 y 4 garantizan entre el 45 y 56 % del piso que garantizaría la información perfecta.
 
-*Fuente:* `datos_m34/rmax_piso_garantizable.csv`.
+*Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/rmax\_piso\_garantizable.csv y scripts/m34\_figuras\_paper.py.*
 
 ---
 
 ## 5. Discusión
 
-El precio de la información se puede leer como lo máximo que valdría la pena invertir en información para un programa. Como la brecha relativa es mayor con metas modestas y presupuestos pequeños, el argumento pesa más para los programas acotados. El error de inclusión pide una lectura cuidadosa: que buena parte del gasto llegue a hogares no pobres no significa que se pierda, porque esos hogares sí tenían la privación que se les quita. Lo que se pierde es eficacia frente al objetivo de reducir la pobreza multidimensional. Un programa evaluado por su cobertura puede verse exitoso y mover poco el IPM.
+*Se agregan después del segundo párrafo de la sección 5 (implicaciones de política) y antes de los de limitaciones.*
 
-El Modelo 4 y su placebo separan dos fuentes de mejora que en la práctica se confunden: la granularidad, que ayuda aunque las celdas no signifiquen nada, y el contenido de la partición, que solo ayuda si se relaciona con la privación. Con metas por zona, la granularidad sin contenido estorba, porque las celdas al azar mezclan las zonas. Antes de focalizar un programa por tipo de hogar hay que comprobar que esos tipos discriminan la privación que el programa ataca.
+Al retirar el supuesto de información perfecta, el panorama cambia más en el costo que en el resultado. Con la meta en cada zona, focalizar solo por zona cuesta entre 3.1 y 12.9 veces lo que cuesta con información perfecta, y focalizar también por tipo de hogar apenas reduce ese múltiplo. En los términos de Conconi et al. (2025), el presupuesto por desempeño tiene un costo oculto: la meta de M0 se puede cumplir sin información individual, pero a un costo varias veces mayor y con buena parte del gasto en hogares no pobres. Ese gasto no se pierde, porque esos hogares sí tenían la privación que se les quita, pero no mueve el IPM. Un programa evaluado por su cobertura puede verse exitoso y reducir poco la pobreza multidimensional. Con presupuesto fijo el efecto es más fuerte: la tasa mínima de salida por zona que el Modelo 1 cumple con información perfecta no la cumple ninguna réplica de los Modelos 3 y 4, y el piso que sí pueden garantizar con B = $100 mil millones es apenas entre el 45 y 56 % del que garantizaría la información perfecta. La asignación según necesidad, con garantías por zona, depende más de la información que el presupuesto por desempeño.
 
-**Limitaciones de los Modelos 3 y 4.** La base del IPM no identifica municipios, así que la focalización geográfica solo distingue tres zonas; con celdas municipales el Modelo 3 se acercaría a la información perfecta, y nuestro precio de la información es una cota superior. El sorteo supone que, dentro de una celda, cualquier hogar privado tiene la misma probabilidad de ser atendido, y que los sorteos de un hogar son independientes entre indicadores. El modelo elige la cobertura conociendo el sorteo de cada réplica, como en el paper original, así que las cifras son optimistas. Los dos sesgos van en sentidos opuestos: las celdas gruesas inflan el precio de la información y conocer el sorteo lo reduce. Algunas celdas tienen menos de 10 hogares privados en la muestra, y en ellas la cobertura avanza a saltos. La severidad que se reporta, como en el Modelo 1, no está censurada.
+El precio de la información también puede leerse como el valor máximo de mejorar la focalización. Como la diferencia relativa es mayor con metas modestas y presupuestos pequeños, el argumento pesa más para los programas acotados. El Modelo 4 y su placebo separan dos fuentes de mejora que en la práctica se confunden: la granularidad, que ayuda aunque las celdas no signifiquen nada, y el contenido de la partición, que solo ayuda si se relaciona con la privación. Con metas por zona, la granularidad sin contenido estorba, porque las celdas al azar mezclan las zonas. Antes de focalizar un programa por tipo de hogar hay que comprobar que esos tipos discriminan la privación que el programa ataca.
+
+*Se agrega al final de los párrafos de limitaciones.*
+
+Los Modelos 3 y 4 tienen limitaciones propias. La base no identifica municipios, así que la focalización geográfica solo distingue tres zonas; con celdas municipales, el Modelo 3 se acercaría a la información perfecta. El modelo elige la cobertura conociendo el sorteo de cada réplica, como en Hamie et al. (2024), lo que hace optimistas sus cifras. Los dos sesgos van en sentidos opuestos: las celdas gruesas inflan el precio de la información y conocer el sorteo lo reduce. Además, los sorteos de un hogar son independientes entre indicadores, algunas celdas tienen menos de 10 hogares privados en la muestra, y la comparación se hace sin la cobertura obligatoria ni la severidad educativa, que los Modelos 3 y 4 no pueden representar.
 
 ---
 
-## Apéndice 1. Linealización y parámetros de los Modelos 3 y 4
+## Referencias
 
-### Censura de Alkire y Foster
+*Se agregan a la lista de referencias.*
 
-Hamie et al. (2024, Apéndice 1) linealizan la censura con dos binarias por hogar y cinco restricciones (Lin 1 a Lin 5). En los Modelos 3 y 4 bastan Lin 1 a Lin 3, escritas como M3.6a a M3.6c, con Big-M igual a pᵢ en las dos primeras e igual a 1 en la tercera, y con sᵢ < k escrito como sᵢ ≤ 0.33. La conversión es exacta porque todos los pesos son múltiplos de 0.01. Omitir Lin 4 y Lin 5 no cambia el óptimo: si se toma una solución factible sin ellas y se redefine yᵢ como 1 exactamente cuando sᵢ < k, la contribución Cᵢ no aumenta, la meta se sigue cumpliendo y el gasto es el mismo. El Big-M pᵢ es el más ajustado posible, porque sᵢ ≤ 1; con una constante global la relajación lineal se afloja y el solver no cierra la brecha. La cota Cᵢ ≥ 0 es indispensable: sin ella la meta se cumple con contribuciones negativas.
+- Alkire, S., y Foster, J. (2011). Counting and multidimensional poverty measurement. *Journal of Public Economics*, 95(7-8), 476-487. https://doi.org/10.1016/j.jpubeco.2010.11.006
+- Hamie, C., Hlasny, V., y Jouni, M. (2024). *Multidimensional poverty alleviation: Policy optimization and impact simulation* (Working Paper 1742). Economic Research Forum. https://erf.org.eg/publications/multidimensional-poverty-alleviation-policy-optimization-and-impact-simulation/
+- Huangfu, Q., y Hall, J. A. J. (2018). Parallelizing the dual revised simplex method. *Mathematical Programming Computation*, 10(1), 119-142. https://doi.org/10.1007/s12532-017-0130-5
+- Mitchell, S., O'Sullivan, M., y Dunning, I. (2011). PuLP: A linear programming toolkit for Python. University of Auckland. https://optimization-online.org/2011/09/3178/
+- Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830. https://jmlr.org/papers/v12/pedregosa11a.html
 
-### Mecanismo de cobertura
+---
 
-Para cada par privado, el paper introduce dos binarias y escribe M3.3 como Lin 6 a Lin 10. La verificamos rama por rama: si la primera binaria vale 0, el hogar sale de la privación y Rᵢⱼ ≤ θ; si vale 1, sigue privado y θ ≤ Rᵢⱼ − ε. Las dos ramas cubren todos los casos sin solaparse. Como todas las cantidades están entre 0 y 1, basta Big-M igual a 1, y con ese valor la binaria coincide con xᵢⱼ, así que las dos binarias se eliminan. La desigualdad estricta θ < R se escribe θ ≤ R − ε con ε = 10⁻⁶, el mismo valor de M3.8: si cambia uno, tiene que cambiar el otro.
+## Apéndice 1
 
-### Equivalencia de la reformulación por cortes
+*Las Tablas A2 y A3 ocupan el lugar que el Apéndice 1 dejó para los Modelos 3 y 4 («las Tablas A2 y A3 del original, de los Modelos 3 y 4, no se incluyen»). La derivación y las Tablas A9 a A11 se agregan al final del apéndice.*
 
-Tomemos una solución factible de la formulación directa y un par (j, d). Por M3.3, los hogares curados son los que tienen Rᵢⱼ ≤ θ(j, d), un prefijo del orden de tamaño c. Por M3.2, θ(j, d) es la cobertura de esos c primeros. El último curado cumple R₍c₎ ≤ θ y el primero no curado cumple θ ≤ R₍c₊₁₎ − ε, así que c pertenece a F(j, d), y con z(j, d, c) = 1 la ecuación M3.11 reproduce las mismas xᵢⱼ con el mismo gasto. Recíprocamente, si c pertenece a F(j, d), curar los c primeros y fijar θ como su cobertura cumple M3.2 y M3.3 por la definición de F(j, d). Las restricciones M3.5 a M3.7 dependen solo de xᵢⱼ, así que se cumplen en las dos formulaciones a la vez.
+**Tabla A2.** Nomenclatura del Modelo 3.
 
-### Tangentes de la severidad
+| Símbolo | Tipo | Definición |
+| --- | --- | --- |
+| Ī, I | Conjunto | Todos los hogares de la muestra (3,732) y los hogares pobres de la línea base (523) |
+| J, Jᴵ | Conjunto | Los 15 indicadores y los intervenibles en un año |
+| D | Conjunto | Las tres zonas de P3; d(i) es la zona del hogar i |
+| F(j, d) | Conjunto | Cortes admisibles del par (j, d) |
+| wⱼ, Mᵢⱼ, HWᵢ, HSᵢ, pᵢ, cᵢ⁰ | Parámetro original o calculado | Como en el Modelo 1 |
+| cᵢⱼ | Parámetro calculado | Costo de quitar la privación j al hogar i: costo unitario de la zona × uᵢⱼ × HWᵢ |
+| Vᵢⱼ | Parámetro calculado | Población que atiende el par (i, j): uᵢⱼ · HWᵢ |
+| Den(j, d) | Parámetro calculado | Población privada en el indicador j dentro de la zona d |
+| Rᵢⱼ | Parámetro calculado | Sorteo uniforme del par (i, j), distinto en cada réplica |
+| m, Pob\_d, M0\_d⁰ | Parámetro | Meta de reducción de M0; población y M0 inicial de la zona d |
+| θ(j, d) | Variable externa | Cobertura del indicador j en la zona d |
+| xᵢⱼ, yᵢ | Variable interna binaria | Se quita la privación j al hogar i; el hogar pobre i sale de la pobreza |
+| Gᵢ, E(j, d) | Variable interna continua | Contribución censurada del hogar i a M0; gasto en el indicador j dentro de la zona d |
+| z(j, d, c) | Variable interna binaria | Se elige el corte c en el par (j, d) |
 
-En el criterio de presupuesto fijo, la severidad qᵢ = sᵢ² se representa, como en el Modelo 1, con una tangente por cada valor posible a del puntaje: qᵢ ≥ 2a · sᵢ − a². Como sᵢ solo toma valores discretos, el máximo de las tangentes coincide con sᵢ² en esos valores. La implementación omite la tangente en a = 0, que es redundante con qᵢ ≥ 0.
+*Fuente: elaboración propia con base en la Tabla A2 de Hamie et al. (2024).*
 
-### Parámetros del Modelo 4
+**Tabla A3.** Nomenclatura del Modelo 4 (además de la del Modelo 3).
 
-**Tabla M34-9. Razón entre la incidencia de la privación en la celda más privada y en la menos privada**
+| Símbolo | Tipo | Definición |
+| --- | --- | --- |
+| T, t(i) | Conjunto | Los cuatro tipos de hogar y el tipo del hogar i |
+| V, U | Conjunto | Bienes públicos (acueducto y alcantarillado) y bienes privados (los otros 13 indicadores) |
+| g(i, j) | Parámetro calculado | Celda del par (i, j): d(i) si j ∈ V y t(i) si j ∈ U |
+| θ(j, g), E(j, g), z(j, g, c) | Variable | Como en el Modelo 3, por celda g |
 
-La tabla compara qué tanto varía cada privación entre zonas y entre tipos de hogar. Una razón alta significa que la partición discrimina bien esa privación.
+*Fuente: elaboración propia con base en la Tabla A3 de Hamie et al. (2024).*
+
+**Censura de Alkire y Foster.** El original linealiza la censura con dos binarias por hogar y cinco restricciones (Lin 1 a Lin 5). En los Modelos 3 y 4 bastan Lin 1 a Lin 3 (Restricción₃ 4 a Restricción₃ 6), con sᵢ < k escrito como sᵢ ≤ 0.33, que es exacto porque todos los pesos son múltiplos de 0.01. Omitir Lin 4 y Lin 5 no cambia el óptimo: si se toma una solución factible sin ellas y se redefine yᵢ como 1 exactamente cuando sᵢ ≤ 0.33, Gᵢ no aumenta, la meta se sigue cumpliendo y el gasto es el mismo. El big-M pᵢ basta porque sᵢ ≤ 1; con una constante global la relajación lineal se afloja y el solver no cierra la brecha. La cota Gᵢ ≥ 0 es indispensable: sin ella la meta se cumple con contribuciones negativas.
+
+**Mecanismo de cobertura.** Para cada par privado, el original introduce dos binarias y escribe Restricción₃ 3 como Lin 6 a Lin 10. Las verificamos rama por rama: si la primera binaria vale 0, el hogar sale de la privación y Rᵢⱼ ≤ θ; si vale 1, sigue privado y θ ≤ Rᵢⱼ − ε. Las dos ramas cubren todos los casos sin solaparse. Como todas las cantidades están entre 0 y 1, basta big-M igual a 1, y con ese valor la binaria coincide con 1 − xᵢⱼ, así que las dos binarias se eliminan. La desigualdad estricta θ < R se escribe θ ≤ R − ε con ε = 10⁻⁶, el mismo valor de la definición de F(j, d).
+
+**Equivalencia de la reformulación por cortes.** Tomemos una solución factible de la formulación directa y un par (j, d). Por Restricción₃ 3, los hogares curados son los que tienen Rᵢⱼ ≤ θ(j, d), un prefijo del orden de tamaño c. Por Restricción₃ 2, θ(j, d) es la cobertura de esos c primeros. El último curado cumple R₍c₎ ≤ θ y el primero no curado cumple θ ≤ R₍c₊₁₎ − ε, así que c ∈ F(j, d), y con z(j, d, c) = 1 la Restricción₃ 9 reproduce las mismas xᵢⱼ con el mismo gasto. Recíprocamente, si c ∈ F(j, d), curar a los c primeros y fijar θ como su cobertura cumple Restricción₃ 2 y Restricción₃ 3 por la definición de F(j, d). Las restricciones de censura y meta dependen solo de xᵢⱼ, así que se cumplen en las dos formulaciones a la vez.
+
+**Tabla A9.** Razón entre la incidencia de cada privación en la celda más privada y en la menos privada, entre zonas y entre tipos de hogar.
 
 | Privación | Entre zonas | Entre tipos de hogar |
 | --- | ---: | ---: |
@@ -472,9 +507,9 @@ La tabla compara qué tanto varía cada privación entre zonas y entre tipos de 
 | Aseguramiento en salud | 1.9 | 1.9 |
 | Barreras de acceso a salud | 2.7 | 1.8 |
 
-*Nota.* Personas expandidas, k = 4. La atención integral a la primera infancia solo puede existir en hogares con niños menores de 5 años. Fuente: `datos_m34/discriminacion_privaciones.csv`.
+*Personas expandidas, k = 4. La atención integral a la primera infancia solo puede existir en hogares con niños menores de 5 años. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/discriminacion\_privaciones.csv.*
 
-**Tabla M34-10. Tipos de hogar del Modelo 4 (k = 4)**
+**Tabla A10.** Tipos de hogar del Modelo 4 (k = 4).
 
 | Tipo de hogar | Hogares en la muestra | Incidencia H |
 | --- | ---: | ---: |
@@ -483,13 +518,9 @@ La tabla compara qué tanto varía cada privación entre zonas y entre tipos de 
 | Con hijos escolares | 849 | 9.1 % |
 | Primera infancia | 456 | 16.1 % |
 
-*Nota.* k-medias ponderado por el factor de expansión, semilla fija. Fuente: `datos_m34/tipos_hogar.csv`.
+*k-medias ponderado por el factor de expansión, con semilla fija. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/tipos\_hogar.csv.*
 
-### Validación de granularidad máxima
-
-**Tabla M34-11. Modelo 3 con un hogar por celda frente a la información perfecta**
-
-G1 compara el costo con meta en cada zona contra el Modelo 2 (mil millones de pesos de 2025). G2 compara las personas que salen con r_B contra el Modelo 1.
+**Tabla A11.** Prueba de granularidad máxima: Modelo 3 con un hogar por celda frente a la información perfecta.
 
 | Prueba | Modelo 3 con un hogar por celda | Información perfecta | Diferencia | Resultado |
 | --- | ---: | ---: | ---: | ---: |
@@ -505,17 +536,17 @@ G1 compara el costo con meta en cada zona contra el Modelo 2 (mil millones de pe
 | G2 piso por zona r_B, B = 50 | 279,498 | 281,588 | -0.74 % | pasa |
 | G2 piso por zona r_B, B = 100 | 368,751 | 369,940 | -0.32 % | pasa |
 
-*Nota.* La diferencia admitida es la del ciclo de educación para adultos. Fuente: `datos_m34/validacion_granularidad_maxima.csv`.
+*G1 compara el costo con meta en cada zona contra el Modelo 2 (mil millones de pesos de 2025). G2 compara las personas que salen con r\_B contra el Modelo 1. La diferencia admitida es la del supuesto 2 (ciclo CLEI). Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/validacion\_granularidad\_maxima.csv.*
 
 ---
 
-## Apéndice 2. Sensibilidades de los Modelos 3 y 4
+## Apéndice 2: resultados adicionales
 
-### Sin equidad territorial: meta global y r = 0
+*Se agrega al final del Apéndice 2, después de la Tabla A8 y del párrafo del costo de la equidad territorial.*
 
-Como sensibilidad, repetimos la comparación sin restricciones de equidad territorial: con la meta de M0 global y con r = 0. Miden cuánto cuesta la equidad territorial en cada modelo. Con la meta global del 10 %, la información perfecta cuesta $1.32 mil millones, y con la misma meta en cada zona, $5.17 mil millones. Con meta global, el Modelo 3 cuesta entre 6.2 y 16.9 veces la información perfecta con metas de hasta el 10 %. El Modelo 4 es más barato que el Modelo 3, pero hasta la meta del 18 % cuesta lo mismo que el placebo: sin la exigencia por zona, cualquier partición más fina ayuda.
+**Sin equidad territorial: meta global y r = 0.** Como sensibilidad de los Modelos 3 y 4, repetimos la comparación sin restricciones de equidad territorial: con la meta de M0 global y con r = 0. Con la meta global del 10 %, la información perfecta cuesta $1.32 mil millones, y con la misma meta en cada zona, $5.17 mil millones. Con meta global, el Modelo 3 cuesta entre 6.2 y 16.9 veces la información perfecta con metas de hasta el 10 %. El Modelo 4 es más barato que el Modelo 3, pero hasta la meta del 18 % cuesta lo mismo que el placebo: sin la exigencia por zona, cualquier partición más fina ayuda.
 
-**Tabla M34-12. Costo de reducir M0 con una meta global (mil millones de pesos de 2025)**
+**Tabla A12.** Costo de reducir M0 con una meta global según la información del Estado (mil millones de pesos de 2025).
 
 | Meta m | Modelo 2 | Modelo 3 | Modelo 4 | Placebo | Precio M3 | Precio M4 | M4/placebo (IC 95 %) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -528,11 +559,9 @@ Como sensibilidad, repetimos la comparación sin restricciones de equidad territ
 | 24 % | 12.49 | 48.74 | 34.48 | 45.16 | 3.9 | 2.8 | 0.75 (0.72 a 0.77) |
 | 30 % | 24.40 | 84.36 | 61.08 | 82.77 | 3.5 | 2.5 | 0.74 (0.72 a 0.76) |
 
-*Nota.* Mediana de 100 réplicas. Datos congelados del 10 de noviembre. Fuente: `datos_m34/sens_meta_global_costos.csv`.
+*Mediana de 100 réplicas. Corridas del 10 de noviembre, sin E-7 ni SevEdu. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/sens\_meta\_global\_costos.csv.*
 
-**Tabla M34-13. Personas que salen de la pobreza con r = 0**
-
-Esta tabla permite comparar H en los cuatro modelos, porque sin piso por zona los Modelos 3 y 4 sí son factibles.
+**Tabla A13.** Personas que salen de la pobreza con presupuesto fijo y r = 0 según la información del Estado.
 
 | B | Réplicas | Modelo 1 | Modelo 3 | Modelo 4 | Placebo | M3 / M1 | M4 / M1 | M4/M3 (IC 95 %) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -543,15 +572,13 @@ Esta tabla permite comparar H en los cuatro modelos, porque sin piso por zona lo
 | 50 | 30 | 284,099 | 166,850 | 186,268 | 170,098 | 59 % | 66 % | 1.12 (1.11 a 1.12) |
 | 100 | 30 | 370,508 | 218,204 | 242,657 | 222,610 | 59 % | 65 % | 1.11 (1.10 a 1.12) |
 
-*Nota.* B en mil millones de pesos de 2025. Modelo 1 con r = 0, sin E-7 ni SevEdu. Mediana de las réplicas, con su intervalo de confianza del 95 % para el cociente pareado. Datos congelados del 10 de noviembre. Fuente: `datos_m34/sens_r0_personas_que_salen.csv` y `datos_m34/sens_r0_info_perfecta_M1.csv`.
+*B en mil millones de pesos de 2025. Modelo 1 con r = 0, sin E-7 ni SevEdu. Mediana de las réplicas, con el intervalo de confianza del 95 % del cociente pareado. Corridas del 10 de noviembre. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/sens\_r0\_personas\_que\_salen.csv y sens\_r0\_info\_perfecta\_M1.csv.*
 
-Con r = 0, el Modelo 3 saca de la pobreza entre el 13 y 65 % de las personas que saldrían con el Modelo 1, y el Modelo 4 entre el 19 y 67 %.
+Sin piso por zona, los Modelos 3 y 4 sí son factibles. El Modelo 3 saca de la pobreza entre el 13 y 65 % de las personas que saldrían con el Modelo 1, y el Modelo 4 entre el 19 y 67 %.
 
-### Número de tipos de hogar k y costos simplificados (u = 1)
+**Número de tipos de hogar.** La elección de k se apoyó en un análisis con 50 réplicas pareadas para k de 2 a 8. Se hizo con una versión simplificada de los costos (una intervención por hogar, uᵢⱼ = 1) y sin equidad territorial, así que se lee por su forma y no por sus cifras. Con k = 2, el Modelo 4 saca de la pobreza 0.71 veces las personas del Modelo 3: la partición separa los hogares por tamaño, que casi no se relaciona con la pobreza. De k = 3 a k = 4 la ganancia es grande, y desde ahí se aplana (1.92 veces con k = 4 y 1.93 con k = 5). Con k = 8 hay celdas con menos de 10 hogares privados, donde el sorteo deja de representar una focalización por tipo. Elegimos k = 4 con dos criterios: que menos del 15 % de los pares (indicador, celda) tenga menos de 10 hogares privados, y que al pasar a k + 1 la ganancia sea marginal.
 
-La elección de k se apoyó en un análisis con 50 réplicas pareadas para k de 2 a 8, hecho con una versión simplificada de los costos (una intervención por hogar, uᵢⱼ = 1) y sin equidad territorial, así que se lee por su forma y no por sus cifras. Con k = 2, el Modelo 4 saca de la pobreza 0.71 veces las personas del Modelo 3: la partición separa los hogares por tamaño, que casi no se relaciona con la pobreza. De k = 3 a k = 4 la ganancia es grande, y desde ahí se aplana (1.92 veces con k = 4 y 1.93 con k = 5). Con k = 8 hay celdas con menos de 10 hogares privados, donde el sorteo deja de representar una focalización por tipo. Elegimos k = 4 con dos criterios: que menos del 15 % de los pares (indicador, celda) tenga menos de 10 hogares privados, y que al pasar a k + 1 la ganancia sea marginal.
-
-**Tabla M34-14. Personas que salen con B = $10 mil millones según el número de tipos de hogar**
+**Tabla A14.** Personas que salen de la pobreza con B = $10 mil millones según el número de tipos de hogar del Modelo 4.
 
 | Partición del Modelo 4 | Personas que salen con B = 10 | Veces el Modelo 3 (mediana) |
 | --- | ---: | ---: |
@@ -563,15 +590,21 @@ La elección de k se apoyó en un análisis con 50 réplicas pareadas para k de 
 | k = 6 | 64,677 | 1.99 |
 | k = 8 | 76,248 | 2.44 |
 
-*Nota.* Costos simplificados (uᵢⱼ = 1), sin equidad territorial, 50 réplicas pareadas. Fuente: `datos_m34/sens_k_u1.csv`.
+*Costos simplificados (uᵢⱼ = 1), sin equidad territorial, 50 réplicas pareadas. Fuente: cálculos propios con los microdatos del IPM 2025 (DANE); entrega\_m34/datos\_m34/sens\_k\_u1.csv.*
 
 ---
 
-## Referencias
+## Glosario EN–ES
 
-- Alkire, S., y Foster, J. (2011). Counting and multidimensional poverty measurement. *Journal of Public Economics*, 95(7-8), 476-487. https://doi.org/10.1016/j.jpubeco.2010.11.006
-- DANE (2026). *Medida de Pobreza Multidimensional 2025: microdatos departamentales* (catálogo 903). Departamento Administrativo Nacional de Estadística. https://microdatos.dane.gov.co/index.php/catalog/903
-- Hamie, C., Hlasny, V., y Jouni, M. (2024). *Multidimensional poverty alleviation: Policy optimization and impact simulation* (Working Paper 1742). Economic Research Forum. https://erf.org.eg/publications/multidimensional-poverty-alleviation-policy-optimization-and-impact-simulation/
-- Huangfu, Q., y Hall, J. A. J. (2018). Parallelizing the dual revised simplex method. *Mathematical Programming Computation*, 10(1), 119-142. https://doi.org/10.1007/s12532-017-0130-5
-- Mitchell, S., O'Sullivan, M., y Dunning, I. (2011). PuLP: A linear programming toolkit for Python. University of Auckland. https://optimization-online.org/2011/09/3178/
-- Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830. https://jmlr.org/papers/v12/pedregosa11a.html
+*Se agregan a la tabla del glosario.*
+
+| English term | Español | Use in context |
+| --- | --- | --- |
+| price of information | precio de la información | *The price of information is the cost ratio against the first best.* |
+| coverage | cobertura | *The State chooses coverage by zone, not which households are served.* |
+| random draw | sorteo | *A random draw decides which deprived households are served.* |
+| inclusion error | error de inclusión | *The inclusion error is the share of spending on non-poor households.* |
+| exclusion error | error de exclusión | *The exclusion error is the share of poor people who receive nothing.* |
+| targeting cell | celda de focalización | *Model 4 targets private goods by household type.* |
+| placebo partition | partición placebo | *A placebo with shuffled household types keeps the cells but not their content.* |
+| maximum guaranteed floor | piso máximo garantizable | *Without household data, the guaranteed floor stays below r_B.* |

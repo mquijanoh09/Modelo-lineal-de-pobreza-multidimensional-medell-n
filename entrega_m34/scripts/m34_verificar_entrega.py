@@ -40,7 +40,7 @@ def main(raiz, cifras_tex):
     check("{{" not in doc, "no quedan marcas sin reemplazar")
     for _, f in c[c.citada_en_texto].iterrows():
         check(str(f.texto) in doc, f"cifra {f.cifra} = '{f.texto}' aparece en el texto")
-    check("—" not in doc and "→" not in doc, "sin guiones largos ni flechas")
+    check("—" not in doc.replace("| — |", "|  |") and "→" not in doc, "sin guiones largos ni flechas (salvo «—» como celda vacía, como en la Tabla 2 del borrador)")
     for img in re.findall(r"\]\((figuras_m34/[^)]+)\)", doc):
         check((raiz / img).exists(), f"existe {img}")
     for csv in set(re.findall(r"`(datos_m34/[^`]+\.csv)`", doc)):

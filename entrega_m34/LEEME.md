@@ -4,8 +4,8 @@ Jerónimo Vélez, 15 de noviembre de 2026. Responde a `PLAN_INTEGRACION_M3_M4.md
 
 | Archivo | Contenido | Sección del plan |
 | --- | --- | --- |
-| `M34_para_paper.md` | Todo el texto de los Modelos 3 y 4, en Markdown, con los títulos de la sección 3 del plan | §2 y §3 |
-| `figuras_m34/*.png` | Figuras M34-1 a M34-3 a 300 dpi | §2 |
+| `M34_para_paper.md` | Todo el texto de los Modelos 3 y 4, en Markdown, con los títulos y la numeración del borrador | §2 y §3 |
+| `figuras_m34/*.png` | Figuras 10 a 12 a 300 dpi (los archivos se llaman M34-1 a M34-3) | §2 |
 | `scripts/m34_figuras_paper.py` | Script que genera las tres figuras desde `datos_m34/` | §2 |
 | `datos_m34/*.csv` | CSV de origen de cada tabla y figura | §2 y §5 |
 | `cifras_m34.csv` | Una fila por cifra: texto, valor, archivo y columna de origen, y si se cita en el texto | §2 |
@@ -13,11 +13,13 @@ Jerónimo Vélez, 15 de noviembre de 2026. Responde a `PLAN_INTEGRACION_M3_M4.md
 
 ## Qué hay que saber al integrar
 
-1. **Tabla 1.** No tuve acceso al borrador (el enlace no está compartido conmigo), así que no conozco sus 11 filas. Las columnas de los Modelos 3 y 4 están en la sección 2 con las filas que distinguen a los cuatro modelos; al integrar hay que pasarlas a las filas del borrador.
-2. **Referencias provisionales.** r_B, ρ_B y el Modelo 2 con meta por zona se calcularon con las funciones de Martín sin cambiarlas. Coinciden con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`; siguen siendo provisionales hasta que Martín lo confirme por escrito.
-3. **Caso base y comparación (§6.3 del plan).** La comparación llega hasta B = $100 mil millones y se corre sin E-7 ni SevEdu. La decisión de cómo conectarla con el caso base (B = $424 mil millones) es de Martín; el texto no la toma.
-4. **Colores.** Modelo 3 aqua #1baf7a, Modelo 4 amarillo #eda100 y placebo magenta #e87ba4: las ranuras 3 a 5 de la misma paleta categórica de la Figura 9, validadas para daltonismo. Como su contraste con el fondo es bajo, cada serie lleva marcador propio y etiqueta o leyenda.
-5. **Numeración provisional.** Tablas M34-1 a M34-14, Figuras M34-1 a M34-3, ecuaciones M3.1 a M3.11 y M4.1 a M4.2.
+1. **Ajustada al borrador de Martín** (`paper_borrador/borrador_paper_2026-11-14.md`, rama `Contexto`, revisión 856). Cada bloque de `M34_para_paper.md` empieza con una línea en cursiva que dice dónde se pega.
+2. **Numeración que continúa la del borrador.** Tabla 1 (reemplazo con cuatro columnas y las mismas 11 filas), Tablas 3 a 9 y Figuras 10 a 12 en el cuerpo, Tablas A2 y A3 (nomenclatura de los Modelos 3 y 4, el hueco que dejó el Apéndice 1) y Tablas A9 a A14 en los apéndices. Ecuaciones: OBJ 3, OBJ 4, Restricción₃ 1 a 10 y Restricción₄ 1 a 10. La tabla de restricciones de la comparación va sin número, como las tablas de la §3 del borrador.
+3. **Notación del borrador.** I son los 523 hogares pobres y Ī los 3,732 hogares; cᵢⱼ es el costo, Gᵢ la contribución censurada (como en el Modelo 2) y A se reporta como decimal (0.409).
+4. **Supuestos.** Los Modelos 3 y 4 no cumplen los supuestos 3 y 7 del borrador (hay error de inclusión y se modelan todos los hogares), ni el 10 (E-7). Se agregan los supuestos 12 a 14.
+5. **Referencias provisionales.** r_B, ρ_B y el Modelo 2 con meta por zona se calcularon con las funciones de Martín sin cambiarlas. Coinciden con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`; siguen siendo provisionales hasta que Martín lo confirme por escrito.
+6. **Caso base y comparación (§6.3 del plan).** La comparación llega hasta B = $100 mil millones y se corre sin E-7 ni SevEdu. Cómo conectarla con el caso base (B = $424 mil millones) lo decide Martín; el texto no lo toma.
+7. **Colores.** Modelo 3 aqua #1baf7a, Modelo 4 amarillo #eda100 y placebo magenta #e87ba4, las ranuras 3 a 5 de la paleta de la Figura 9, validadas para daltonismo. Como su contraste con el fondo es bajo, cada serie lleva marcador propio y etiqueta o leyenda.
 
 ## Qué es nuevo frente a lo que ya estaba corrido
 
@@ -41,4 +43,4 @@ python3 scripts/m34_documento_paper.py datos_m34/ scripts/plantilla_M34.md M34_p
 python3 scripts/m34_verificar_entrega.py . <paper/cifras.tex de paper-12nov>
 ```
 
-`m34_documento_paper.py` llena la plantilla con las cifras y las tablas calculadas desde los CSV. Si una cifra no tiene valor, falla: no hay números escritos a mano. `m34_verificar_entrega.py` comprueba que cada cifra citada aparezca en el texto, que coincida con el paper de la rama `paper-12nov` (ya verificado 16/16 y 29/29) y con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`, que existan las figuras y los CSV citados, y que no haya guiones largos ni flechas.
+`m34_documento_paper.py` llena la plantilla con las cifras y las tablas calculadas desde los CSV. Si una cifra no tiene valor, falla: no hay números escritos a mano. `m34_verificar_entrega.py` comprueba que cada cifra citada aparezca en el texto, que coincida con el paper de la rama `paper-12nov` (ya verificado 16/16 y 29/29) y con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`, que existan las figuras y los CSV citados, y que no haya guiones largos (salvo «—» en celdas vacías, como en la Tabla 2 del borrador) ni flechas.

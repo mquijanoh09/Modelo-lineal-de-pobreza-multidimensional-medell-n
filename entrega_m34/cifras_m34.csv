@@ -4,7 +4,7 @@ hogares_pobres,523,523.0,datos_m34/linea_base.csv,hogares_pobres (Total Antioqui
 personas_pobres,"683,406",683406.2979129804,datos_m34/linea_base.csv,personas_pobres (Total Antioquia),False
 poblacion,"7,231,754",7231754.000000002,datos_m34/linea_base.csv,poblacion (Total Antioquia),False
 H0,9.45 %,0.0945007667452433,datos_m34/linea_base.csv,H0 (Total Antioquia),True
-A0,40.94 %,0.4093557413927114,datos_m34/linea_base.csv,A0 (Total Antioquia),True
+A0,0.409,0.4093557413927114,datos_m34/linea_base.csv,A0 (Total Antioquia),True
 M0,0.0387,0.0386844314331787,datos_m34/linea_base.csv,M0 (Total Antioquia),True
 pares_privados,"8,602",8602.0,datos_m34/linea_base.csv,pares_privados (Total Antioquia),False
 H0_cab,6.2 %,0.0621094066545715,datos_m34/linea_base.csv,H0 (Cabeceras),False
@@ -28,7 +28,7 @@ replicas_costo,100,100,datos_m34/costo_meta_zona.csv,replicas,True
 corridas_costo,"4,500",4500,datos_m34/costo_meta_zona.csv,3 x suma de replicas,True
 m3_ip_baja,5.5 y 12.9,5.542277827313321|12.916284438624928,datos_m34/costo_meta_zona.csv,"precio_info_m3, metas 2-10 %",True
 m3_ip_alta,3.1 y 4.1,3.1365289526097664|4.059048192350923,datos_m34/costo_meta_zona.csv,"precio_info_m3, metas 20-30 %",True
-m3_ip_todas,3.1 y 12.9,3.1365289526097664|12.916284438624928,datos_m34/costo_meta_zona.csv,"precio_info_m3, todas las metas",False
+m3_ip_todas,3.1 y 12.9,3.1365289526097664|12.916284438624928,datos_m34/costo_meta_zona.csv,"precio_info_m3, todas las metas",True
 m4_ip_todas,3.4 y 8.8,3.403271016918477|8.797359432636958,datos_m34/costo_meta_zona.csv,"precio_info_m4, todas las metas",True
 n_m4_menor_m3,9,9,datos_m34/costo_meta_zona.csv,metas con M4_sobre_M3_ic95_sup < 1,True
 n_m4_mayor_m3,3,3,datos_m34/costo_meta_zona.csv,metas con M4_sobre_M3_ic95_inf > 1,True

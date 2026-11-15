@@ -47,7 +47,7 @@ def cifras(D):
     reg("personas_pobres", n(t.personas_pobres), t.personas_pobres, f, "personas_pobres (Total Antioquia)")
     reg("poblacion", n(t.poblacion), t.poblacion, f, "poblacion (Total Antioquia)")
     reg("H0", pc(100 * t.H0, 2), t.H0, f, "H0 (Total Antioquia)")
-    reg("A0", pc(100 * t.A0, 2), t.A0, f, "A0 (Total Antioquia)")
+    reg("A0", n(t.A0, 3), t.A0, f, "A0 (Total Antioquia)")
     reg("M0", n(t.M0, 4), t.M0, f, "M0 (Total Antioquia)")
     reg("pares_privados", n(t.pares_privados), t.pares_privados, f, "pares_privados (Total Antioquia)")
     for z, k in [("Cabeceras", "cab"), ("Centros poblados", "cp"), ("Rural disperso", "rd")]:
@@ -239,18 +239,31 @@ def tablas(D):
         "Exclusión placebo": [pc(100 * x, 0) for x in c.exclusion_m4p]}))
 
     z = pd.read_csv(D / "H_A_M0_por_zona.csv")
+    lb = pd.read_csv(D / "linea_base.csv").set_index("zona")
     orden_z = ["Total Antioquia", "Cabeceras", "Centros poblados", "Rural disperso"]
+    nom_z = {"Total Antioquia": "Total", "Cabeceras": "Cabecera", "Centros poblados": "Centro poblado",
+             "Rural disperso": "Rural disperso"}
     orden_m = ["Modelo 2", "Modelo 3", "Modelo 4", "Placebo"]
     for meta in [0.10, 0.30]:
-        s = z[np.isclose(z.meta, meta)].copy()
-        s["oz"] = s.zona.map(orden_z.index)
-        s["om"] = s.modelo.map(orden_m.index)
-        s = s.sort_values(["oz", "om"])
-        T[f"zonas{int(round(100 * meta))}"] = md(pd.DataFrame({
-            "Zona": s.zona, "Modelo": s.modelo, "Gasto": [n(x, 2) for x in s.gasto_mm],
-            "H inicial": [pc(100 * x, 2) for x in s.H0], "H final": [pc(100 * x, 2) for x in s.H],
-            "A inicial": [pc(100 * x, 2) for x in s.A0], "A final": [pc(100 * x, 2) for x in s.A],
-            "M0 inicial": [n(x, 4) for x in s.M0_inicial], "M0 final": [n(x, 4) for x in s.M0]}))
+        s_ = z[np.isclose(z.meta, meta)].copy()
+        s_["oz"] = s_.zona.map(orden_z.index)
+        s_["om"] = s_.modelo.map(orden_m.index)
+        s_ = s_.sort_values(["om", "oz"])
+        salen = [(r.H0 - r.H) * lb.at[r.zona, "poblacion"] for r in s_.itertuples()]
+        filas = []
+        for zona in orden_z:
+            b0 = lb.loc[zona]
+            filas.append({"Escenario": "Línea base" if zona == orden_z[0] else "", "Zona": nom_z[zona],
+                          "Personas que salen": "—", "H": pc(100 * b0.H0, 2), "A": n(b0.A0, 3),
+                          "M0": n(b0.M0, 4), "Costo (mil millones)": "—"})
+        ult = None
+        for r, sl in zip(s_.itertuples(), salen):
+            filas.append({"Escenario": r.modelo if r.modelo != ult else "", "Zona": nom_z[r.zona],
+                          "Personas que salen": n(sl), "H": pc(100 * r.H, 2), "A": n(r.A, 3),
+                          "M0": f"{n(r.M0, 4)} (−{n(r.reduccion_M0_pct, 1)} %)",
+                          "Costo (mil millones)": n(r.gasto_mm, 1)})
+            ult = r.modelo
+        T[f"zonas{int(round(100 * meta))}"] = md(pd.DataFrame(filas))
 
     g = pd.read_csv(D / "gasto_por_zona_y_dimension.csv")
     g = g[g.meta.round(2).isin([0.02, 0.06, 0.10, 0.14, 0.20, 0.24, 0.30])]

@@ -63,6 +63,25 @@ class Modelo2(ModeloIPMBase):
                               <= techo * float((h.p * h.c0).sum()), "Meta")
         if self.esc.get("usar_sevedu", False):
             self.agregar_sevedu(self.esc["rho_e"])                # E-5 como sensibilidad
+        if self.esc.get("usar_severidad", False):                 # techo de severidad (sensibilidad)
+            rho = self.esc.get("rho_sev")
+            self.agregar_severidad(self.meta_m if rho is None else rho)
+
+    def agregar_severidad(self, rho):
+        """Techo de severidad como en el Modelo 1: q_i >= s_i^2 con tangentes y
+        sum p_i q_i <= (1 - rho) * Sev0, con Sev0 = sum p_i c0_i^2 (sin censurar).
+
+        El puntaje s_i solo toma los valores de d.A[i]; la parábola es convexa, así que las
+        tangentes en esos valores, q >= 2a*s - a^2, dejan q_i = s_i^2 de forma exacta cuando
+        el techo empuja q hacia abajo."""
+        d = self.datos
+        self.q = {}
+        for i in d.hogares.index:
+            self.q[i] = pulp.LpVariable(f"q_{i}", lowBound=0)
+            for a in d.A[i]:
+                self.prob += self.q[i] >= 2 * a * self.s[i] - a * a, f"Tan_{i}_{int(round(a * 100))}"
+        self.prob += (pulp.lpSum(d.hogares.at[i, "p"] * self.q[i] for i in self.q)
+                      <= (1 - rho) * d.Sev0), "Sev"
 
     def definir_objetivo(self):
         if self.objetivo == "costo":

@@ -1,0 +1,121 @@
+escenario,zona,caja,bigote_inf,Q1,mediana,Q3,bigote_sup
+base,Total,Antes,0.34,0.35,0.39,0.44,0.57
+base,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+base,Total,Después (siguen pobres),0.34,0.3463768590409711,0.39,0.46,0.58
+base,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+base,Cabecera,Después (todos),0.2,0.25,0.3,0.31,0.4
+base,Cabecera,Después (siguen pobres),0.34,0.3415051129735641,0.3746000483988853,0.4126281189332905,0.51
+base,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+base,Centro poblado,Después (todos),0.18,0.25,0.28838090711837305,0.3,0.35
+base,Centro poblado,Después (siguen pobres),0.34,0.34,0.34,0.44,0.48
+base,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+base,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+base,Rural disperso,Después (siguen pobres),0.35,0.4209178364843367,0.4509579774605847,0.4706348647518036,0.52
+p_050,Total,Antes,0.34,0.35,0.39,0.44,0.57
+p_050,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+p_050,Total,Después (siguen pobres),0.34,0.34014973154833006,0.4,0.46,0.58
+p_050,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+p_050,Cabecera,Después (todos),0.2,0.25,0.2936462619820972,0.31,0.4
+p_050,Cabecera,Después (siguen pobres),0.34,0.34,0.35,0.42,0.52
+p_050,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+p_050,Centro poblado,Después (todos),0.18,0.25,0.2881803890751976,0.3,0.35
+p_050,Centro poblado,Después (siguen pobres),0.34,0.34,0.34178297263591706,0.3933658202195243,0.44
+p_050,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+p_050,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+p_050,Rural disperso,Después (siguen pobres),0.38,0.43,0.46,0.47010330515427695,0.52
+p_075,Total,Antes,0.34,0.35,0.39,0.44,0.57
+p_075,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+p_075,Total,Después (siguen pobres),0.34,0.34,0.39,0.4642231890546925,0.58
+p_075,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+p_075,Cabecera,Después (todos),0.2,0.25,0.2936462619820972,0.31,0.4
+p_075,Cabecera,Después (siguen pobres),0.34,0.34,0.35,0.42,0.52
+p_075,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+p_075,Centro poblado,Después (todos),0.18,0.24,0.28,0.3,0.35
+p_075,Centro poblado,Después (siguen pobres),0.34,0.34,0.35,0.44,0.48
+p_075,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+p_075,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+p_075,Rural disperso,Después (siguen pobres),0.34,0.39173306202473135,0.4577516348744063,0.4775732142174009,0.58
+con_E3,Total,Antes,0.34,0.35,0.39,0.44,0.57
+con_E3,Total,Después (todos),0.18,0.25,0.282885435792988,0.31,0.4
+con_E3,Total,Después (siguen pobres),0.34,0.34,0.39,0.46694597729022663,0.53
+con_E3,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+con_E3,Cabecera,Después (todos),0.2,0.25,0.29,0.30405480625254033,0.38
+con_E3,Cabecera,Después (siguen pobres),0.34,0.34,0.3563578279021257,0.4254235432592764,0.52
+con_E3,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+con_E3,Centro poblado,Después (todos),0.18,0.24,0.28,0.3,0.38
+con_E3,Centro poblado,Después (siguen pobres),0.34,0.34,0.35,0.44,0.48
+con_E3,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+con_E3,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+con_E3,Rural disperso,Después (siguen pobres),0.34,0.39347468093917204,0.45,0.4771685191226887,0.53
+sin_E7,Total,Antes,0.34,0.35,0.39,0.44,0.57
+sin_E7,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+sin_E7,Total,Después (siguen pobres),0.34,0.34,0.4,0.46,0.56
+sin_E7,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+sin_E7,Cabecera,Después (todos),0.2,0.25,0.2936462619820972,0.31,0.4
+sin_E7,Cabecera,Después (siguen pobres),0.34,0.34,0.35,0.42,0.52
+sin_E7,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+sin_E7,Centro poblado,Después (todos),0.18,0.25,0.2809923424153992,0.3,0.35
+sin_E7,Centro poblado,Después (siguen pobres),0.34,0.34,0.3475145139783427,0.44,0.48
+sin_E7,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+sin_E7,Rural disperso,Después (todos),0.18,0.2617358264913453,0.28,0.32,0.4
+sin_E7,Rural disperso,Después (siguen pobres),0.35,0.41809629862745884,0.46,0.47,0.53
+desempleo_imputado,Total,Antes,0.34,0.35,0.39,0.44,0.57
+desempleo_imputado,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+desempleo_imputado,Total,Después (siguen pobres),0.34,0.34,0.39,0.45,0.58
+desempleo_imputado,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+desempleo_imputado,Cabecera,Después (todos),0.2,0.25,0.296956695748635,0.31,0.4
+desempleo_imputado,Cabecera,Después (siguen pobres),0.34,0.34,0.38,0.4193796278893826,0.52
+desempleo_imputado,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+desempleo_imputado,Centro poblado,Después (todos),0.18,0.24720197734624816,0.28,0.3,0.35
+desempleo_imputado,Centro poblado,Después (siguen pobres),0.34,0.34,0.34,0.44,0.48
+desempleo_imputado,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+desempleo_imputado,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.39
+desempleo_imputado,Rural disperso,Después (siguen pobres),0.34,0.3658232961865253,0.44,0.48,0.58
+ti_psicosocial,Total,Antes,0.34,0.35,0.39,0.44,0.57
+ti_psicosocial,Total,Después (todos),0.18,0.25,0.29,0.314645309255231,0.4
+ti_psicosocial,Total,Después (siguen pobres),0.34,0.35,0.39,0.4595151467654405,0.58
+ti_psicosocial,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+ti_psicosocial,Cabecera,Después (todos),0.2,0.25,0.3,0.31,0.4
+ti_psicosocial,Cabecera,Después (siguen pobres),0.34,0.35,0.38,0.42,0.52
+ti_psicosocial,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+ti_psicosocial,Centro poblado,Después (todos),0.18,0.24720197734624816,0.28,0.3,0.35
+ti_psicosocial,Centro poblado,Después (siguen pobres),0.34,0.34,0.35,0.4,0.48
+ti_psicosocial,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+ti_psicosocial,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+ti_psicosocial,Rural disperso,Después (siguen pobres),0.34,0.40428019014799593,0.45,0.47,0.55
+acueducto_bid,Total,Antes,0.34,0.35,0.39,0.44,0.57
+acueducto_bid,Total,Después (todos),0.18,0.25,0.29,0.31553713823148316,0.4
+acueducto_bid,Total,Después (siguen pobres),0.34,0.35,0.3928644583422184,0.45809915257538975,0.58
+acueducto_bid,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+acueducto_bid,Cabecera,Después (todos),0.2,0.25,0.3,0.31,0.4
+acueducto_bid,Cabecera,Después (siguen pobres),0.34,0.3415051129735641,0.3746000483988853,0.4126281189332905,0.51
+acueducto_bid,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+acueducto_bid,Centro poblado,Después (todos),0.18,0.24491025045457002,0.28,0.3,0.35
+acueducto_bid,Centro poblado,Después (siguen pobres),0.34,0.34,0.35,0.44,0.48
+acueducto_bid,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+acueducto_bid,Rural disperso,Después (todos),0.18,0.26,0.28,0.33,0.43
+acueducto_bid,Rural disperso,Después (siguen pobres),0.34,0.40938904615199734,0.4432641224465022,0.47,0.55
+rho_codo,Total,Antes,0.34,0.35,0.39,0.44,0.57
+rho_codo,Total,Después (todos),0.18,0.25,0.29,0.31475460906181996,0.4
+rho_codo,Total,Después (siguen pobres),0.34,0.3451677490944263,0.3948978750218799,0.46,0.58
+rho_codo,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+rho_codo,Cabecera,Después (todos),0.2,0.25,0.3,0.31,0.4
+rho_codo,Cabecera,Después (siguen pobres),0.34,0.34,0.3751338209213524,0.4079523807357446,0.5
+rho_codo,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+rho_codo,Centro poblado,Después (todos),0.18,0.24814757921242633,0.28,0.3,0.35
+rho_codo,Centro poblado,Después (siguen pobres),0.34,0.34,0.34082641148922044,0.44,0.48
+rho_codo,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+rho_codo,Rural disperso,Después (todos),0.18,0.26,0.28,0.32,0.4
+rho_codo,Rural disperso,Después (siguen pobres),0.34,0.42,0.45,0.48,0.57
+sin_penalizaciones,Total,Antes,0.34,0.35,0.39,0.44,0.57
+sin_penalizaciones,Total,Después (todos),0.18,0.25,0.29,0.31,0.4
+sin_penalizaciones,Total,Después (siguen pobres),0.34,0.3563004687357797,0.44,0.48,0.65
+sin_penalizaciones,Cabecera,Antes,0.34,0.35,0.4,0.42589344092945464,0.53
+sin_penalizaciones,Cabecera,Después (todos),0.24,0.25,0.3,0.3034442774633792,0.38
+sin_penalizaciones,Cabecera,Después (siguen pobres),0.34,0.34,0.39,0.4483357441861737,0.52
+sin_penalizaciones,Centro poblado,Antes,0.34,0.34,0.38,0.4,0.49
+sin_penalizaciones,Centro poblado,Después (todos),0.18,0.25,0.28,0.3,0.35
+sin_penalizaciones,Centro poblado,Después (siguen pobres),0.34,0.34,0.43980573028586584,0.44,0.48
+sin_penalizaciones,Rural disperso,Antes,0.34,0.36,0.4,0.47,0.62
+sin_penalizaciones,Rural disperso,Después (todos),0.18,0.26,0.2821740810742165,0.33,0.43
+sin_penalizaciones,Rural disperso,Después (siguen pobres),0.34,0.43751790961265724,0.47,0.5158584190231655,0.61

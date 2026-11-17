@@ -1,0 +1,11 @@
+rango B 105.92296166705387 742.0870344665141 rho_e 0.14
+etapas: {'etapa1': {'estado': 'Optimal', 'objetivo': 106665.69634685917, 'gap': 0.0, 'segundos': 0.59}, 'etapa2': {'estado': 'Optimal', 'objetivo': 110065.68828736938, 'gap': 5.288447455259048e-16, 'segundos': 2.03}, 'H_star': 106665.69634685917} segundos 3
+          zona  hogares_pobres_muestra  hogares_salen_muestra  personas_pobres  personas_salen  pct_salen  pct_modelo_recalcular
+      Cabecera                     127                     14    363285.931636   101430.626084  27.920329              27.920329
+Centro poblado                     103                      2     69089.415356     2453.658880   3.551425               3.551425
+Rural disperso                     293                      3    251030.950921     2781.411383   1.107995               1.107995
+total personas que salen 106665.69634685917 costo 107.99977134865487 A 0.41530688132175353 A0 0.40935574139271147
+hogares que salen por zona (muestra) y pesos FEX:
+Cabecera [630.4, 672.0, 930.3, 1030.0, 1356.3, 1357.1, 1563.0, 1737.3, 2071.1, 2335.4, 2394.5, 2411.4, 2435.6, 3764.5] HS [2, 2, 7, 4, 2, 4, 2, 4, 4, 6, 3, 7, 5, 4]
+Centro poblado [174.5, 321.7] HS [6, 3]
+Rural disperso [135.9, 209.0, 436.7] HS [3, 4, 3]

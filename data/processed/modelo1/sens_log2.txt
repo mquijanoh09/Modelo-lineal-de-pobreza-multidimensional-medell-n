@@ -1,0 +1,10 @@
+base: ya existe, se salta
+p_050: ya existe, se salta
+p_075: ya existe, se salta
+con_E3: ya existe, se salta
+sin_E7: ya existe, se salta
+desempleo_imputado: ya existe, se salta
+ti_psicosocial: 585,073 personas, r=0.839, rho=0.4770937973377366, A=0.4083 (A0=0.4094) en 433 s
+acueducto_bid: 582,078 personas, r=0.832, rho=0.47371068927164817, A=0.4087 (A0=0.4094) en 361 s
+rho_codo: 584,201 personas, r=0.833, rho=0.469287970447584, A=0.4127 (A0=0.4094) en 654 s
+sin_penalizaciones: 592,196 personas, r=0.000, rho=None, A=0.4399 (A0=0.4094) en 15 s

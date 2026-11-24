@@ -5,7 +5,7 @@ de lo de siempre, los valores finales de H, A y M0 POR ZONA (PLAN_INTEGRACION_M3
 
 No cambia ningún modelo: solo agrega columnas a X.metricas antes de lanzar m34_comparacion_12nov (modo costo).
 El sorteo R se deriva del hogar y de la réplica, así que las soluciones son las mismas del 12-nov; el script
-m34_tablas_15nov.py comprueba que el costo de cada corrida coincide con costo_meta_zona_crudo_12nov.csv.
+scripts/m34_datos_paper.py comprueba que el costo de cada corrida coincide con costo_meta_zona_crudo_12nov.csv.
 
 Uso: python3 m34_zonas_costo_15nov.py <raiz> <n_rep> <salida/> <procesos>
 """

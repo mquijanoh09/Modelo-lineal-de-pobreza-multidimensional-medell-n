@@ -1,0 +1,10 @@
+# Versiones exactas con las que se reprodujeron al peso los datos-finales-10nov (auditoría 12-nov)
+# Python 3.13.18
+PuLP==3.3.2
+highspy==1.15.1
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.1
+scipy==1.18.1
+pyarrow==26.0.1
+matplotlib==3.11.2

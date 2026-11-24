@@ -10,7 +10,9 @@ Jerónimo Vélez, 15 de noviembre de 2026. Responde a `PLAN_INTEGRACION_M3_M4.md
 | `datos_m34/*.csv` | CSV de origen de cada tabla y figura | §2 y §5 |
 | `cifras_m34.csv` | Una fila por cifra: texto, valor, archivo y columna de origen, y si se cita en el texto | §2 |
 | `scripts/` | Cómo se generó todo (ver abajo) | |
-| `scripts_modelo3/`, `crudo/` | Scripts que corren sobre la rama `Modelo3` y sus salidas crudas (H, A y M0 por zona; B = 424) | §5 |
+| `scripts_modelo3/` | Los scripts de las corridas y todos los módulos `m34_*` que importan, copiados de la rama `Modelo3` (commit `4e7eefc`) para que la entrega se reproduzca desde esta rama | §5 |
+| `crudo/` | Salidas crudas por réplica y por B que leen los scripts de `scripts/` (las del 10 y 12-nov, auditadas el 14-nov, y las del 15-nov) | §5 |
+| `requirements-lock.txt` | Versiones exactas de Python y de las librerías con las que se reprodujeron las cifras | §5 |
 
 ## Qué hay que saber al integrar
 
@@ -31,23 +33,38 @@ Todo el criterio de costo, el de presupuesto fijo, el piso máximo garantizable 
 
 ## Cómo se reproduce
 
-Desde la raíz de la rama `Modelo3`, con las versiones de `requirements-lock.txt`:
+Todo corre **desde la raíz de esta rama** (`entrega-m34-15nov`), con las versiones de `entrega_m34/requirements-lock.txt` (`pip install -r entrega_m34/requirements-lock.txt`). Python agrega la carpeta de cada script a la ruta de importación, así que los módulos `m34_*` de `scripts_modelo3/` se encuentran solos.
+
+Hacen falta dos cosas que no están en `entrega_m34/`:
+
+- **Los microdatos del IPM 2025 del DANE** en `data/DANE/DEPARTAMENTAL/` (en esta rama ya están en la raíz; no se copian a la entrega).
+- **El código de los Modelos 1 y 2 de Martín**, la carpeta `Modelos/` de `main` (commit `c741f50`). Se pasa como argumento (`<Modelos/ de main>`), por ejemplo desde un `git worktree add ../main main`. Lo usan `m34_costos_comunes.py`, `m34_ip_zonas_15nov.py`, `m34_b424_15nov.py ref` y las corridas de la comparación, a través de `m34_compat_martin.py`. No se copia, porque es código de Martín.
 
 ```bash
-python3 m34_zonas_costo_15nov.py data/DANE/DEPARTAMENTAL 100 out15/costo 2      # unas 3 horas con 2 núcleos
-python3 m34_ip_zonas_15nov.py <Modelos/ de main> out15/ip_zonas.csv              # 1 minuto
-python3 m34_base_paper_15nov.py data/DANE/DEPARTAMENTAL datos_m34/                # segundos
-# puente con el caso base (B = 424), 15-nov:
-python3 m34_b424_15nov.py ref <Modelos/ de main> out424/ref424.csv                # ~8 minutos
-python3 m34_b424_15nov.py ipmax out424/ipmax.csv                                  # segundos
-python3 m34_b424_15nov.py rmax 100 <tabla con B=424> out424/rmax424.csv           # ~4 minutos
-python3 m34_equidad_comun.py data/DANE/DEPARTAMENTAL 30 out424/eq 2 424           # ~15 minutos
-python3 m34_b424_resumen_15nov.py out424/ R/
-# con resultados/m34/, costo_zonas_crudo_15nov.csv, ip_zonas_15nov.csv y lo de B = 424 en una carpeta R/:
-python3 scripts/m34_datos_paper.py R/ datos_m34/
+S=entrega_m34/scripts_modelo3
+R=data/DANE/DEPARTAMENTAL
+# 0. Tabla de costos común a los cuatro modelos (se escribe en data/processed/; no se sube)
+python3 $S/m34_costos_comunes.py <Modelos/ de main>                                   # 1 minuto
+# 1. Corridas del 15-nov
+python3 $S/m34_zonas_costo_15nov.py $R 100 out15/costo 2                               # unas 3 horas con 2 núcleos
+python3 $S/m34_ip_zonas_15nov.py <Modelos/ de main> out15/ip_zonas.csv                 # 1 minuto
+python3 $S/m34_base_paper_15nov.py $R entrega_m34/datos_m34/                           # segundos
+# 2. Puente con el caso base (B = 424)
+python3 $S/m34_b424_15nov.py ref <Modelos/ de main> out424/ref424.csv                  # ~8 minutos
+python3 $S/m34_b424_15nov.py ipmax out424/ipmax.csv                                    # segundos
+python3 $S/m34_b424_15nov.py rmax 100 out424/ref424.csv out424/rmax424.csv             # ~4 minutos
+python3 $S/m34_equidad_comun.py $R 30 out424/eq 2 424                                  # ~15 minutos
+python3 $S/m34_b424_resumen_15nov.py out424/ entrega_m34/crudo/
+# 3. Datos, figuras, texto y verificación (desde los CSV de crudo/)
+cd entrega_m34
+python3 scripts/m34_datos_paper.py crudo/ datos_m34/
 python3 scripts/m34_figuras_paper.py datos_m34/ figuras_m34/
 python3 scripts/m34_documento_paper.py datos_m34/ scripts/plantilla_M34.md M34_para_paper.md cifras_m34.csv
-python3 scripts/m34_verificar_entrega.py . <paper/cifras.tex de paper-12nov>
+python3 scripts/m34_verificar_entrega.py . <paper/cifras.tex de paper-12nov>            # 126/126
 ```
+
+Las salidas crudas del 10 y 12-nov que están en `crudo/` salen de `m34_comparacion_12nov.py` (costo y cobertura con r\_B), `m34_rmax_12nov.py` (piso máximo), `m34_equidad_comun.py` (r = 0), `m34_tablas_12nov.py` y `m34_bootstrap_ic.py` (intervalos), todos en `scripts_modelo3/`; volver a correrlas toma unas 10 horas con 2 núcleos, y la auditoría del 14-nov ya las verificó. `datos_m34/sens_k_u1.csv` es una copia de `resumen_k.csv` (3-nov), que producen `m34_sensibilidad_k.py` y `m34_resumen_k.py`.
+
+**Comprobado el 24-nov desde esta rama:** `m34_costos_comunes.py` reproduce la tabla de costos de `Modelo3` (8,602 pares, idéntica), `m34_b424_15nov.py ipmax` reproduce `crudo/ipmax.csv` exactamente, `m34_base_paper_15nov.py` reproduce los tres CSV de contexto y `m34_datos_paper.py crudo/` reproduce byte a byte los 11 CSV de `datos_m34/` que produce.
 
 `m34_documento_paper.py` llena la plantilla con las cifras y las tablas calculadas desde los CSV. Si una cifra no tiene valor, falla: no hay números escritos a mano. `m34_verificar_entrega.py` comprueba que cada cifra citada aparezca en el texto, que coincida con el paper de la rama `paper-12nov` (ya verificado 16/16 y 29/29) y con la sección 6 de `RESPUESTA_JERONIMO_12NOV.md`, que existan las figuras y los CSV citados, y que no haya guiones largos (salvo «—» en celdas vacías, como en la Tabla 2 del borrador) ni flechas.

@@ -1,0 +1,7 @@
+B,r_B,rho_B,nota_rho,M1_salen_r,M1_estado_r,M1_salen_r_rho,M1_estado_r_rho,segundos
+2,0.03648415097916941,,la regla no se alcanza ni con el rho maximo,87033.98186608385,Optimal,,sin rho,49.6
+5,0.0729666957060957,,la regla no se alcanza ni con el rho maximo,129294.15527139725,Optimal,,sin rho,63.0
+10,0.14618127610347653,,la regla no se alcanza ni con el rho maximo,154346.53722351335,Optimal,,sin rho,83.6
+25,0.23821414728571216,0.16464718639219103,,214879.00792339692,Optimal,193046.87981865118,Optimal,350.4
+50,0.34420053165548814,0.21515553786372416,,281588.00076802203,Optimal,259930.7089078405,Optimal,408.6
+100,0.5219472217824831,,la regla no se alcanza ni con el rho maximo,369939.743242749,Optimal,,sin rho,270.4
